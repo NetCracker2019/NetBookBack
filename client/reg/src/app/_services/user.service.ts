@@ -9,7 +9,7 @@ export class UserService {
     private url: string;
 
     constructor(private http: HttpClient) {
-        this.url = 'http://localhost:8080';
+        this.url = 'https://netbookstest.herokuapp.com';
     }
 
     getAll() {
