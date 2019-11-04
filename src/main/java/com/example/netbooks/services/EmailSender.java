@@ -6,6 +6,7 @@ import com.example.netbooks.controllers.AuthenticationController;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,10 +28,10 @@ public class EmailSender {
         
         try {
         	emailSender.send(simpleMessage);
-        	logger.info("email for" + emailTo + "was sent");
+        	logger.info("email for " + emailTo + " was sent " );
         	//System.out.println("ok");
         }catch(Exception e) {
-        	logger.info("ERROR: email for" + emailTo + "was not sent");
+        	logger.info("ERROR: email for " + emailTo + " was not sent" + e);
         	//System.out.println("error");
         }
     }

@@ -1,7 +1,10 @@
 package com.example.netbooks.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.example.netbooks.services.VerificationToken;
 
+@Repository
 public class VerificationTokenRepository {
 
 	

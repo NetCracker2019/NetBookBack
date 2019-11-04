@@ -1,7 +1,10 @@
 package com.example.netbooks.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.example.netbooks.services.User;
 
+@Repository
 public class UserRepository {
 
 	
@@ -10,9 +13,9 @@ public class UserRepository {
 		//save into DB
 	}
 	
-	public User findByEmail(String mail) {
+	public boolean findByEmail(String mail) {
 		/////
-		return new User();
+		return false;
 	}
 	
 }
