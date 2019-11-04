@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class AuthenticationService {
     private Url: string;
-    constructor(private http: HttpClient) {this.Url = 'http://localhost:8080'; }
+    constructor(private http: HttpClient) {this.Url = 'https://netbookstest.herokuapp.com'; }
 
     login(username: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}/users/authenticate`, { username: username, password: password })
