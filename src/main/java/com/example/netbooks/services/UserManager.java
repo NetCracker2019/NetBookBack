@@ -30,7 +30,7 @@ public class UserManager {
     }
 
     public User GetUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUserName(username);
     }
 
     

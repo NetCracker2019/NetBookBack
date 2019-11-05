@@ -41,7 +41,7 @@ public class User {
     public User(String email, String password, String username, String role) {
         this.email = email;
         this.password = password;
-        this.userName = login;
+        this.userName = username;
         this.role = role;
     }
     
