@@ -61,7 +61,6 @@ public class AuthenticationController {
             userManager.SaveUser(user);//into db
 
             VerificationToken verificationToken = new VerificationToken(user);
-
             verificationTokenRepo.save(verificationToken);
             
             String message = "To verification your account, please click here : "
