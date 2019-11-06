@@ -28,7 +28,7 @@ import com.example.netbooks.models.VerificationToken;
 import com.example.netbooks.services.EmailSender;
 import com.example.netbooks.services.UserManager;
 import com.example.netbooks.models.User;
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://netbooksnice.herokuapp.com")
 @RestController
 public class AuthenticationController {
 	
