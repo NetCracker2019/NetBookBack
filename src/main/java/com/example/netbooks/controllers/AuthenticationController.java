@@ -65,7 +65,7 @@ public class AuthenticationController {
             verificationTokenRepo.save(verificationToken);
             
             String message = "To verification your account, please click here : "
-                    +"https://netbookstest.herokuapp.com/verification-account?token="+verificationToken.getVerificationToken();
+                    +"https://netbooksnice.herokuapp.com/verification-account?token="+verificationToken.getVerificationToken();
             
             emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
              
