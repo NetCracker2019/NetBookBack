@@ -7,16 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.netbooks.dao.UserRepository;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 
 @Data
 public class User {
+	@JsonProperty("id")
 	private long userId;
-	private String userName;	
+	@JsonProperty("lastname")
+	private String userName;
+	@JsonProperty("firstname")
 	private String login;
+	@JsonProperty("username")
 	private String email;
+	@JsonProperty("password")
     private String password;
     private LocalDate regDate;
     private String avatarFilePath;    

@@ -32,9 +32,8 @@ public class VerificationTokenManager {
         return verificationTokenRepository.GetAllVerificationTokens();
     }
    
-    public VerificationToken SaveToken(User user)
+    public VerificationToken SaveToken(VerificationToken VerTok)
     {
-       VerificationToken VerTok = new VerificationToken(user);
        verificationTokenRepository.save(VerTok);
        return VerTok;
     }
