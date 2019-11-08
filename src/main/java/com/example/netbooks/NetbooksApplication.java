@@ -12,24 +12,8 @@ import com.example.netbooks.services.EmailSender;
 @SpringBootApplication
 public class NetbooksApplication{ //implements CommandLineRunner {
 	
-	@Autowired
-	EmailSender emailSender;
-	
 	public static void main(String[] args) {
 		SpringApplication.run(NetbooksApplication.class, args);
 	}
-	/*
-	@Override
-    public void run(String... args) {
-		/*
-		 import org.apache.commons.validator.EmailValidator;
-		 
-		 EmailValidator validator = EmailValidator.getInstance();
-		 if (validator.isValid(email)...
-		 ///
-		emailSender.sendMessage("reniko@ukr.net", "ret", "bet");
-        System.out.println("gg");
-
-    }
-	*/
+	
 }

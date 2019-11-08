@@ -14,13 +14,13 @@ public class VerificationToken {
 
     private Date createdDate;
     
-    private User user;
+    private long userId; 
     
     public VerificationToken() {
     }
 
-    public VerificationToken(User user) {
-        this.user = user;
+    public VerificationToken(long userId) {
+        this.userId = userId;
         createdDate = new Date();
         verificationToken = UUID.randomUUID().toString();
     }
@@ -50,14 +50,12 @@ public class VerificationToken {
 		this.createdDate = createdDate;
 	}
 
-	public User getUser() {
-		return user;
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setUser(User userService) {
-		this.user = userService;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 
-	
-    
 }

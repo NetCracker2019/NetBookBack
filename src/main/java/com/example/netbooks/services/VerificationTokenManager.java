@@ -14,27 +14,21 @@ public class VerificationTokenManager {
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
     
-    public VerificationToken FindVerificationToken(String verificationToken) {
+    public VerificationToken findVerificationToken(String verificationToken) {
         return verificationTokenRepository.findByVerificationToken(verificationToken);
     }
     
-    public boolean RemoveVerificationToken(String verificationToken) {
-        return verificationTokenRepository.removeVerificationToken(FindVerificationToken(verificationToken));
+    public boolean removeVerificationToken(String verificationToken) {
+        return verificationTokenRepository.removeVerificationToken(findVerificationToken(verificationToken));
     }
     
-    public VerificationTokenManager(VerificationTokenRepository verificationTokenRepository)
-    {
-        this.verificationTokenRepository = verificationTokenRepository;
-    }
-    
-    public LinkedList<VerificationToken> GetAllVerificationTokens()
+    public LinkedList<VerificationToken> getAllVerificationTokens()
     {
         return verificationTokenRepository.GetAllVerificationTokens();
     }
    
-    public VerificationToken SaveToken(VerificationToken VerTok)
+    public void saveToken(VerificationToken VerTok)
     {
        verificationTokenRepository.save(VerTok);
-       return VerTok;
     }
 }

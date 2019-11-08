@@ -16,11 +16,11 @@ import lombok.Data;
 public class User {
 	@JsonProperty("id")
 	private long userId;
-	@JsonProperty("lastname")
-	private String userName;
-	@JsonProperty("firstname")
+	@JsonProperty("name")
+	private String name;
+	@JsonProperty("login")
 	private String login;
-	@JsonProperty("username")
+	@JsonProperty("email")
 	private String email;
 	@JsonProperty("password")
     private String password;
@@ -29,12 +29,12 @@ public class User {
     private String country;    
     private String city;    
     private String status;
-    private String role;
-    
-    
+    private boolean activity;
+    @JsonProperty("role")
+    private Role role;
 
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 
@@ -44,28 +44,18 @@ public class User {
     }
     
     
-    public User(String email, String password, String username, String role) {
+    public User(int id, String email, String password, String login, String name, Role role) {
+    	this.userId = id;//rewrite
         this.email = email;
         this.password = password;
-        this.userName = username;
+        this.login = login;
+        this.name = name;
         this.role = role;
+        
+        this.activity = true;
     }
-    
-    public User(Map<String, String> user) {
-    	this.userName = user.get("firstName");
-    	this.login = user.get("lastName");
-    	this.email = user.get("username");
-    	this.password = user.get("password");
-    	
-    	/*
-    	 * userName == firstName
-    	login == lastName
-    	email == username
-    	 */
-    }
-    
-    
-    public String getRole() {
+   
+    public Role getRole() {
 		return role;
 	}
 	public long getUserId() {
@@ -76,12 +66,12 @@ public class User {
 		this.userId = userId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getName() {
+		return name;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getLogin() {
@@ -146,6 +136,16 @@ public class User {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public boolean isActivity() {
+		return activity;
+	}
+
+
+	public void setActivity(boolean activity) {
+		this.activity = activity;
 	}
 
 	
