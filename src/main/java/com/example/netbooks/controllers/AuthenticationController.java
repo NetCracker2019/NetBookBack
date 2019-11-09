@@ -48,7 +48,12 @@ public class AuthenticationController {
 	@Autowired
 	private VerificationTokenManager verificationTokenManager;
 
-
+	
+	@RequestMapping(value="/interrupt", method = RequestMethod.GET)
+	public void interruptr(@RequestParam("login")String login){
+		userManager.interrupt(login);
+	}
+	
 	@RequestMapping(value="/register", method = RequestMethod.POST, headers = {"Content-type=application/json"})
 	public ResponseEntity<Map> register(@RequestBody User user){
 		return userManager.signup(user);

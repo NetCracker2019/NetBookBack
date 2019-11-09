@@ -31,6 +31,7 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
         .antMatchers("/register").permitAll()
         .antMatchers("/verification-account").permitAll()
         .antMatchers("/signin").permitAll()
+        .antMatchers("/interrupt").authenticated()
         .antMatchers("/Users").permitAll()
         //.antMatchers("/Users").authenticated()
         //.antMatchers("/Users").hasRole("ADMIN")

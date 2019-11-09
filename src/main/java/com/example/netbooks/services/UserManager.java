@@ -38,8 +38,11 @@ public class UserManager {
 	private JwtProvider jwtProvider;
 	@Autowired
 	private VerificationTokenManager verificationTokenManager;
-
-
+	
+	public void interrupt(String login){
+		User user = userRepository.findByLogin(login);
+		user.setMinRefreshDate(null);
+	}
 
 	public ResponseEntity<Map> signin(User user) {
 		try {
