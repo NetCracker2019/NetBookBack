@@ -43,6 +43,7 @@ public class UserManager {
 
 	public ResponseEntity<Map> signin(User user) {
 		try {
+			//user.setMinRefreshDate(null);// if only one active session is allowed
 			logger.info("Try to login " + user.getLogin() + " ---- " + user.getPassword());
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
 			Map<Object, Object> response = new HashMap<>();
@@ -67,7 +68,6 @@ public class UserManager {
 			//emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
 			logger.info("Complete Registration!" + user.getLogin() + message);
 			Map<Object, Object> response = new HashMap<>();
-			//response.put("token", jwtProvider.createToken(user.getLogin(), user.getRole()));
             response.put("msg", "Successful registration");
             return ResponseEntity.ok(response);
 		} else {

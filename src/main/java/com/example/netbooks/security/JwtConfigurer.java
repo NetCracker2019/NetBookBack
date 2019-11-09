@@ -32,11 +32,10 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
         .antMatchers("/verification-account").permitAll()
         .antMatchers("/signin").permitAll()
         .antMatchers("/Users").permitAll()
+        //.antMatchers("/Users").authenticated()
+        //.antMatchers("/Users").hasRole("ADMIN")
         
         .anyRequest().authenticated();
-
-
-    http.exceptionHandling().accessDeniedPage("/login");
 
     http.apply(new JwtFilterConfigurer(jwtProvider));
 

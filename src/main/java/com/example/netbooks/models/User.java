@@ -1,6 +1,8 @@
 package com.example.netbooks.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class User {
 	private String email;
 	@JsonProperty("password")
     private String password;
-    private LocalDate regDate;
+	private Date regDate;
     private String avatarFilePath;    
     private String country;    
     private String city;    
@@ -32,7 +34,11 @@ public class User {
     private boolean activity;
     @JsonProperty("role")
     private Role role;
+    private Date minRefreshDate;
+    
 
+
+	
 
 	public void setRole(Role role) {
 		this.role = role;
@@ -51,8 +57,7 @@ public class User {
         this.login = login;
         this.name = name;
         this.role = role;
-        
-        this.activity = true;
+        this.activity = true;//to
     }
    
     public Role getRole() {
@@ -98,11 +103,11 @@ public class User {
 		this.password = password;
 	}
 
-	public LocalDate getRegDate() {
+	public Date getRegDate() {
 		return regDate;
 	}
 
-	public void setRegDate(LocalDate regDate) {
+	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
 
@@ -149,7 +154,15 @@ public class User {
 	}
 
 	
-    
+	public Date getMinRefreshDate() {
+		return minRefreshDate;
+	}
+
+
+	public void setMinRefreshDate(Date minRefreshDate) {
+		this.minRefreshDate = minRefreshDate;
+	}
+
    
 
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -40,9 +41,9 @@ public class JwtFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		} catch (CustomException ex) {
+			logger.info("next layer" + ex.getMessage());
 			SecurityContextHolder.clearContext();
 			httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
-			return;
 		}
 
 

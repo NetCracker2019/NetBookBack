@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,17 +58,17 @@ public class AuthenticationController {
 	public ResponseEntity<Map> confirmUserAccount(@RequestParam("token")String verificationToken){
 		return userManager.confirmUserAccount(verificationToken);        
 	}
-	
+
 	@RequestMapping(value="/signin", method = RequestMethod.POST, headers = {"Content-type=application/json"})
 	public ResponseEntity<Map> signin(@RequestBody User user){
 		return userManager.signin(user);
 	}
-	
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+
 	@RequestMapping(value = "/Users", method = {RequestMethod.GET, RequestMethod.POST})
 	public LinkedList<User> getAllUsers() {
 		return userManager.getAllUsers();
 	}
+
 
 	@RequestMapping(value = "/Tokens", method = {RequestMethod.GET, RequestMethod.POST})
 	public LinkedList<VerificationToken> getAllVerificationTokens() {

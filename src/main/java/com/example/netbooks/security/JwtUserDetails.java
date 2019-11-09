@@ -34,7 +34,6 @@ public class JwtUserDetails implements UserDetailsService {
 				.password(user.getPassword())
 				.authorities(user.getRole())
 				.accountLocked(!user.isActivity())
-				.accountLocked(false)
 				.credentialsExpired(false)
 				.disabled(false)
 				.build();

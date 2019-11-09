@@ -21,8 +21,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.example.netbooks.controllers.AuthenticationController;
+import com.example.netbooks.dao.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Role;
+import com.example.netbooks.models.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -37,23 +39,31 @@ public class JwtProvider {
 
 	@Value("${jwt.token.expired}")
 	private long validityTime;
+	
+	@Value("${jwt.token.secondPause}")
+	private long secondPause;
 
 	@Autowired
 	private JwtUserDetails JwtUserDetails;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@PostConstruct
 	protected void init() {
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 	}
 
-	public String createToken(String username, Role role) {
-
-		Claims claims = Jwts.claims().setSubject(username);
-		claims.put("auth", role);
+	public String createToken(String login, Role role) {
+		final User user = userRepository.findByLogin(login);
+		Claims claims = Jwts.claims().setSubject(login);
+		claims.put("role", role);
 
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + validityTime);
-
+		if(user.getMinRefreshDate() == null) {
+			user.setMinRefreshDate( new Date(now.getTime() - secondPause));
+		}
 		return Jwts.builder()
 				.setClaims(claims)
 				.setIssuedAt(now)
@@ -81,9 +91,16 @@ public class JwtProvider {
 
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+			Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+			final User user = userRepository.findByLogin(claims.getSubject());
+			logger.info(user.getLogin() + " " );
+			if(claims.getIssuedAt().compareTo(user.getMinRefreshDate()) == -1) {
+				logger.info("fal");
+				throw new Exception();
+				//return false;
+			}
 			return true;
-		} catch (JwtException | IllegalArgumentException e) {
+		} catch (Exception e) {
 			logger.info("valid error ");
 			throw new CustomException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
