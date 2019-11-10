@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -16,12 +14,13 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<Book> findAll() {
-        return jdbcTemplate.query("SELECT * FROM book", this::mapRowToBook);
+        return jdbcTemplate.query("SELECT * FROM book", new BookRowMapper());
     }
 
-    private Book mapRowToBook(ResultSet resultSet, int i) throws SQLException {
-        return new Book(
-                resultSet.getLong("book_id"),
-                resultSet.getString("title"));
+    @Override
+    public List<Book> findBooksByTitle(String title) {
+        title = "%" + title + "%";
+        return jdbcTemplate.query("SELECT * FROM book WHERE lower(title) LIKE ?",
+                new Object[] {title}, new BookRowMapper());
     }
 }

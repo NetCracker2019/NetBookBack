@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface BookRepository {
     List<Book> findAll();
+    List<Book> findBooksByTitle(String title);
 }
