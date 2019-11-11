@@ -55,7 +55,7 @@ public class JwtProvider {
 	}
 
 	public String createToken(String login, Role role) {
-		final User user = userRepository.findByLogin(login);
+		User user = userRepository.findByLogin(login);
 		Claims claims = Jwts.claims().setSubject(login);
 		claims.put("role", role);
 
@@ -63,6 +63,7 @@ public class JwtProvider {
 		Date validity = new Date(now.getTime() + validityTime);
 		if(user.getMinRefreshDate() == null) {
 			user.setMinRefreshDate( new Date(now.getTime() - secondPause));
+			userRepository.updateUser(user);
 		}
 		return Jwts.builder()
 				.setClaims(claims)

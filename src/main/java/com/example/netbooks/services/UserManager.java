@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.dao.UserRepository;
@@ -101,6 +102,39 @@ public class UserManager {
 			throw new CustomException("Invalid token", HttpStatus.NOT_FOUND);
 		}   
 
+	}
+	
+	public ResponseEntity<Map> recoveryPass(String verificationToken, String newPass){
+		VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+		if(token != null) {
+			User user = userRepository.findByUserId(token.getUserId());
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setMinRefreshDate(null);
+			userRepository.updateUser(user);
+			verificationTokenManager.removeVerificationToken(verificationToken);
+			// TODO del addled tokens
+			Map<Object, Object> response = new HashMap<>();
+            response.put("msg", "successful password recovery");
+            return ResponseEntity.ok(response);
+		}
+		else {
+			throw new CustomException("Invalid recovery password link", HttpStatus.NOT_FOUND);
+		}  
+	}
+	
+	public ResponseEntity<Map> recoveryPassRequest(User user){
+		VerificationToken verificationToken = new VerificationToken(
+				userRepository.findByEmail(user.getEmail()).getUserId());
+		verificationTokenManager.saveToken(verificationToken);
+		
+		String message = "To recovery your password, please click here : "
+				+"https://netbooksnice.herokuapp.com/recovery-password?token="
+				+verificationToken.getVerificationToken();        
+		//emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+		logger.info("success recovery" + verificationToken.getVerificationToken());
+		Map<Object, Object> response = new HashMap<>();
+        response.put("msg", "Password recovery letter has been sent successfully");
+        return ResponseEntity.ok(response);
 	}
 
 	public User getUserByMail(User user) {
