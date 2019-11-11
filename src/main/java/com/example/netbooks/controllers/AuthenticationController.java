@@ -74,9 +74,20 @@ public class AuthenticationController {
 	public Iterable<User> getAllUsers() {
 		return userManager.getAllUsers();
 	}
+
 	@RequestMapping(value = "/rmuser", method = {RequestMethod.GET})
 	public void removeUser(@RequestParam("id")long id) {
 		userManager.removeUserById(id);
+	}
+        
+        @RequestMapping(value="/verification-admin", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+	public ResponseEntity<Map> register(@RequestBody User user, @RequestParam("token")String verificationToken){
+		return userManager.signupAdmin(user, Role.ROLE_ADMIN, verificationToken);
+	}
+        
+        @RequestMapping(value="/send-admin-reg-mail", method = RequestMethod.POST)
+	public ResponseEntity<Map> sendAdminRegMail(@RequestParam("mail")String mail){
+		return userManager.sendAdminRegMail(mail);
 	}
 
 }
