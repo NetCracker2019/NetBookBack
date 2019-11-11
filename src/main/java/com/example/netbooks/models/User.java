@@ -42,12 +42,7 @@ public class User {
     @JsonProperty("role")
     private Role role;
     private Date minRefreshDate;
-    
 
-
-	
-
-    
 
 	public User() {
     	
@@ -63,7 +58,23 @@ public class User {
         this.role = role;
         this.activity = true;//to
     }
-   
+
+	public User(long id, String email, String password, String login, String name, Role role,
+				String sex, String avatarFilePath, String country, String city, String status) {
+		this.userId = id;//rewrite
+		this.email = email;
+		this.password = password;
+		this.login = login;
+		this.name = name;
+		this.role = role;
+		this.sex = sex;
+		this.avatarFilePath = avatarFilePath;
+		this.country = country;
+		this.city = city;
+		this.status = status;
+		this.activity = true;//to
+	}
+
     public Role getRole() {
 		return role;
 	}
