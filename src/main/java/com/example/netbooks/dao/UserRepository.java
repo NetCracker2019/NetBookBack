@@ -7,6 +7,7 @@ import com.example.netbooks.models.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -82,6 +83,26 @@ public class UserRepository {
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
 
         namedJdbcTemplate.update(env.getProperty("saveUser"), namedParams);
+    }
+    
+    public void updateUser(User user) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("login", user.getLogin());
+        namedParams.put("passw", user.getPassword());
+        namedParams.put("person_name", user.getName());
+        namedParams.put("mail", user.getEmail());
+        namedParams.put("avatar_filepath", user.getAvatarFilePath());
+        namedParams.put("sex", user.getSex());
+        namedParams.put("country", user.getCountry());
+        namedParams.put("city", user.getCity());
+        namedParams.put("description", user.getStatus());
+        namedParams.put("activity", user.isActivity());
+        namedParams.put("turn_on_notif", user.isTurnOnNotif());
+        namedParams.put("reg_date", user.getRegDate());
+        namedParams.put("role_id", user.getRole().ordinal() + 1);
+        namedParams.put("min_refresh_date",  user.getMinRefreshDate());
+
+        namedJdbcTemplate.update(env.getProperty("updateUser"), namedParams);
     }
     
     public Iterable<User> getAllUsers() {

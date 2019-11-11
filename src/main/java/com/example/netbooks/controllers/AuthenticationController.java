@@ -89,5 +89,14 @@ public class AuthenticationController {
 	public ResponseEntity<Map> sendAdminRegMail(@RequestParam("mail")String mail){
 		return userManager.sendAdminRegMail(mail);
 	}
+	@RequestMapping(value="/recovery-pass-request", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+	public ResponseEntity<Map> recoveryPassRequest(@RequestBody User user){
+		return userManager.recoveryPassRequest(user);
+	}
+	@RequestMapping(value="/recovery-pass", method= {RequestMethod.GET})
+	public ResponseEntity<Map> recoveryPass(@RequestParam("token")String token, @RequestParam("pass")String pass){
+		return userManager.recoveryPass(token, pass);
+	}
+	
 
 }
