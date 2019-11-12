@@ -69,7 +69,7 @@ public class VerificationTokenRepository {
             namedParams.put("token_name", token);
             return namedJdbcTemplate.queryForObject(env.getProperty("findByVerificationToken"), namedParams, new TokenMapper());
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User not found - " + token);
+            logger.info("Token not found - " + token);
             return null;
         }
     }
