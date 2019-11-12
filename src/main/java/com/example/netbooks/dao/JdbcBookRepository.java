@@ -29,8 +29,8 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public String addBook(Book book) {
-        jdbcTemplate.update("insert into book (book_id, title, likes, image_path, release_date, lang, pages, approved) " + "values(?, ?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?)",
-                new Object[] {book.getBookId(), book.getTitle(), book.getLike(), book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.isApproved()});
+        jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?)",
+                new Object[] {book.getTitle(), book.getLike(), book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.isApproved()});
         return "Complete!";
     }
 

@@ -149,7 +149,7 @@ public class UserManager {
             response.put("msg", "Successful registration");
             return ResponseEntity.ok(response);
     }
-	}
+
 	
 	public ResponseEntity<Map> recoveryPass(String verificationToken, String newPass){
 		VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
