@@ -26,6 +26,7 @@ import java.util.UUID;
 @Service
 public class UserManager {
 
+<<<<<<< HEAD
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	@Autowired
 	UserRepository userRepository;
@@ -146,6 +147,129 @@ public class UserManager {
 		return ResponseEntity.ok(response);
 	}
 
+=======
+    private final Logger logger = LogManager.getLogger(AuthenticationController.class);
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    private VerificationTokenManager verificationTokenManager;
+
+    public void interrupt(String login) {
+        User user = userRepository.findByLogin(login);
+        user.setMinRefreshDate(null);
+    }
+
+    public ResponseEntity<Map> signin(User user) {
+        try {
+            //user.setMinRefreshDate(null);// if only one active session is allowed
+            logger.info("Try to login " + user.getLogin() + " ---- " + user.getPassword());
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("token", jwtProvider.createToken(user.getLogin(), user.getRole()));
+            response.put("msg", "Successful login");
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public ResponseEntity<Map> signup(User user, Role role) {
+        if (userRepository.findByLogin(user.getLogin()) == null
+                && userRepository.findByEmail(user.getEmail()) == null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole(role);
+            userRepository.save(user);
+
+            VerificationToken verificationToken = new VerificationToken(
+                    userRepository.findByLogin(user.getLogin()).getUserId());
+            verificationTokenManager.saveToken(verificationToken);
+
+            String message = "To verification your account, please click here : "
+                    + "https://netbooksnice.herokuapp.com/verification-account?token="
+                    + verificationToken.getVerificationToken();
+            //emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+            logger.info("Complete Registration!" + user.getLogin() + message);
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("msg", "Successful registration");
+            return ResponseEntity.ok(response);
+        } else {
+            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public ResponseEntity<Map> signupAdmin(User user, Role role, String verificationToken) {
+        if (userRepository.findByLogin(user.getLogin()) == null
+                && userRepository.findByEmail(user.getEmail()) == null) {
+            VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+            if (token != null) {
+                userRepository.removeUserById(token.getUserId());
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setRole(role);
+                userRepository.save(user);
+                verificationTokenManager.removeVerificationToken(verificationToken);
+                // TODO del addled tokens
+                //emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+                logger.info("Complete Admin Registration!" + user.getLogin());
+
+                Map<Object, Object> response = new HashMap<>();
+                response.put("msg", "Successful registration");
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("Admin token is invalid.", HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        } else {
+            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public ResponseEntity<Map> confirmUserAccount(String verificationToken) {
+        VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+        if (token != null) {
+            userRepository.activateUser(token.getUserId());
+            logger.info("successRegister!" + verificationToken);
+            verificationTokenManager.removeVerificationToken(verificationToken);
+            // TODO del addled tokens
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("msg", "Successful account verification");
+            return ResponseEntity.ok(response);
+        } else {
+            logger.info("Fail Register!" + verificationToken);
+            throw new CustomException("Invalid token", HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    public ResponseEntity<Map> sendAdminRegMail(String mail) {
+           User user = new User();
+           user.setLogin(UUID.randomUUID().toString());
+           userRepository.save(user);
+            VerificationToken verificationToken = new VerificationToken(
+                    userRepository.findByLogin(user.getLogin()).getUserId());
+            verificationTokenManager.saveToken(verificationToken);
+
+            String message = "To register your admin account, please click here : "
+                    + "https://netbooksnice.herokuapp.com/verification-admin?token="
+                    + verificationToken.getVerificationToken();
+            //emailSender.sendMessage(user.getEmail(), "Register admin account!", message);
+            logger.info("Admin registration mail sent!" + user.getLogin() + message);
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("msg", "Successful registration");
+            return ResponseEntity.ok(response);
+    }
+
+	
+>>>>>>> bc81d99743b51a0313f154f397ba238e3b5eefb3
 	public ResponseEntity<Map> recoveryPass(String verificationToken, String newPass){
 		logger.info("success recovery request " + newPass + " " + verificationToken);
 		VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
