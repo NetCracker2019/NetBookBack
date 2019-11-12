@@ -30,6 +30,8 @@ public class UserManager {
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
+	EmailSender emailSender;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private AuthenticationManager authenticationManager;
