@@ -71,9 +71,9 @@ public class UserManager {
 			verificationTokenManager.saveToken(verificationToken);
 
 			String message = "To verification your account, please click here : "
-					+ "https://netbooksnice.herokuapp.com/verification-account?token="
+					+ "https://netbooksfront.herokuapp.com/verification-account?token="
 					+ verificationToken.getVerificationToken();
-			//emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+			emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
 			logger.info("Complete Registration!" + user.getLogin() + message);
 
 			Map<Object, Object> response = new HashMap<>();
@@ -136,9 +136,9 @@ public class UserManager {
 		verificationTokenManager.saveToken(verificationToken);
 
 		String message = "To register your admin account, please click here : "
-				+ "https://netbooksnice.herokuapp.com/verification-admin?token="
+				+ "https://netbooksfront.herokuapp.com/verification-admin?token="
 				+ verificationToken.getVerificationToken();
-		//emailSender.sendMessage(user.getEmail(), "Register admin account!", message);
+		emailSender.sendMessage(user.getEmail(), "Register admin account!", message);
 		logger.info("Admin registration mail sent!" + user.getLogin() + message);
 
 		Map<Object, Object> response = new HashMap<>();
@@ -172,9 +172,9 @@ public class UserManager {
 			verificationTokenManager.saveToken(verificationToken);
 
 			String message = "To recovery your password, please click here : "
-					+"https://netbooksnice.herokuapp.com/recovery-password?token="
+					+"https://netbooksfront.herokuapp.com/recovery-password?token="
 					+verificationToken.getVerificationToken();        
-			//emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+			emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
 			logger.info("success recovery request" + verificationToken.getVerificationToken());
 			Map<Object, Object> response = new HashMap<>();
 			response.put("msg", "Password recovery letter has been sent successfully");
