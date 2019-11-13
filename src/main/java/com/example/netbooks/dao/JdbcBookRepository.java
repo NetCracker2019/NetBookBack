@@ -1,12 +1,18 @@
 package com.example.netbooks.dao;
 
+import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -37,6 +43,7 @@ public class JdbcBookRepository implements BookRepository {
 
         return namedParameterJdbcTemplate.query(sql, namedParameters, new BookRowMapper());
     }
+
 
     @Override
     public List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
@@ -81,7 +88,7 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public String addBook(Book book) {
         jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?)",
-                new Object[] {book.getTitle(), book.getLike(), book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.isApproved()});
+                new Object[] {book.getTitle(), book.getLikes(), book.getImagePath(), book.getReleaseDate(), book.getLang(), book.getPages(), book.isApproved()});
         return "Complete!";
     }
     private Announcement mapRowToAnnouncement(ResultSet resultSet, int i) throws SQLException {
@@ -96,17 +103,31 @@ public class JdbcBookRepository implements BookRepository {
     }
 
 }
-class BookRowMapper implements RowMapper{
+class BookRowMapper implements RowMapper {
     @Override
     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
         Book book = new Book(
                 resultSet.getLong("book_id"),
                 resultSet.getString("title"),
+                resultSet.getInt("likes"),
                 resultSet.getString("image_path"),
                 resultSet.getDate("release_date"),
                 resultSet.getString("lang"),
                 resultSet.getInt("pages"),
                 resultSet.getBoolean("approved"));
         return book;
+    }
+}
+class AnnouncementRowMapper implements RowMapper {
+    @Override
+    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+        return new Announcement(
+                resultSet.getInt("announcment_id"),
+                resultSet.getInt("announcement_book_id"),
+                resultSet.getInt("user_id"),
+                resultSet.getBoolean("approved"),
+                resultSet.getString("title"),
+                resultSet.getString("description"),
+                resultSet.getString("image_path"));
     }
 }

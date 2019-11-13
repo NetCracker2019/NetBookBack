@@ -20,7 +20,7 @@ public class BookService {
     GenreRepository genreRepository;
 
     public List<Book> findBooks(String searchString){
-        String processedString = String.join(" ", searchString.trim().replaceAll(" +", " "));
+        String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
         System.out.println(processedString);
         List<Book> booksByTitle = jdbcBookRepository.findBooksByTitle(processedString);
         if (!booksByTitle.isEmpty())
@@ -33,8 +33,8 @@ public class BookService {
 
     }
     public List<Book> filterBooks(String title, String author, String genre, String strDate1, String strDate2, int page1, int page2){
-        String processedTitle = String.join(" ", title.trim().replaceAll(" +", " "));
-        String processedAuthor = String.join(" ", author.trim().replaceAll(" +", " "));
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        String processedAuthor = author.toLowerCase().trim().replaceAll(" +", " ");
         Date date1 = null;
         Date date2 = null;
         try {
