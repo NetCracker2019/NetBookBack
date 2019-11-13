@@ -21,8 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.exceptions.CustomException;
 
-
-
 public class JwtFilter extends OncePerRequestFilter {
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	private JwtProvider jwtProvider;
