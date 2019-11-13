@@ -12,7 +12,7 @@ public class BookRowMapper implements RowMapper<Book> {
         return new Book(
                 resultSet.getLong("book_id"),
                 resultSet.getString("title"),
-                resultSet.getLong("likes"),
+                resultSet.getInt("likes"),
                 resultSet.getString("image_path"),
                 resultSet.getDate("release_date"),
                 resultSet.getString("lang"),

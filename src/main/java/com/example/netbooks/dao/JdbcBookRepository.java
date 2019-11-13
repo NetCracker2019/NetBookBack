@@ -103,21 +103,7 @@ public class JdbcBookRepository implements BookRepository {
     }
 
 }
-class BookRowMapper implements RowMapper {
-    @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-        Book book = new Book(
-                resultSet.getLong("book_id"),
-                resultSet.getString("title"),
-                resultSet.getInt("likes"),
-                resultSet.getString("image_path"),
-                resultSet.getDate("release_date"),
-                resultSet.getString("lang"),
-                resultSet.getInt("pages"),
-                resultSet.getBoolean("approved"));
-        return book;
-    }
-}
+
 class AnnouncementRowMapper implements RowMapper {
     @Override
     public Object mapRow(ResultSet resultSet, int i) throws SQLException {

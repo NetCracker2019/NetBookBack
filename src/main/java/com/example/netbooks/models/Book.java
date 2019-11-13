@@ -6,14 +6,14 @@ public class Book {
 
     private long bookId;
     private String title;
-    private int likes;
+    private long likes;
     private String imagePath;
     private Date releaseDate;
     private String lang;
     private int pages;
     private boolean approved;
 
-    public Book(long bookId, String title, int likes, String imagePath, Date releaseDate, String lang, int pages, boolean approved) {
+    public Book(long bookId, String title, long likes, String imagePath, Date releaseDate, String lang, int pages, boolean approved) {
         this.bookId = bookId;
         this.title = title;
         this.imagePath = imagePath;
@@ -91,7 +91,7 @@ public class Book {
                 '}';
     }
 
-    public int getLikes() {
+    public long getLikes() {
         return likes;
     }
 }
