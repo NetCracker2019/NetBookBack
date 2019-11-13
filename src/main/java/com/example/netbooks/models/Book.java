@@ -1,26 +1,78 @@
 package com.example.netbooks.models;
 
+import java.util.Date;
+
 public class Book {
 
     private long bookId;
     private String title;
-    private int like;
+    private int likes;
     private String imagePath;
-    private String release_date;
-    private String language;
+    private Date releaseDate;
+    private String lang;
     private int pages;
     private boolean approved;
 
-    public Book(long bookId, String title, int like, String imagePath, String release_date, String language, int pages, boolean approved) {
+    public Book(long bookId, String title, int likes, String imagePath, Date releaseDate, String lang, int pages, boolean approved) {
         this.bookId = bookId;
         this.title = title;
-        this.like = like;
         this.imagePath = imagePath;
-        this.release_date = release_date;
-        this.language = language;
+        this.likes = likes;
+        this.releaseDate = releaseDate;
+        this.lang = lang;
         this.pages = pages;
         this.approved = approved;
     }
+
+
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public int getPages() {
+        return pages;
+    }
+
+    public void setPages(int pages) {
+        this.pages = pages;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
 
     public long getBookId() {
         return bookId;
@@ -29,27 +81,17 @@ public class Book {
     public String getTitle() {
         return title;
     }
-    public int getLike() {
-        return like;
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", title='" + title + '\'' +
+                ", releaseDate=" + releaseDate +
+                '}';
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public boolean isApproved() {
-        return approved;
+    public int getLikes() {
+        return likes;
     }
 }
