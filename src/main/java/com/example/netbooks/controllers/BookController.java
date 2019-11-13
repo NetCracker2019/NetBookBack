@@ -1,23 +1,36 @@
 package com.example.netbooks.controllers;
 
+import com.example.netbooks.dao.JdbcBookRepository;
 import com.example.netbooks.models.Book;
-import com.example.netbooks.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
+@RequestMapping(value="/home/books/addBook", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+public String add (@RequestBody Book book){
+        return jdbcBookRepository.addBook(book);
+        }
+
+@RequestMapping(value="/home/announcement", method = RequestMethod.GET)
+public List<Announcement> getAllAnnouncement() {
+        return jdbcBookRepository.findAllAnnouncement();
+        }
 public class BookController {
     @Autowired
-    private BookService bookService;
+    private JdbcBookRepository jdbcBookRepository;
 
+    @RequestMapping(value="/home/books/addBook", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+    public String add (@RequestBody Book book){
+        return jdbcBookRepository.addBook(book);
+    }
 
+    @RequestMapping(value="/home/announcement", method = RequestMethod.GET)
+    public List<Announcement> getAllAnnouncement() {
+        return jdbcBookRepository.findAllAnnouncement();
+    }
     @GetMapping("/books")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
@@ -35,7 +48,7 @@ public class BookController {
              @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String date2,
              @RequestParam(value = "page1", required = false, defaultValue = "0") int page1,
              @RequestParam(value = "page2", required = false, defaultValue = "1000000") int page2
-           ){
-            return bookService.filterBooks(title, author, genre, date1, date2, page1, page2);
+            ){
+        return bookService.filterBooks(title, author, genre, date1, date2, page1, page2);
     }
 }

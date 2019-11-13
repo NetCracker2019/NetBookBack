@@ -37,7 +37,7 @@ import com.example.netbooks.services.UserManager;
 import com.example.netbooks.services.VerificationTokenManager;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://netbooksfront.herokuapp.com")
 @RestController
 public class AuthenticationController {
 
@@ -74,9 +74,29 @@ public class AuthenticationController {
 	public Iterable<User> getAllUsers() {
 		return userManager.getAllUsers();
 	}
+
 	@RequestMapping(value = "/rmuser", method = {RequestMethod.GET})
 	public void removeUser(@RequestParam("id")long id) {
 		userManager.removeUserById(id);
 	}
+        
+        @RequestMapping(value="/verification-admin", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+	public ResponseEntity<Map> register(@RequestBody User user, @RequestParam("token")String verificationToken){
+		return userManager.signupAdmin(user, Role.ROLE_ADMIN, verificationToken);
+	}
+        
+        @RequestMapping(value="/send-admin-reg-mail", method = RequestMethod.POST)
+	public ResponseEntity<Map> sendAdminRegMail(@RequestParam("mail")String mail){
+		return userManager.sendAdminRegMail(mail);
+	}
+	@RequestMapping(value="/recovery-pass-request", method = RequestMethod.GET)
+	public ResponseEntity<Map> recoveryPassRequest(@RequestParam("email")String email){
+		return userManager.recoveryPassRequest(email);
+	}
+	@RequestMapping(value="/recovery-pass", method= {RequestMethod.GET})
+	public ResponseEntity<Map> recoveryPass(@RequestParam("token")String token, @RequestParam("pass")String pass){
+		return userManager.recoveryPass(token, pass);
+	}
+	
 
 }

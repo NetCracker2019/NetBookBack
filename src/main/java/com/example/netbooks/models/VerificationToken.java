@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class VerificationToken {
 
-	private long tokenId;
+    private long tokenId;
 
     private String verificationToken;
 
     private Date createdDate;
-    
-    private long userId; 
-    
+
+    private long userId;
+
     public VerificationToken() {
     }
 
@@ -25,37 +25,36 @@ public class VerificationToken {
         verificationToken = UUID.randomUUID().toString();
     }
 
-	
     public long getTokenId() {
-		return tokenId;
-	}
+        return tokenId;
+    }
 
-	public void setTokenId(long tokenId) {
-		this.tokenId = tokenId;
-	}
+    public void setTokenId(long tokenId) {
+        this.tokenId = tokenId;
+    }
 
-	public String getVerificationToken() {
-		return verificationToken;
-	}
+    public String getVerificationToken() {
+        return verificationToken;
+    }
 
-	public void setVerificationToken(String verificationToken) {
-		this.verificationToken = verificationToken;
-	}
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
+    public Date getCreatedDate() {
+        return createdDate;
+    }
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 
-	public long getUserId() {
-		return userId;
-	}
+    public long getUserId() {
+        return userId;
+    }
 
-	public void setUserId(long userId) {
-		this.userId = userId;
-	}
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
 }
