@@ -2,7 +2,10 @@ package com.example.netbooks.dao;
 
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,33 +18,39 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+@PropertySource("classpath:queries/book.properties")
 @Repository
 public class JdbcBookRepository implements BookRepository {
+    @Autowired
+    Environment env;
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    RowMapper viewBooksMapper = new ViewBookMapper();
+
 
     @Override
-    public List<Book> findAll() {
-        return jdbcTemplate.query("SELECT * FROM book", new BookRowMapper());
+    public List<ViewBook> findAllViewBooks() {
+        return jdbcTemplate.query(env.getProperty("getAllBooks"), viewBooksMapper);
     }
 
     @Override
-    public List<Book> findBooksByTitle(String bookTitle) {
-        bookTitle = "%" + bookTitle + "%";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("searchString", bookTitle);
-        String sql = "select * from book where lower(title) like :searchString";
-        return namedParameterJdbcTemplate.query(sql, namedParameters, new BookRowMapper());
+    public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
+        titleOrAuthor = "%" + titleOrAuthor + "%";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("titleOrAuthor", titleOrAuthor);
+        return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleOrAuthor"), namedParameters, viewBooksMapper);
+    }
+
+
+    @Override
+    public List<ViewBook> findViewBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
+        return null;
     }
 
     @Override
-    public List<Book> findBooksByAuthor(String author) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("searchString", "%" + author + "%");
-        String sql = "select * from book inner join book_author using (book_id) where author_id = \n" +
-                "(select author_id from author where lower(firstname) like :searchString or lower(lastname) like :searchString)";
-
-        return namedParameterJdbcTemplate.query(sql, namedParameters, new BookRowMapper());
+    public List<Book> findAllBooks() {
+        return jdbcTemplate.query("select * from book", new BookRowMapper());
     }
 
 
@@ -108,7 +117,7 @@ class AnnouncementRowMapper implements RowMapper {
     @Override
     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Announcement(
-                resultSet.getInt("announcment_id"),
+                resultSet.getInt("announcement_id"),
                 resultSet.getInt("announcement_book_id"),
                 resultSet.getInt("user_id"),
                 resultSet.getBoolean("approved"),

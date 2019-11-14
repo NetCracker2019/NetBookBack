@@ -3,6 +3,7 @@ package com.example.netbooks.services;
 import com.example.netbooks.dao.GenreRepository;
 import com.example.netbooks.dao.JdbcBookRepository;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,18 @@ public class BookService {
     @Autowired
     GenreRepository genreRepository;
 
-    public List<Book> findBooks(String searchString){
+    public List<ViewBook> findBooks(String searchString){
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
         System.out.println(processedString);
-        List<Book> booksByTitle = jdbcBookRepository.findBooksByTitle(processedString);
-        if (!booksByTitle.isEmpty())
-            return booksByTitle;
-        List<Book> booksByAuthor = jdbcBookRepository.findBooksByAuthor(processedString);
-        return booksByAuthor;
+        List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(searchString);
+        return books;
     }
     public List<Book> getAllBooks(){
-        return jdbcBookRepository.findAll();
+        return jdbcBookRepository.findAllBooks();
+
+    }
+    public List<ViewBook> getAllViewBooks(){
+        return jdbcBookRepository.findAllViewBooks();
 
     }
     public List<Book> filterBooks(String title, String author, String genre, String strDate1, String strDate2, int page1, int page2){
