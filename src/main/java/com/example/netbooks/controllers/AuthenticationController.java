@@ -42,8 +42,6 @@ public class AuthenticationController {
 	@Autowired
 	private UserManager userManager;
 	@Autowired
-	UserRepository userRepository;
-	@Autowired
 	EmailSender emailSender;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -65,7 +63,7 @@ public class AuthenticationController {
 				&& userManager.getUserByEmail(user.getEmail()) == null) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user.setRole(Role.ROLE_CLIENT);
-			userRepository.save(user);
+			userManager.saveUser(user);
 
 			VerificationToken verificationToken = new VerificationToken(
 					userManager.getUserByLogin(user.getLogin()).getUserId());
@@ -124,7 +122,7 @@ public class AuthenticationController {
 		return userManager.getAllUsers();
 	}
 
-	@DeleteMapping("/rmuser/{id}")
+	@DeleteMapping("/remove/{id}")
 	public void removeUser(@PathVariable("id")long id) {
 		userManager.removeUserById(id);
 	}
@@ -188,7 +186,7 @@ public class AuthenticationController {
 			response.put("msg", "Password recovery letter has been sent successfully");
 			return ResponseEntity.ok(response);
 		}else {
-			throw new CustomException("User with this email not found", HttpStatus.UNPROCESSABLE_ENTITY);
+			throw new CustomException("User with this email not found " + email, HttpStatus.UNPROCESSABLE_ENTITY);
 		}	
 	}
 	@PutMapping("/change/password")
