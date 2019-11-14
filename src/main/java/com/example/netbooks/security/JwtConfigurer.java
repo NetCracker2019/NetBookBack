@@ -33,7 +33,6 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
 
         //.antMatchers("/user-service/users").authenticated()
         //.antMatchers("/user-service/users").hasRole("ADMIN")
-        
         .anyRequest().permitAll();
 
     http.apply(new JwtFilterConfigurer(jwtProvider));

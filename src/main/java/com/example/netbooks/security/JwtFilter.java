@@ -44,8 +44,6 @@ public class JwtFilter extends OncePerRequestFilter {
 			logger.debug("next layer {}", ex.getMessage());
 			throw ex;
 		}
-
-
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
 	}
 }
