@@ -28,26 +28,12 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.authorizeRequests()
-        .antMatchers("/register").permitAll()
-        .antMatchers("/verification-account").permitAll()
-        .antMatchers("/signin").permitAll()
-        .antMatchers("/interrupt").authenticated()
-        .antMatchers("/Users").permitAll()
-        .antMatchers("/books").permitAll()
-        .antMatchers("/rmuser").permitAll()
-        .antMatchers("/verification-admin").permitAll()
-        .antMatchers("/send-admin-reg-mail").permitAll()
-        .antMatchers("/home/books").permitAll()
-        .antMatchers("/home").permitAll()
-        .antMatchers("/addBook").permitAll()
-        .antMatchers("/home/books/addBook").permitAll()
-        .antMatchers("/home/announcement").permitAll()
-        .antMatchers("/recovery-pass").permitAll()
-        .antMatchers("/recovery-pass-request").permitAll()
-        //.antMatchers("/Users").authenticated()
-        //.antMatchers("/Users").hasRole("ADMIN")
-        
-        .anyRequest().authenticated();
+        .antMatchers("/user-service/interrupt-sessions").authenticated()
+        .antMatchers("/user-service/send-admin-reg-mail").permitAll()//
+
+        //.antMatchers("/user-service/users").authenticated()
+        //.antMatchers("/user-service/users").hasRole("ADMIN")
+        .anyRequest().permitAll();
 
     http.apply(new JwtFilterConfigurer(jwtProvider));
 

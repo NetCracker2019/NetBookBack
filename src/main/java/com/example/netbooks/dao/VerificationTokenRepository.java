@@ -73,4 +73,15 @@ public class VerificationTokenRepository {
             return null;
         }
     }
+    public VerificationToken findByVerificationTokenByUserId(Long id) {
+    	try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_id", id);
+            return namedJdbcTemplate.queryForObject(env.getProperty("findByVerificationTokenByUserId"),
+            		namedParams, new TokenMapper());
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Token not found - " + id);
+            return null;
+        }
+    }
 }

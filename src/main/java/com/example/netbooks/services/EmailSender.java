@@ -28,11 +28,9 @@ public class EmailSender {
         
         try {
         	emailSender.send(simpleMessage);
-        	logger.info("email for " + emailTo + " was sent " );
-        	//System.out.println("ok");
+        	logger.info("email for {} was sent", emailTo);
         }catch(Exception e) {
-        	logger.info("ERROR: email for " + emailTo + " was not sent" + e);
-        	//System.out.println("error");
+        	logger.error("ERROR: email for {} was not sent", emailTo);
         }
     }
 
