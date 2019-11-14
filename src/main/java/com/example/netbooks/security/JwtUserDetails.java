@@ -17,7 +17,6 @@ import com.example.netbooks.models.User;
 
 @Service
 public class JwtUserDetails implements UserDetailsService {
-	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	@Autowired
 	private UserRepository userRepository;
 

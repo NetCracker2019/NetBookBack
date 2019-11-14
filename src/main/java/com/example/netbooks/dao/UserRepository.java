@@ -159,4 +159,11 @@ public class UserRepository {
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("deActivateUser"), namedParams);
     }
+
+	public void setMinRefreshDate(String login, Date date) {
+		Map<String, Object> namedParams = new HashMap<>();
+		namedParams.put("min_refresh_date", date);
+		namedParams.put("login", login);
+        namedJdbcTemplate.update(env.getProperty("setMinRefreshDate"), namedParams);
+	}
 }

@@ -25,6 +25,7 @@ import com.example.netbooks.dao.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
+import com.example.netbooks.services.UserManager;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -33,7 +34,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtProvider {
-	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
+	private final Logger logger = LogManager.getLogger(JwtProvider.class);
 	@Value("${jwt.token.secret}")
 	private String secretKey;
 
@@ -47,7 +48,7 @@ public class JwtProvider {
 	private JwtUserDetails JwtUserDetails;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private UserManager userManager;
 
 	@PostConstruct
 	protected void init() {
@@ -55,15 +56,14 @@ public class JwtProvider {
 	}
 
 	public String createToken(String login, Role role) {
-		User user = userRepository.findByLogin(login);
+		User user = userManager.getUserByLogin(login);
 		Claims claims = Jwts.claims().setSubject(login);
 		claims.put("role", role);
 
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + validityTime);
 		if(user.getMinRefreshDate() == null) {
-			user.setMinRefreshDate( new Date(now.getTime() - secondPause));
-			userRepository.updateUser(user);
+			userManager.setMinRefreshDate(login, new Date(now.getTime() - secondPause));
 		}
 		return Jwts.builder()
 				.setClaims(claims)
@@ -93,16 +93,15 @@ public class JwtProvider {
 	public boolean validateToken(String token) {
 		try {
 			Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-			final User user = userRepository.findByLogin(claims.getSubject());
-			logger.info(user.getLogin() + " " );
+			final User user = userManager.getUserByLogin(claims.getSubject());
 			if(claims.getIssuedAt().compareTo(user.getMinRefreshDate()) == -1) {
-				logger.info("fal");
+				logger.debug("fal {}", user.getLogin());
 				throw new Exception();
 				//return false;
 			}
 			return true;
 		} catch (Exception e) {
-			logger.info("valid error ");
+			logger.debug("valid error ");
 			throw new CustomException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

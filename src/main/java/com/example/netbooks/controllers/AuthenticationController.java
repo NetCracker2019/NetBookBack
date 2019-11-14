@@ -1,102 +1,215 @@
 package com.example.netbooks.controllers;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.websocket.server.PathParam;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.example.netbooks.dao.UserRepository;
-import com.example.netbooks.dao.VerificationTokenRepository;
-import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.VerificationToken;
-import com.example.netbooks.security.JwtProvider;
 import com.example.netbooks.services.EmailSender;
 import com.example.netbooks.services.UserManager;
 import com.example.netbooks.services.VerificationTokenManager;
+import com.example.netbooks.dao.UserRepository;
+import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
-@CrossOrigin(origins = "http://localhost:4200")
+import com.example.netbooks.models.VerificationToken;
+import com.example.netbooks.security.JwtProvider;
+
 @RestController
+@RequestMapping(value = "/user-service")
 public class AuthenticationController {
-
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
-
 	@Autowired
-	private UserManager userManager ;
-
+	private UserManager userManager;
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	EmailSender emailSender;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private JwtProvider jwtProvider;
 	@Autowired
 	private VerificationTokenManager verificationTokenManager;
-
 	
-	@RequestMapping(value="/interrupt", method = RequestMethod.GET)
-	public void interruptr(@RequestParam("login")String login){
-		userManager.interrupt(login);
+	@PutMapping("/interrupt-sessions/{login}")
+	public void interruptr(@PathVariable("login")String login){
+		userManager.setMinRefreshDate(login, null);
 	}
 	
-	@RequestMapping(value="/register", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+	@PostMapping("/register/user")
 	public ResponseEntity<Map> register(@RequestBody User user){
-		return userManager.signup(user, Role.ROLE_CLIENT);
+		if (userManager.getUserByLogin(user.getLogin()) == null
+				&& userManager.getUserByEmail(user.getEmail()) == null) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setRole(Role.ROLE_CLIENT);
+			userRepository.save(user);
+
+			VerificationToken verificationToken = new VerificationToken(
+					userManager.getUserByLogin(user.getLogin()).getUserId());
+			verificationTokenManager.saveToken(verificationToken);
+
+			String message = "To verification your account, please click here : "
+					+ "https://netbooksfront.herokuapp.com/verification-account?token="
+					+ verificationToken.getVerificationToken();
+			//emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+			logger.info("Complete Registration for {}", user.getLogin());
+
+			Map<Object, Object> response = new HashMap<>();
+			response.put("msg", "Successful registration");
+			return ResponseEntity.ok(response);
+		} else {
+			throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
 
-	@RequestMapping(value="/verification-account", method= {RequestMethod.GET})
+	@PutMapping("/verification/user")
 	public ResponseEntity<Map> confirmUserAccount(@RequestParam("token")String verificationToken){
-		return userManager.confirmUserAccount(verificationToken);        
+		VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+		if (token != null) {
+			userManager.activateUser(token.getUserId());
+			logger.info("successRegister for {}", verificationToken);
+			verificationTokenManager.removeVerificationToken(verificationToken);
+			// TODO del addled tokens
+
+			Map<Object, Object> response = new HashMap<>();
+			response.put("msg", "Successful account verification");
+			return ResponseEntity.ok(response);
+		} else {
+			logger.info("Fail Register!" + verificationToken);
+			throw new CustomException("Invalid token", HttpStatus.NOT_FOUND);
+		}        
 	}
 
-	@RequestMapping(value="/signin", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+	@PostMapping("/signin")
 	public ResponseEntity<Map> signin(@RequestBody User user){
-		return userManager.signin(user);
+		try {
+			logger.info("Try to login " + user.getLogin() + " ---- " + user.getPassword());
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
+
+			Map<Object, Object> response = new HashMap<>();
+			response.put("token", jwtProvider.createToken(user.getLogin(), user.getRole()));
+			response.put("msg", "Successful login");
+			return ResponseEntity.ok(response);
+		} catch (AuthenticationException e) {
+			throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
 
-	@RequestMapping(value = "/Users", method = {RequestMethod.GET, RequestMethod.POST})
+	@GetMapping("/users")
 	public Iterable<User> getAllUsers() {
 		return userManager.getAllUsers();
 	}
 
-	@RequestMapping(value = "/rmuser", method = {RequestMethod.GET})
-	public void removeUser(@RequestParam("id")long id) {
+	@DeleteMapping("/rmuser/{id}")
+	public void removeUser(@PathVariable("id")long id) {
 		userManager.removeUserById(id);
 	}
         
-        @RequestMapping(value="/verification-admin", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+	@PostMapping("/register/admin")
 	public ResponseEntity<Map> register(@RequestBody User user, @RequestParam("token")String verificationToken){
-		return userManager.signupAdmin(user, Role.ROLE_ADMIN, verificationToken);
+		if (userManager.getUserByLogin(user.getLogin()) == null
+				&& userManager.getUserByEmail(user.getEmail()) == null) {
+			VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+			if (token != null) {
+				userManager.removeUserById(token.getUserId());
+				user.setPassword(passwordEncoder.encode(user.getPassword()));
+				user.setRole(Role.ROLE_ADMIN);
+				userManager.saveUser(user);
+				verificationTokenManager.removeVerificationToken(verificationToken);
+				// TODO del addled tokens
+				logger.info("Complete Admin Registration! {}", user.getLogin());
+
+				Map<Object, Object> response = new HashMap<>();
+				response.put("msg", "Successful registration");
+				return ResponseEntity.ok(response);
+			} else {
+				throw new CustomException("Admin token is invalid.", HttpStatus.UNPROCESSABLE_ENTITY);
+			}
+		} else {
+			throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
         
-        @RequestMapping(value="/send-admin-reg-mail", method = RequestMethod.POST)
+	@PostMapping("/send-admin-reg-mail")//TODO change mapping
 	public ResponseEntity<Map> sendAdminRegMail(@RequestParam("mail")String mail){
-		return userManager.sendAdminRegMail(mail);
+		User user = new User();
+		user.setLogin(UUID.randomUUID().toString());
+		userManager.saveUser(user);
+		VerificationToken verificationToken = new VerificationToken(
+				userManager.getUserByLogin(user.getLogin()).getUserId());
+		verificationTokenManager.saveToken(verificationToken);
+
+		String message = "To register your admin account, please click here : "
+				+ "https://netbooksfront.herokuapp.com/verification-admin?token="
+				+ verificationToken.getVerificationToken();
+		//emailSender.sendMessage(user.getEmail(), "Register admin account!", message);
+		logger.info("Admin registration mail sent! {}", user.getLogin() + message);
+
+		Map<Object, Object> response = new HashMap<>();
+		response.put("msg", "Successful registration");
+		return ResponseEntity.ok(response);
 	}
-	@RequestMapping(value="/recovery-pass-request", method = RequestMethod.GET)
+	@PostMapping("/recovery/password")
 	public ResponseEntity<Map> recoveryPassRequest(@RequestParam("email")String email){
-		return userManager.recoveryPassRequest(email);
+		User user = userManager.getUserByEmail(email);
+		if(user != null) {
+			VerificationToken verificationToken = new VerificationToken(user.getUserId());
+			verificationTokenManager.saveToken(verificationToken);
+
+			String message = "To recovery your password, please click here : "
+					+"https://netbooksfront.herokuapp.com/recovery-password?token="
+					+verificationToken.getVerificationToken();        
+			//emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+			Map<Object, Object> response = new HashMap<>();
+			response.put("msg", "Password recovery letter has been sent successfully");
+			return ResponseEntity.ok(response);
+		}else {
+			throw new CustomException("User with this email not found", HttpStatus.UNPROCESSABLE_ENTITY);
+		}	
 	}
-	@RequestMapping(value="/recovery-pass", method= {RequestMethod.GET})
-	public ResponseEntity<Map> recoveryPass(@RequestParam("token")String token, @RequestParam("pass")String pass){
-		return userManager.recoveryPass(token, pass);
+	@PutMapping("/change/password")
+	public ResponseEntity<Map> recoveryPass(@RequestParam("token")String verificationToken, 
+			@RequestParam("pass")String newPass){
+		logger.info("success recovery request " + newPass + " " + verificationToken);
+		VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+		if(token != null) {
+			User user = userManager.getUserById(token.getUserId());
+			user.setPassword(passwordEncoder.encode(newPass));
+			user.setMinRefreshDate(null);
+			userManager.updateUser(user);
+			verificationTokenManager.removeVerificationToken(verificationToken);
+			// TODO del addled tokens
+			Map<Object, Object> response = new HashMap<>();
+			response.put("msg", "successful password recovery");
+			return ResponseEntity.ok(response);
+		}
+		else {
+			throw new CustomException("Invalid recovery password link", HttpStatus.NOT_FOUND);
+		}  
 	}
 	
-
 }
