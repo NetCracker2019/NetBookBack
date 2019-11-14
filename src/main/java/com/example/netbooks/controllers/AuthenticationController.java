@@ -28,6 +28,8 @@ import com.example.netbooks.models.User;
 import com.example.netbooks.models.VerificationToken;
 import com.example.netbooks.security.JwtProvider;
 
+
+
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/user-service")
@@ -205,3 +207,4 @@ public class AuthenticationController {
 	}
 	
 }
+
