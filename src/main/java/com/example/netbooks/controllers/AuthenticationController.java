@@ -68,7 +68,7 @@ public class AuthenticationController {
 			String message = "To verification your account, please click here : "
 					+ "https://netbooksfront.herokuapp.com/verification-account?token="
 					+ verificationToken.getVerificationToken();
-			//emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+			emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
 			logger.info("Complete Registration for {}", user.getLogin());
 
 			Map<Object, Object> response = new HashMap<>();
@@ -177,7 +177,7 @@ public class AuthenticationController {
 			String message = "To recovery your password, please click here : "
 					+"https://netbooksfront.herokuapp.com/recovery-password?token="
 					+verificationToken.getVerificationToken();
-			//emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+			emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
 			Map<Object, Object> response = new HashMap<>();
 			response.put("msg", "Password recovery letter has been sent successfully");
 			return ResponseEntity.ok(response);
