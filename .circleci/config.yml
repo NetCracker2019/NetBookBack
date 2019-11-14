@@ -42,8 +42,11 @@ jobs:
         path: target/surefire-reports
     - store_artifacts:
         path: target/back-0.0.1-SNAPSHOT.jar
-    environment:
-    - CIRCLE_COMPARE_URL: https://github.com/pSvch0/back/compare/caef1c58e946...3273fccce001
+    - checkout
+    - run:
+        name: Deploy Master to Heroku
+        command: |
+            git push https://heroku:3caacff5-78f9-4586-b293-a40f8cc0bc9a@git.heroku.com/netbooksback.git HEAD:master
 workflows:
   version: 2
   workflow:

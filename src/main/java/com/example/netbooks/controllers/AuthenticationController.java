@@ -47,12 +47,12 @@ public class AuthenticationController {
 	private JwtProvider jwtProvider;
 	@Autowired
 	private VerificationTokenManager verificationTokenManager;
-	
+
 	@PutMapping("/interrupt-sessions/{login}")
 	public void interruptr(@PathVariable("login")String login){
 		userManager.setMinRefreshDate(login, null);
 	}
-	
+
 	@PostMapping("/register/user")
 	public ResponseEntity<Map> register(@RequestBody User user){
 		if (userManager.getUserByLogin(user.getLogin()) == null
@@ -94,7 +94,7 @@ public class AuthenticationController {
 		} else {
 			logger.info("Fail Register!" + verificationToken);
 			throw new CustomException("Invalid token", HttpStatus.NOT_FOUND);
-		}        
+		}
 	}
 
 	@PostMapping("/signin")
@@ -122,7 +122,7 @@ public class AuthenticationController {
 	public void removeUser(@PathVariable("id")long id) {
 		userManager.removeUserById(id);
 	}
-        
+
 	@PostMapping("/register/admin")
 	public ResponseEntity<Map> register(@RequestBody User user, @RequestParam("token")String verificationToken){
 		if (userManager.getUserByLogin(user.getLogin()) == null
@@ -147,7 +147,7 @@ public class AuthenticationController {
 			throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 	}
-        
+
 	@PostMapping("/send-admin-reg-mail")//TODO change mapping
 	public ResponseEntity<Map> sendAdminRegMail(@RequestParam("mail")String mail){
 		User user = new User();
@@ -176,17 +176,17 @@ public class AuthenticationController {
 
 			String message = "To recovery your password, please click here : "
 					+"https://netbooksfront.herokuapp.com/recovery-password?token="
-					+verificationToken.getVerificationToken();        
+					+verificationToken.getVerificationToken();
 			//emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
 			Map<Object, Object> response = new HashMap<>();
 			response.put("msg", "Password recovery letter has been sent successfully");
 			return ResponseEntity.ok(response);
 		}else {
 			throw new CustomException("User with this email not found " + email, HttpStatus.UNPROCESSABLE_ENTITY);
-		}	
+		}
 	}
 	@PutMapping("/change/password")
-	public ResponseEntity<Map> recoveryPass(@RequestParam("token")String verificationToken, 
+	public ResponseEntity<Map> recoveryPass(@RequestParam("token")String verificationToken,
 			@RequestParam("pass")String newPass){
 		logger.info("success recovery request " + newPass + " " + verificationToken);
 		VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
@@ -203,8 +203,7 @@ public class AuthenticationController {
 		}
 		else {
 			throw new CustomException("Invalid recovery password link", HttpStatus.NOT_FOUND);
-		}  
+		}
 	}
-	
 }
 
