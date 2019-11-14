@@ -13,12 +13,12 @@ import java.util.List;
 public class ViewBook {
     private long bookId;
     private String title;
-    private Author[] authors;
+    private String[] authors;
     private long likes;
     private String imagePath;
     private Date releaseDate;
     private String lang;
     private int pages;
-    private Genre[] genres;
+    private String[] genres;
     private String description;
 }

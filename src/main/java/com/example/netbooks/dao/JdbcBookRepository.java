@@ -39,6 +39,7 @@ public class JdbcBookRepository implements BookRepository {
     public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
         titleOrAuthor = "%" + titleOrAuthor + "%";
         SqlParameterSource namedParameters = new MapSqlParameterSource("titleOrAuthor", titleOrAuthor);
+        System.out.println(env.getProperty("findBooksByTitleOrAuthor"));
         return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleOrAuthor"), namedParameters, viewBooksMapper);
     }
 

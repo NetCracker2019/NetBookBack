@@ -3,6 +3,7 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.dao.JdbcBookRepository;
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.ViewBook;
 import com.example.netbooks.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.View;
 import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
@@ -35,7 +37,7 @@ public class BookController {
         return bookService.getAllBooks();
     }
     @GetMapping("/home/find_books")
-    public List<Book> getFoundBook(@RequestParam(value= "title", defaultValue = "lord") String title){
+    public List<ViewBook> getFoundBook(@RequestParam(value= "title", defaultValue = "lord") String title){
         logger.info("Books by title "+title+":  "+bookService.findBooks(title));
         return bookService.findBooks(title);
     }

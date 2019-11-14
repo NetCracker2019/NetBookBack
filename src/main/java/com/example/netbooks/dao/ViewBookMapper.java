@@ -16,13 +16,13 @@ public class ViewBookMapper implements RowMapper {
         return new ViewBook(
                 resultSet.getInt("book_id"),
                 resultSet.getString("title"),
-                (Author[])resultSet.getArray("authors").getArray(),
+                (String[])resultSet.getArray("authors").getArray(),
                 resultSet.getLong("likes"),
                 resultSet.getString("image_path"),
                 resultSet.getDate("release_date"),
                 resultSet.getString("lang"),
                 resultSet.getInt("pages"),
-                (Genre[])resultSet.getArray("genres").getArray(),
+                (String[])resultSet.getArray("genres").getArray(),
                 resultSet.getString("description")
                 );
     }
