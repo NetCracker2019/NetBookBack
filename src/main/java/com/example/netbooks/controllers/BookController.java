@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://netbooksfront.herokuapp.com")
 public class BookController {
     @Autowired
     private JdbcBookRepository jdbcBookRepository;
