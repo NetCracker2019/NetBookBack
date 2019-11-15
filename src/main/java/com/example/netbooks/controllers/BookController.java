@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.View;
 import java.util.List;
 @RestController
-@CrossOrigin(origins = "http://localhost:4200/")
+//@CrossOrigin(origins = "http://localhost:4200/")
 public class BookController {
     private final Logger logger = LogManager.getLogger(BookController.class);
     @Autowired
@@ -33,16 +32,20 @@ public class BookController {
     }
     @GetMapping("/home/books")
     public List<Book> getAllBooks() {
-        logger.info("Books: "+bookService.getAllBooks());
         return bookService.getAllBooks();
     }
-    @GetMapping("/home/find_books")
-    public List<ViewBook> getFoundBook(@RequestParam(value= "title", defaultValue = "lord") String title){
+    @GetMapping("/home/view-books")
+    public List<ViewBook> getAllViewBooks() {
+        logger.info("Books: "+bookService.getAllViewBooks());
+        return bookService.getAllViewBooks();
+    }
+    @GetMapping("/home/find-books")
+    public List<ViewBook> getFoundBook(@RequestParam("title") String title){
         logger.info("Books by title "+title+":  "+bookService.findBooks(title));
         return bookService.findBooks(title);
     }
 
-    @GetMapping("/filteredBooks")
+    @GetMapping("/home/filter-books")
     public List<Book> getFilteredBooks
             (@RequestParam(value = "title", required = false, defaultValue = "") String title,
              @RequestParam(value = "author", required = false, defaultValue = "") String author,

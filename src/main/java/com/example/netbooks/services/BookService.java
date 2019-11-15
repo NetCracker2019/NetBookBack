@@ -22,7 +22,6 @@ public class BookService {
 
     public List<ViewBook> findBooks(String searchString){
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
-        System.out.println(processedString);
         List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(searchString);
         return books;
     }
