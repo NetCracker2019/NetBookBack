@@ -129,12 +129,10 @@ public class AuthenticationController {
 				&& userManager.getUserByEmail(user.getEmail()) == null) {
 			VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
 			if (token != null) {
-				userManager.removeUserById(token.getUserId());
-				user.setPassword(passwordEncoder.encode(user.getPassword()));
-				user.setRole(Role.ROLE_ADMIN);
-				userManager.saveUser(user);
+                                user.setPassword(passwordEncoder.encode(user.getPassword()));
+				userManager.updateUserById(user, token.getUserId());
+                                userManager.activateUser(token.getUserId());
 				verificationTokenManager.removeVerificationToken(verificationToken);
-				// TODO del addled tokens
 				logger.info("Complete Admin Registration! {}", user.getLogin());
 
 				Map<Object, Object> response = new HashMap<>();
@@ -149,9 +147,15 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/send-admin-reg-mail")//TODO change mapping
-	public ResponseEntity<Map> sendAdminRegMail(@RequestParam("mail")String mail){
+	public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail){
 		User user = new User();
-		user.setLogin(UUID.randomUUID().toString());
+                String tempLogPass = UUID.randomUUID().toString();
+		user.setLogin(tempLogPass);
+                user.setPassword(tempLogPass);
+                user.setEmail(tempLogPass);
+                user.setName(tempLogPass);
+                user.setRole(Role.ROLE_CLIENT);
+                
 		userManager.saveUser(user);
 		VerificationToken verificationToken = new VerificationToken(
 				userManager.getUserByLogin(user.getLogin()).getUserId());
