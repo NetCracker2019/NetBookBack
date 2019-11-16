@@ -37,7 +37,7 @@ import com.example.netbooks.services.UserManager;
 import com.example.netbooks.services.VerificationTokenManager;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
-//@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 public class AuthenticationController {
 
