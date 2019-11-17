@@ -40,6 +40,10 @@ public class UserManager {
 	public void updateUser(User user) {
 		userRepository.updateUser(user);
 	}
+        
+        public void updateUserById(User user, Long id) {
+		userRepository.updateUserById(user,id);
+	}
 	
 	public void saveUser(User user) {
 		userRepository.save(user);
