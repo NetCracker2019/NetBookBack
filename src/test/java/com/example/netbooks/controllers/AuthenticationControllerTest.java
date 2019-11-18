@@ -1,6 +1,6 @@
 package com.example.netbooks.controllers;
 
-import com.example.netbooks.dao.UserRepository;
+import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.models.User;
 import com.example.netbooks.security.JwtProvider;
 import com.example.netbooks.services.EmailSender;
