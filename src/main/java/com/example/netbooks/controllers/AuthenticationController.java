@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.netbooks.services.EmailSender;
 import com.example.netbooks.services.UserManager;
 import com.example.netbooks.services.VerificationTokenManager;
-import com.example.netbooks.dao.UserRepository;
+import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
