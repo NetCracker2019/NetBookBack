@@ -12,6 +12,8 @@ public interface BookRepository {
     List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2);
     List<Announcement> findAllAnnouncement();
     String addBook(Book book);
+    int getAmountOfAnnouncement();
+    List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
 
     List<ViewBook> findAllViewBooks();
     List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);

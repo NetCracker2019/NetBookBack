@@ -39,6 +39,18 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
+    public int getAmountOfAnnouncement() {
+        return jdbcTemplate.queryForObject("SELECT COUNT (*) FROM announcement;", Integer.class);
+    }
+    @Override
+    public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
+        int startIndex = booksPerPage * (page - 1);
+//        int amount = startIndex + booksPerPage;
+//        logger.info(jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY title LIMIT 5 OFFSET 1", this::mapRowToAnnouncement));
+        return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY announcment_id LIMIT " + booksPerPage + " OFFSET " + startIndex, this::mapRowToAnnouncement);
+    }
+
+    @Override
     public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
         titleOrAuthor = "%" + titleOrAuthor + "%";
         SqlParameterSource namedParameters = new MapSqlParameterSource("titleOrAuthor", titleOrAuthor);

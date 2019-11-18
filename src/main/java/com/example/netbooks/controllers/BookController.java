@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://netbooksfront.herokuapp.com")
+@CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
+@RequestMapping("/book-service")
 public class BookController {
+    Logger logger = LogManager.getLogger(BookController.class);
     @Autowired
     private JdbcBookRepository jdbcBookRepository;
     @Autowired
@@ -73,10 +75,6 @@ public class BookController {
     public List<Review> getReviewForBook(@PathVariable("id") int bookId){
         logger.info(bookService.getReviewsForBook(bookId));
         return bookService.getReviewsForBook(bookId);
-    }
-    @GetMapping("/home/announcement/{id}")
-    public List<Review> getReviewForAnnouncement(@PathVariable("id") int announcementId){
-        return null;
     }
     @GetMapping("/home/find-book-by-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
