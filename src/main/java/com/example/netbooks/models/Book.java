@@ -42,7 +42,7 @@ public class Book {
     public String getTitle() {
         return title;
     }
-    public int getLike() {
+    public int getLikes() {
         return like;
     }
 
@@ -50,11 +50,11 @@ public class Book {
         return imagePath;
     }
 
-    public String getRelease_date() {
+    public String getReleaseDate() {
         return release_date;
     }
 
-    public String getLanguage() {
+    public String getLang() {
         return language;
     }
 
