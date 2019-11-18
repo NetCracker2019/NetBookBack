@@ -46,7 +46,7 @@ jobs:
     - run:
         name: Deploy Master to Heroku
         command: |
-            git push https://heroku:3caacff5-78f9-4586-b293-a40f8cc0bc9a@git.heroku.com/netbooksback.git HEAD:master
+            git push https://heroku:3caacff5-78f9-4586-b293-a40f8cc0bc9a@git.heroku.com/netbooksback.git master
 workflows:
   version: 2
   workflow:
