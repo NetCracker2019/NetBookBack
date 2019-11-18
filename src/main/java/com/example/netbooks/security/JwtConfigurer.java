@@ -3,6 +3,7 @@ package com.example.netbooks.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,8 +30,8 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.authorizeRequests()
         .antMatchers("/user-service/interrupt-sessions").authenticated()
-        .antMatchers("/user-service/send-admin-reg-mail").permitAll()//
-
+        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+        .antMatchers("/user-service/send-admin-reg-mail").hasRole("SUPER_ADMIN")
         //.antMatchers("/user-service/users").authenticated()
         //.antMatchers("/user-service/users").hasRole("ADMIN")
         .anyRequest().permitAll();

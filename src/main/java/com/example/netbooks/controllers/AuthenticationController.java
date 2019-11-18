@@ -27,6 +27,7 @@ import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 import com.example.netbooks.models.VerificationToken;
 import com.example.netbooks.security.JwtProvider;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
