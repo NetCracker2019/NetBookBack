@@ -12,11 +12,14 @@ public class BookRowMapper implements RowMapper<Book> {
         return new Book(
                 resultSet.getLong("book_id"),
                 resultSet.getString("title"),
+                resultSet.getString("author"),
+                resultSet.getString("genre"),
                 resultSet.getInt("likes"),
                 resultSet.getString("image_path"),
-                resultSet.getDate("release_date"),
+                resultSet.getString("release_date"),
                 resultSet.getString("lang"),
                 resultSet.getInt("pages"),
+                resultSet.getString("description"),
                 resultSet.getBoolean("approved"));
     }
 }

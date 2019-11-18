@@ -24,13 +24,18 @@ public class BookController {
     BookService bookService;
 
     @GetMapping("/home/books")
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public List<ViewBook> getAllBooks() {
+        return bookService.getAllViewBooks();
     }
 
     @PostMapping("/home/books/addBook")
     public String add (@RequestBody Book book){
         return jdbcBookRepository.addBook(book);
+    }
+
+    @PostMapping("/home/books/addAnnouncement")
+    public String addAnnouncement (@RequestBody Book book){
+        return jdbcBookRepository.addAnnouncement(book);
     }
 
     @GetMapping(value="/home/announcement")
