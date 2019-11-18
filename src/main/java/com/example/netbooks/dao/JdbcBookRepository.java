@@ -46,21 +46,65 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public String addBook(Book book) {
-        jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?)",
-                new Object[] {book.getTitle(), book.getLike(), book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.isApproved()});
+        int isThisBookExist = jdbcTemplate.queryForObject("select count(*) from book where title='" + book.getTitle() + "'", Integer.class);
+        if(isThisBookExist == 0){
+            jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?)",
+                    new Object[] {book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false});
+
+            String[] subStrAuthors = book.getAuthor().split(", ");
+            for (int i = 0; i < subStrAuthors.length; i++) {
+                int isThisAuthorExist = jdbcTemplate.queryForObject("select count(*) from author where fullname='" + subStrAuthors[i] + "'", Integer.class);
+                if(isThisAuthorExist == 0){
+                    jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {subStrAuthors[i]});
+                }
+                jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
+                        "\t\t   (select author_id from author where fullname ='" +  subStrAuthors[i] + "'))");
+            }
+
+            String[] subStrGenres = book.getGenre().split(", ");
+            for (int i = 0; i < subStrGenres.length; i++) {
+                int isThisGenreExist = jdbcTemplate.queryForObject("select count(*) from genre where genre_name='" + subStrGenres[i] + "'", Integer.class);
+                if(isThisGenreExist == 0){
+                    jdbcTemplate.update("insert into genre (genre_name) values (?)", new Object[] {subStrGenres[i]});
+                }
+                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
+                        "\t\t   (select genre_id from genre where genre_name ='" +  subStrGenres[i] + "'))");
+            }
+        }
         return "Complete!";
     }
 
 
+    private String mapRowGenresToBook(ResultSet resultSet, int i) throws SQLException {
+        return resultSet.getString("genre_name");
+    }
+
+    private String mapRowAuthorsToBook(ResultSet resultSet, int i) throws SQLException {
+        return resultSet.getString("fullname");
+    }
+
     private Book mapRowToBook(ResultSet resultSet, int i) throws SQLException {
+        String arrayOfGenre = "" + jdbcTemplate.query("select  book.title, genre.genre_name\n" +
+                "from book_genre\n" +
+                "join genre on book_genre.genre_id = genre.genre_id\n" +
+                "join book on book_genre.book_id = book.book_id where book.title ='" + resultSet.getString("title") + "'", this::mapRowGenresToBook);
+
+        String arrayOfAuthors = "" + jdbcTemplate.query("select  book.title, author.fullname\n" +
+                "from book_author\n" +
+                "join author on book_author.author_id = author.author_id\n" +
+                "join book on book_author.book_id = book.book_id where book.title ='" + resultSet.getString("title") + "'", this::mapRowAuthorsToBook);
+
         return new Book(
                 resultSet.getLong("book_id"),
                 resultSet.getString("title"),
+                arrayOfAuthors,
+                arrayOfGenre,
                 resultSet.getInt("likes"),
                 resultSet.getString("image_path"),
                 resultSet.getString("release_date"),
                 resultSet.getString("lang"),
                 resultSet.getInt("pages"),
+                resultSet.getString("description"),
                 resultSet.getBoolean("approved"));
     }
 
