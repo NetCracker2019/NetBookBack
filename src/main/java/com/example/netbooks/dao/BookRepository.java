@@ -8,5 +8,7 @@ import java.util.List;
 public interface BookRepository {
     List<Book> findAll();
     List<Announcement> findAllAnnouncement();
+    List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
+    int getAmountOfAnnouncement();
     String addBook(Book book);
 }

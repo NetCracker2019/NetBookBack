@@ -1,7 +1,10 @@
 package com.example.netbooks.dao;
 
+import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,13 +15,27 @@ import java.util.List;
 
 @Repository
 public class JdbcBookRepository implements BookRepository {
+    private final Logger logger = LogManager.getLogger(AuthenticationController.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
 
     @Override
+    public int getAmountOfAnnouncement() {
+        return jdbcTemplate.queryForObject("SELECT COUNT (*) FROM announcement;", Integer.class);
+    }
+
+    @Override
     public List<Announcement> findAllAnnouncement() {
         return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true", this::mapRowToAnnouncement);
+    }
+
+    @Override
+    public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
+        int startIndex = booksPerPage * (page - 1);
+//        int amount = startIndex + booksPerPage;
+//        logger.info(jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY title LIMIT 5 OFFSET 1", this::mapRowToAnnouncement));
+        return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY announcment_id LIMIT " + booksPerPage + " OFFSET " + startIndex, this::mapRowToAnnouncement);
     }
 
     @Override
