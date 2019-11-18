@@ -1,78 +1,39 @@
 package com.example.netbooks.models;
 
-import java.util.Date;
-
 public class Book {
-
     private long bookId;
     private String title;
-    private long likes;
+    private String author;
+    private String genre;
+    private int like;
     private String imagePath;
-    private Date releaseDate;
-    private String lang;
+    private String release_date;
+    private String language;
     private int pages;
+    private String description;
     private boolean approved;
 
-    public Book(long bookId, String title, long likes, String imagePath, Date releaseDate, String lang, int pages, boolean approved) {
+    public Book(long bookId, String title, String author, String genre, int like, String imagePath, String release_date, String language, int pages, String description, boolean approved) {
         this.bookId = bookId;
         this.title = title;
+        this.author = author;
+        this.genre = genre;
+        this.like = like;
         this.imagePath = imagePath;
-        this.likes = likes;
-        this.releaseDate = releaseDate;
-        this.lang = lang;
+        this.release_date = release_date;
+        this.language = language;
         this.pages = pages;
+        this.description = description;
         this.approved = approved;
     }
 
-
-    public void setBookId(long bookId) {
-        this.bookId = bookId;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getGenre() {
+        return genre;
     }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public void setPages(int pages) {
-        this.pages = pages;
-    }
-
-    public boolean isApproved() {
-        return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
-
 
     public long getBookId() {
         return bookId;
@@ -81,17 +42,31 @@ public class Book {
     public String getTitle() {
         return title;
     }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "bookId=" + bookId +
-                ", title='" + title + '\'' +
-                ", releaseDate=" + releaseDate +
-                '}';
+    public int getLike() {
+        return like;
     }
 
-    public long getLikes() {
-        return likes;
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public String getRelease_date() {
+        return release_date;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public int getPages() {
+        return pages;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isApproved() {
+        return approved;
     }
 }
