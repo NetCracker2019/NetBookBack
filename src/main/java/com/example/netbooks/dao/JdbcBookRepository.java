@@ -1,8 +1,10 @@
 package com.example.netbooks.dao;
 
 import com.example.netbooks.controllers.AuthenticationController;
+import com.example.netbooks.dao.interfaces.BookRepository;
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.ViewBook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -26,6 +29,16 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
+    public List<Book> findAllBooks() {
+        return null;
+    }
+
+    @Override
+    public List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
+        return null;
+    }
+
+    @Override
     public List<Announcement> findAllAnnouncement() {
         return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true", this::mapRowToAnnouncement);
     }
@@ -36,6 +49,26 @@ public class JdbcBookRepository implements BookRepository {
 //        int amount = startIndex + booksPerPage;
 //        logger.info(jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY title LIMIT 5 OFFSET 1", this::mapRowToAnnouncement));
         return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY announcment_id LIMIT " + booksPerPage + " OFFSET " + startIndex, this::mapRowToAnnouncement);
+    }
+
+    @Override
+    public List<ViewBook> findAllViewBooks() {
+        return null;
+    }
+
+    @Override
+    public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
+        return null;
+    }
+
+    @Override
+    public List<ViewBook> findViewBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
+        return null;
+    }
+
+    @Override
+    public ViewBook getBookById(int id) {
+        return null;
     }
 
     @Override
