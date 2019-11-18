@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/back
+    docker:
+    - image: circleci/openjdk:8-jdk-stretch
+    steps:
+    - checkout
+    - run:
+        name: chmod permissions
+        command: chmod +x ~/back/gradlew
+    - restore_cache:
+        key: back - {{ checksum "pom.xml" }}
+    - run: mvn dependency:go-offline
+    - run:
+        name: Run tests in parallel
+        command: |
+          cd src/test/java
+          # Get list of classnames of tests that should run on this node
+          CLASSNAMES=$(circleci tests glob "**/*.java" \
+            | cut -c 1- | sed 's@/@.@g' \
+            | sed 's/.\{5\}$//' \
+            | circleci tests split --split-by=timings --timings-type=classname)
+          cd ../../..
+          # Format the arguments to "./gradlew test"
+          GRADLE_ARGS=$(echo $CLASSNAMES | awk '{for (i=1; i<=NF; i++) print "--tests",$i}')
+          echo "Prepared arguments for Gradle: $GRADLE_ARGS"
+          ./gradlew test $GRADLE_ARGS
+    - save_cache:
+        paths:
+        - ~/.m2
+        key: back - {{ checksum "pom.xml" }}
+    - run: mvn package
+    - run:
+        name: Assemble JAR
+        command: |
+          # Skip this for other nodes
+          if [ "$CIRCLE_NODE_INDEX" == 0 ]; then
+            ./gradlew assemble
+          fi
+    - store_test_results:
+        path: target/surefire-reports
+    - store_artifacts:
+        path: target/back-0.0.1-SNAPSHOT.jar
+    - checkout
+    - run:
+        name: Deploy Master to Heroku
+        command: |
+            git push -f https://heroku:3caacff5-78f9-4586-b293-a40f8cc0bc9a@git.heroku.com/netbooksback.git HEAD:master
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build

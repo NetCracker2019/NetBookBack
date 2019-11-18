@@ -17,6 +17,9 @@ public class VerificationTokenManager {
     public VerificationToken findVerificationToken(String verificationToken) {
         return verificationTokenRepository.findByVerificationToken(verificationToken);
     }
+    public VerificationToken findVerificationTokenByUserId(Long id) {
+        return verificationTokenRepository.findByVerificationTokenByUserId(id);
+    }
     
     public void removeVerificationToken(String verificationToken) {
         verificationTokenRepository.removeVerificationToken(verificationToken);
