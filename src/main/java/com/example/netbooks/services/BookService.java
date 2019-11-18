@@ -1,15 +1,17 @@
 package com.example.netbooks.services;
 
-import com.example.netbooks.dao.GenreRepository;
-import com.example.netbooks.dao.JdbcBookRepository;
+import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.interfaces.GenreRepository;
+import com.example.netbooks.dao.implementations.JdbcBookRepository;
+import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.Review;
 import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +21,12 @@ public class BookService {
     JdbcBookRepository jdbcBookRepository;
     @Autowired
     GenreRepository genreRepository;
+    @Autowired
+    ReviewRepository reviewRepository;
 
     public List<ViewBook> findBooks(String searchString){
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
-        List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(searchString);
+        List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(processedString);
         return books;
     }
     public List<Book> getAllBooks(){
@@ -48,5 +52,11 @@ public class BookService {
             return jdbcBookRepository.findBooksByFilter(processedTitle, processedAuthor, genre, date1, date2, page1, page2);
         }
         return null;
+    }
+    public List<Review> getReviewsForBook(int id){
+        return reviewRepository.getReviewsByBookId(id);
+    }
+    public ViewBook getViewBookById(int id){
+        return jdbcBookRepository.getBookById(id);
     }
 }

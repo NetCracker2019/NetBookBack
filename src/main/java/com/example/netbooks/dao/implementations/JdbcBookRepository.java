@@ -1,5 +1,8 @@
-package com.example.netbooks.dao;
+package com.example.netbooks.dao.implementations;
 
+import com.example.netbooks.dao.interfaces.BookRepository;
+import com.example.netbooks.dao.mappers.BookRowMapper;
+import com.example.netbooks.dao.mappers.ViewBookMapper;
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
 import com.example.netbooks.models.ViewBook;
@@ -49,6 +52,12 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
+    public ViewBook getBookById(int id) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
+        return (ViewBook) namedParameterJdbcTemplate.query(env.getProperty("getBookById"), namedParameters, viewBooksMapper).get(0);
+    }
+
+    @Override
     public List<Book> findAllBooks() {
         return jdbcTemplate.query("select * from book", new BookRowMapper());
     }
@@ -88,9 +97,6 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public void save(Book book) {
-    }
-    @Override
     public List<Announcement> findAllAnnouncement() {
         return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true", this::mapRowToAnnouncement);
     }
@@ -111,18 +117,4 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("image_path"));
     }
 
-}
-
-class AnnouncementRowMapper implements RowMapper {
-    @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-        return new Announcement(
-                resultSet.getInt("announcement_id"),
-                resultSet.getInt("announcement_book_id"),
-                resultSet.getInt("user_id"),
-                resultSet.getBoolean("approved"),
-                resultSet.getString("title"),
-                resultSet.getString("description"),
-                resultSet.getString("image_path"));
-    }
 }

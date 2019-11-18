@@ -1,4 +1,4 @@
-package com.example.netbooks.dao;
+package com.example.netbooks.dao.interfaces;
 
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
@@ -12,10 +12,9 @@ public interface BookRepository {
     List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2);
     List<Announcement> findAllAnnouncement();
     String addBook(Book book);
-    void save(Book book);
 
     List<ViewBook> findAllViewBooks();
     List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);
     List<ViewBook> findViewBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2);
-    //void update(Book book);
+    ViewBook getBookById(int id);
 }

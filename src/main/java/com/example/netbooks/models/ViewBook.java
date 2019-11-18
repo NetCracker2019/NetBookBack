@@ -21,4 +21,5 @@ public class ViewBook {
     private int pages;
     private String[] genres;
     private String description;
+
 }

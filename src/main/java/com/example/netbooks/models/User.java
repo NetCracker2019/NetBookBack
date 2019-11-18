@@ -1,14 +1,7 @@
 package com.example.netbooks.models;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.example.netbooks.dao.UserRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;

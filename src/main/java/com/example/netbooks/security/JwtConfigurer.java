@@ -47,6 +47,8 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
         .antMatchers("/home/find-books").permitAll()
         .antMatchers("/home/view-books").permitAll()
         .antMatchers("/home/filter-books").permitAll()
+        .antMatchers("/home/search/{id}").permitAll()
+        .antMatchers("/home/find-book-by-id").permitAll()
         //.antMatchers("/Users").authenticated()
         //.antMatchers("/Users").hasRole("ADMIN")
         

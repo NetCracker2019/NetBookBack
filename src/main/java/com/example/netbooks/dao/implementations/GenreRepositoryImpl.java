@@ -1,12 +1,12 @@
-package com.example.netbooks.dao;
+package com.example.netbooks.dao.implementations;
 
-import com.example.netbooks.models.Book;
+import com.example.netbooks.dao.interfaces.GenreRepository;
+import com.example.netbooks.dao.mappers.GenreMapper;
 import com.example.netbooks.models.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,18 +23,8 @@ public class GenreRepositoryImpl implements GenreRepository {
 
     @Override
     public List<Genre> getAllGenres() {
-        return jdbcTemplate.query("SELECT * FROM genre", new GenreRowMapper());
+        return jdbcTemplate.query("SELECT * FROM genre", new GenreMapper());
     }
 }
 
-class GenreRowMapper implements RowMapper{
 
-    @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-         Genre genre = new Genre(
-                resultSet.getLong("genre_id"),
-                resultSet.getString("genre_name"));
-
-        return genre;
-    }
-}
