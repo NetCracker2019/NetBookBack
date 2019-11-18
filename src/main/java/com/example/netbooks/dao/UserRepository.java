@@ -1,6 +1,7 @@
 package com.example.netbooks.dao;
 
 import com.example.netbooks.controllers.AuthenticationController;
+import com.example.netbooks.models.Book;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 
@@ -32,7 +33,6 @@ public class UserRepository {
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment env;
-	
 
     private final class UserMapper implements RowMapper<User> {
         @Override
@@ -57,6 +57,17 @@ public class UserRepository {
             return user;
         }
     }
+    private final class FriendMapper implements RowMapper<User> {
+        @Override
+        public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            User user = new User();
+            user.setLogin(resultSet.getString("login"));
+            user.setName(resultSet.getString("person_name"));
+            user.setAvatarFilePath(resultSet.getString("avatar_filepath"));
+            return user;
+        }
+    }
+
     
     @Autowired
     public UserRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment env) {
@@ -166,4 +177,18 @@ public class UserRepository {
 		namedParams.put("login", login);
         namedJdbcTemplate.update(env.getProperty("setMinRefreshDate"), namedParams);
 	}
+
+    public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("id", findByLogin(login).getUserId());
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntFriends);
+            return namedJdbcTemplate.query(env.getProperty("getFriendsByLogin"), namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+
 }

@@ -1,7 +1,14 @@
 package com.example.netbooks.models;
 
-public class Book {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Data
+@Getter
+@Setter
+public class Book {
     private long bookId;
     private String title;
     private int like;
@@ -22,34 +29,4 @@ public class Book {
         this.approved = approved;
     }
 
-    public long getBookId() {
-        return bookId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-    public int getLike() {
-        return like;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public boolean isApproved() {
-        return approved;
-    }
 }

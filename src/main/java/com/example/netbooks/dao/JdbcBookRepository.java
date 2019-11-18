@@ -2,18 +2,30 @@ package com.example.netbooks.dao;
 
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.ShortBookDescription;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 
 @Repository
+@PropertySource("classpath:queries/book.properties")
 public class JdbcBookRepository implements BookRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
+    @Autowired
+    private Environment env;
 
 
     @Override
@@ -56,5 +68,33 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("title"),
                 resultSet.getString("description"),
                 resultSet.getString("image_path"));
+    }
+
+
+
+    private final class ShortDescriptionMapper implements RowMapper<ShortBookDescription> {
+        @Override
+        public ShortBookDescription mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            ShortBookDescription book = new ShortBookDescription();
+            book.setImagePath(resultSet.getString("image_path"));
+            book.setLikes(resultSet.getInt("likes"));
+            book.setTitle(resultSet.getString("title"));
+            Array tmpArray = resultSet.getArray("authors");
+            book.setAuthors((String[])tmpArray.getArray());
+            return book;
+        }
+    }
+
+    public List<ShortBookDescription> getBooksByUserId(Long id, int cntBooks, int offset, String property) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntBooks);
+            namedParams.put("user_id", id);
+            return namedJdbcTemplate.query(env.getProperty(property),
+                    namedParams, new ShortDescriptionMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }
