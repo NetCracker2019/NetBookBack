@@ -11,29 +11,40 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
+
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://netbooksfront.herokuapp.com")
 public class BookController {
-    private final Logger logger = LogManager.getLogger(BookController.class);
     @Autowired
     private JdbcBookRepository jdbcBookRepository;
     @Autowired
     BookService bookService;
 
-    @RequestMapping(value="/home/books/addBook", method = RequestMethod.POST, headers = {"Content-type=application/json"})
+    @GetMapping("/home/books")
+    public List<Book> getAllBooks() {
+        return bookService.getAllBooks();
+    }
+
+    @PostMapping("/home/books/addBook")
     public String add (@RequestBody Book book){
         return jdbcBookRepository.addBook(book);
     }
 
-    @RequestMapping(value="/home/announcement", method = RequestMethod.GET)
+    @GetMapping(value="/home/announcement")
     public List<Announcement> getAllAnnouncement() {
         return jdbcBookRepository.findAllAnnouncement();
     }
-    @GetMapping("/home/books")
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    @GetMapping(value="/home/amountOfAnnouncement")
+    public int getAmountOfAnnouncement() {
+        return jdbcBookRepository.getAmountOfAnnouncement();
+    }
+
+    @GetMapping(value="/home/announcementListPeace")
+    public List<Announcement> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
+        logger.info("page {} booksPerPage {}",page, booksPerPage);
+        System.out.print(page + ' ' + booksPerPage);
+        return jdbcBookRepository.getPeaceAnnouncement(page,booksPerPage);
     }
     @GetMapping("/home/view-books")
     public List<ViewBook> getAllViewBooks() {
