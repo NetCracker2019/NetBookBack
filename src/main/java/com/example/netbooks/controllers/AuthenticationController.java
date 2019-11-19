@@ -106,7 +106,7 @@ public class AuthenticationController {
 
             Map<Object, Object> response = new HashMap<>();
             response.put("token", jwtProvider.createToken(user.getLogin(), user.getRole()));
-            response.put("msg", "Successful login");
+            response.put("username", user.getLogin());
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
