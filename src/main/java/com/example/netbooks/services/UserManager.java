@@ -7,8 +7,20 @@ import com.example.netbooks.dao.AchievementRepository;
 import com.example.netbooks.models.Achievement;
 import com.example.netbooks.models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
-import com.example.netbooks.dao.UserRepository;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import com.example.netbooks.controllers.AuthenticationController;
+import com.example.netbooks.dao.implementations.UserRepository;
+import com.example.netbooks.exceptions.CustomException;
+import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 
 @Service
@@ -28,6 +40,10 @@ public class UserManager {
 	
 	public void updateUser(User user) {
 		userRepository.updateUser(user);
+	}
+        
+	public void updateUserById(User user, Long id) {
+		userRepository.updateUserById(user,id);
 	}
 	
 	public void saveUser(User user) {

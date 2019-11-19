@@ -1,6 +1,6 @@
 package com.example.netbooks.controllers;
 
-import com.example.netbooks.dao.UserRepository;
+import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.models.User;
 import com.example.netbooks.security.JwtProvider;
 import com.example.netbooks.services.EmailSender;
@@ -47,6 +47,7 @@ class AuthenticationControllerTest {
     private MockMvc mockMvc;
 
     /*register -> verification -> singin -> recovery/password -> change/pass -> signin -> rmUser*/
+
     @Test
     void registerTest() throws Exception{
         this.mockMvc.perform(post("/user-service/register/user")

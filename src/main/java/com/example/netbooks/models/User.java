@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.netbooks.dao.UserRepository;
+import com.example.netbooks.dao.implementations.UserRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -67,3 +67,4 @@ public class User {
 		this.turnOnNotif = user.turnOnNotif;
     }
 }
+

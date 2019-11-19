@@ -1,11 +1,8 @@
 package com.example.netbooks.services;
 
-import com.example.netbooks.dao.UserRepository;
-import com.example.netbooks.dao.VerificationTokenRepository;
+import com.example.netbooks.dao.implementations.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.netbooks.models.User;
 import com.example.netbooks.models.VerificationToken;
-import java.util.LinkedList;
 import org.springframework.stereotype.Component;
 
 @Component

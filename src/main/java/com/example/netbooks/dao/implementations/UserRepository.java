@@ -1,4 +1,4 @@
-package com.example.netbooks.dao;
+package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.models.Book;
@@ -116,6 +116,27 @@ public class UserRepository {
         namedJdbcTemplate.update(env.getProperty("updateUser"), namedParams);
     }
     
+    public void updateUserById(User user, Long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("login", user.getLogin());
+        namedParams.put("passw", user.getPassword());
+        namedParams.put("person_name", user.getName());
+        namedParams.put("mail", user.getEmail());
+        namedParams.put("avatar_filepath", user.getAvatarFilePath());
+        namedParams.put("sex", user.getSex());
+        namedParams.put("country", user.getCountry());
+        namedParams.put("city", user.getCity());
+        namedParams.put("description", user.getStatus());
+        namedParams.put("activity", user.isActivity());
+        namedParams.put("turn_on_notif", user.isTurnOnNotif());
+        namedParams.put("reg_date", user.getRegDate());
+        namedParams.put("role_id", user.getRole().ordinal() + 1);
+        namedParams.put("min_refresh_date",  user.getMinRefreshDate());
+        namedParams.put("person_id", id);
+
+        namedJdbcTemplate.update(env.getProperty("updateUserById"), namedParams);
+    }
+    
     public Iterable<User> getAllUsers() {
         return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
     }
@@ -189,6 +210,5 @@ public class UserRepository {
             return null;
         }
     }
-
-
 }
+

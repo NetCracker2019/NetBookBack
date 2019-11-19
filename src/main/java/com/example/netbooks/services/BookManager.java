@@ -1,6 +1,6 @@
 package com.example.netbooks.services;
 
-import com.example.netbooks.dao.JdbcBookRepository;
+import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.models.Book;
 import com.example.netbooks.models.ShortBookDescription;
 import org.springframework.beans.factory.annotation.Autowired;
