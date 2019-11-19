@@ -44,7 +44,10 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (CustomException ex) {
             logger.debug("next layer {}", ex.getMessage());
-            throw ex;
+            //throw ex;
+            SecurityContextHolder.clearContext();
+            httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
+            return;
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
