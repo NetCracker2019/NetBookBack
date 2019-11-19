@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,6 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (token != null && jwtProvider.validateToken(token)) {
                 Authentication auth = jwtProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+                //logger.debug("auth {}", ((UserDetails)auth.getPrincipal()).getUsername());
             }
         } catch (CustomException ex) {
             logger.debug("next layer {}", ex.getMessage());
@@ -55,6 +57,5 @@ public class JwtFilter extends OncePerRequestFilter {
             return null;
         }
     }
-
 
 }

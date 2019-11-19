@@ -1,12 +1,15 @@
 package com.example.netbooks.services;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.example.netbooks.dao.AchievementRepository;
+import com.example.netbooks.models.Achievement;
+import com.example.netbooks.models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,14 +22,13 @@ import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
-import com.example.netbooks.models.VerificationToken;
-import com.example.netbooks.security.JwtProvider;
-import java.util.UUID;
 
 @Service
 public class UserManager {
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	AchievementRepository achievementRepository;
 
 	public User getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
@@ -40,7 +42,7 @@ public class UserManager {
 		userRepository.updateUser(user);
 	}
         
-        public void updateUserById(User user, Long id) {
+	public void updateUserById(User user, Long id) {
 		userRepository.updateUserById(user,id);
 	}
 	
@@ -77,4 +79,12 @@ public class UserManager {
 
 	}
 
+    public Achievement getAchievementByLogin(String login) {
+		return achievementRepository.findByAchievementId(
+				userRepository.findByLogin(login).getUserId());
+    }
+
+	public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
+		return userRepository.getFriendsByLogin(login, cntFriends, offset);
+	}
 }

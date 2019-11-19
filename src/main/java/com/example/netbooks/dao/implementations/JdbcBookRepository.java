@@ -5,10 +5,12 @@ import com.example.netbooks.dao.mappers.BookRowMapper;
 import com.example.netbooks.dao.mappers.ViewBookMapper;
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.ShortBookDescription;
 import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,10 +18,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @PropertySource("classpath:queries/book.properties")
 @Repository
@@ -30,6 +35,8 @@ public class JdbcBookRepository implements BookRepository {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Autowired
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
     RowMapper viewBooksMapper = new ViewBookMapper();
 
 
@@ -134,7 +141,7 @@ public class JdbcBookRepository implements BookRepository {
         int isThisBookExist = jdbcTemplate.queryForObject("select count(*) from book where title='" + book.getTitle() + "'", Integer.class);
         if(isThisBookExist == 0){
             jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?)",
-                    new Object[] {book.getTitle(), 0, book.getImagePath(), book.getReleaseDate(), book.getLang(), book.getPages(), book.getDescription(), false});
+                    new Object[] {book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false});
 
             String[] subStrAuthors = book.getAuthor().split(", ");
             for (int i = 0; i < subStrAuthors.length; i++) {
@@ -167,6 +174,31 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("title"),
                 resultSet.getString("description"),
                 resultSet.getString("image_path"));
+    }
+    private final class ShortDescriptionMapper implements RowMapper<ShortBookDescription> {
+        @Override
+        public ShortBookDescription mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            ShortBookDescription book = new ShortBookDescription();
+            book.setImagePath(resultSet.getString("image_path"));
+            book.setLikes(resultSet.getInt("likes"));
+            book.setTitle(resultSet.getString("title"));
+            Array tmpArray = resultSet.getArray("authors");
+            book.setAuthors((String[])tmpArray.getArray());
+            return book;
+        }
+    }
+
+    public List<ShortBookDescription> getBooksByUserId(Long id, int cntBooks, int offset, String property) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntBooks);
+            namedParams.put("user_id", id);
+            return namedJdbcTemplate.query(env.getProperty(property),
+                    namedParams, new ShortDescriptionMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 }
