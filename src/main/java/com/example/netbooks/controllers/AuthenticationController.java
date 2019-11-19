@@ -130,6 +130,7 @@ public class AuthenticationController {
             VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
             if (token != null) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setRole(Role.ROLE_ADMIN);
                 userManager.updateUserById(user, token.getUserId());
                 userManager.activateUser(token.getUserId());
                 verificationTokenManager.removeVerificationToken(verificationToken);
