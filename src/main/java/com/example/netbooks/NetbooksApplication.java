@@ -11,16 +11,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import com.example.netbooks.services.EmailSender;
 
 @SpringBootApplication
-public class NetbooksApplication implements CommandLineRunner {
-	@Autowired
-	BookService bookService;
+public class NetbooksApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(NetbooksApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println(bookService.findBooks("lord"));
-	}
+
 }

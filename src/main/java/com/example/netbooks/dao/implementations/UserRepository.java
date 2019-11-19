@@ -210,5 +210,28 @@ public class UserRepository {
             return null;
         }
     }
+    public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("sought", "%" + sought + "%");
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntPersons);
+            return namedJdbcTemplate.query(env.getProperty("getPersonsBySought"), namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+    public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("id", findByLogin(login).getUserId());
+            namedParams.put("sought", "%" + sought + "%");
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntPersons);
+            return namedJdbcTemplate.query(env.getProperty("getFriendsBySought"), namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }
 

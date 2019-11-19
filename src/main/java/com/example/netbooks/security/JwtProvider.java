@@ -97,8 +97,8 @@ public class JwtProvider {
             }
             return true;
         } catch (Exception e) {
-            logger.debug("valid error ");
-            throw new CustomException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.info("valid error ");
+            throw new CustomException("Expired or invalid JWT token", HttpStatus.UNAUTHORIZED);
         }
     }
 
