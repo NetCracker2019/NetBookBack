@@ -164,7 +164,7 @@ public class AuthenticationController {
         String message = "To register your admin account, please click here : "
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
-        emailSender.sendMessage(user.getEmail(), "Register admin account!", message);
+        emailSender.sendMessage(mail, "Register admin account!", message);
         logger.info("Admin registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
