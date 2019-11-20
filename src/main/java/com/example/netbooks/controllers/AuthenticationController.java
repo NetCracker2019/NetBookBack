@@ -130,7 +130,7 @@ public class AuthenticationController {
             VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
             if (token != null) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
-                user.setRole(Role.ROLE_ADMIN);
+                user.setRole(userManager.getUserById(token.getUserId()).getRole());
                 userManager.updateUserById(user, token.getUserId());
                 userManager.activateUser(token.getUserId());
                 verificationTokenManager.removeVerificationToken(verificationToken);
@@ -155,8 +155,7 @@ public class AuthenticationController {
         user.setPassword(tempLogPass);
         user.setEmail(tempLogPass);
         user.setName(tempLogPass);
-        user.setRole(Role.ROLE_CLIENT);
-
+        user.setRole(Role.ROLE_ADMIN);
         userManager.saveUser(user);
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
@@ -169,7 +168,32 @@ public class AuthenticationController {
         logger.info("Admin registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
-        response.put("msg", "Successful registration");
+        response.put("msg", "Successful admin mail snet!");
+        return ResponseEntity.ok(response);
+    }
+    
+     @PostMapping("/send-moder-reg-mail")//TODO change mapping
+    public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) {
+        User user = new User();
+        String tempLogPass = UUID.randomUUID().toString();
+        user.setLogin(tempLogPass);
+        user.setPassword(tempLogPass);
+        user.setEmail(tempLogPass);
+        user.setName(tempLogPass);
+        user.setRole(Role.ROLE_MODER);
+        userManager.saveUser(user);
+        VerificationToken verificationToken = new VerificationToken(
+                userManager.getUserByLogin(user.getLogin()).getUserId());
+        verificationTokenManager.saveToken(verificationToken);
+
+        String message = "To register your moderator account, please click here : "
+                + "https://netbooksfront.herokuapp.com/verification-admin?token="
+                + verificationToken.getVerificationToken();
+        emailSender.sendMessage(mail, "Register moderator account!", message);
+        logger.info("Moderator registration mail sent! {}", user.getLogin() + message);
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("msg", "Successful moder mail snet!");
         return ResponseEntity.ok(response);
     }
 
