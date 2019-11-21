@@ -1,10 +1,7 @@
 package com.example.netbooks.controllers;
 
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
-import com.example.netbooks.models.Announcement;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Review;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,6 +61,7 @@ public class BookController {
         return bookService.findBooks(title);
     }
 
+    /*
     @GetMapping("/home/filter-books")
     public List<Book> getFilteredBooks
             (@RequestParam(value = "title", required = false, defaultValue = "") String title,
@@ -76,6 +74,16 @@ public class BookController {
             ){
         return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
     }
+    */
+
+    @GetMapping("/home/filter-books")
+    public List<ViewBook> getBooksByTitleAndGenre(
+            @RequestParam(value = "title") String title,
+            @RequestParam(value = "genre") String genre
+            ){
+        return bookService.getBooksByTitleAndGenre(title, genre);
+    }
+
     @GetMapping("/home/search/{id}")
     public List<Review> getReviewForBook(@PathVariable("id") int bookId){
         logger.info(bookService.getReviewsForBook(bookId));
@@ -85,5 +93,10 @@ public class BookController {
     public ViewBook getBookById(@RequestParam("id") int bookId){
         logger.info(bookService.getViewBookById(bookId));
         return bookService.getViewBookById(bookId);
+    }
+
+    @GetMapping("/genres")
+    public List<Genre> getAllGenres() {
+        return bookService.getAllGenres();
     }
 }

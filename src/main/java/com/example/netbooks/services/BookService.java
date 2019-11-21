@@ -5,6 +5,7 @@ import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.Book;
+import com.example.netbooks.models.Genre;
 import com.example.netbooks.models.Review;
 import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,14 @@ public class BookService {
     }
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
+    }
+
+    public List<Genre> getAllGenres() {
+        return genreRepository.getAllGenres();
+    }
+
+    public List<ViewBook> getBooksByTitleAndGenre(String title, String genre) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre);
     }
 }

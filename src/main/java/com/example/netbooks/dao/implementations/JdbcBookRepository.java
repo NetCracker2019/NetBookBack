@@ -37,7 +37,7 @@ public class JdbcBookRepository implements BookRepository {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    RowMapper viewBooksMapper = new ViewBookMapper();
+    RowMapper<ViewBook> viewBooksMapper = new ViewBookMapper();
 
 
     @Override
@@ -81,6 +81,16 @@ public class JdbcBookRepository implements BookRepository {
         return jdbcTemplate.query("select * from book", new BookRowMapper());
     }
 
+    public List<ViewBook> findBooksByTitleAndGenre(String title, String genre) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", "%"+title+"%");
+        namedParameters.addValue("genre", genre);
+        String sql = "SELECT * FROM view_book_list " +
+                "INNER JOIN book_genre USING (book_id)" +
+                "WHERE lower(title) LIKE :title " +
+                "AND genre_id = (SELECT genre_id FROM genre WHERE genre_name = :genre)";
+        return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
+    }
 
     @Override
     public List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
