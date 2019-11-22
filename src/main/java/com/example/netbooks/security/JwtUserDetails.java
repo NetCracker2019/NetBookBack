@@ -14,8 +14,11 @@ import com.example.netbooks.models.User;
 
 @Service
 public class JwtUserDetails implements UserDetailsService {
-	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	public JwtUserDetails(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {

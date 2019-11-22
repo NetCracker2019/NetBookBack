@@ -59,4 +59,16 @@ public class BookService {
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
     }
+
+    public List<ViewBook> getFavouriteBooksByUserId(Long id, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getFavouriteBooksByUserId");
+    }
+
+    public List<ViewBook> getReadingBooksByUserId(long id, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadingBooksByUserId");
+    }
+
+    public List<ViewBook> getReadBooksByUserId(long id, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadBooksByUserId");
+    }
 }

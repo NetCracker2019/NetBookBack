@@ -47,12 +47,13 @@ class AuthenticationControllerTest {
     private MockMvc mockMvc;
 
     /*register -> verification -> singin -> recovery/password -> change/pass -> signin -> rmUser*/
+
     @Test
     void registerTest() throws Exception{
         this.mockMvc.perform(post("/user-service/register/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "  \"login\" : \"test47\",\n" +
+                        "  \"username\" : \"test47\",\n" +
                         "  \"email\" : \"test47@mail\",\n" +
                         "  \"name\" : \"test47\",\n" +
                         "  \"password\" : \"12345\"\n" +
@@ -70,7 +71,7 @@ class AuthenticationControllerTest {
         this.mockMvc.perform(post("/user-service/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "  \"login\" : \"test47\",\n" +
+                        "  \"username\" : \"test47\",\n" +
                         "  \"password\" : \"12345\"\n" +
                         "}"))
                 .andDo(print())
@@ -93,7 +94,7 @@ class AuthenticationControllerTest {
         this.mockMvc.perform(post("/user-service/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "  \"login\" : \"test47\",\n" +
+                        "  \"username\" : \"test47\",\n" +
                         "  \"password\" : \"123456\"\n" +
                         "}"))
                 .andDo(print())
