@@ -87,12 +87,7 @@ public class JdbcBookRepository implements BookRepository {
         namedParameters.addValue("genre", genre);
         namedParameters.addValue("from", from);
         namedParameters.addValue("to", to);
-        String sql = "SELECT * FROM view_book_list " +
-                "INNER JOIN book_genre USING (book_id)" +
-                "WHERE lower(title) LIKE :title " +
-                "AND genre_id = (SELECT genre_id FROM genre WHERE genre_name = :genre) " +
-                "AND release_date BETWEEN :from AND :to";
-        return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
+        return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleAndGenre") , namedParameters, viewBooksMapper);
     }
 
     public List<ViewBook> findBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to) {
@@ -101,12 +96,7 @@ public class JdbcBookRepository implements BookRepository {
         namedParameters.addValue("author", author);
         namedParameters.addValue("from", from);
         namedParameters.addValue("to", to);
-        String sql = "SELECT * FROM view_book_list " +
-                "inner join book_author using (book_id)" +
-                "WHERE lower(title) LIKE :title " +
-                "AND author_id in (select author_id from author where fullname = :author)" +
-                "AND release_date BETWEEN :from AND :to";
-        return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
+        return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleAndAuthor") , namedParameters, viewBooksMapper);
     }
 
     public List<ViewBook> findBooksByTitleAndDate(String title, java.sql.Date from, java.sql.Date to) {
@@ -114,12 +104,7 @@ public class JdbcBookRepository implements BookRepository {
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("from", from);
         namedParameters.addValue("to", to);
-        String sql = "SELECT DISTINCT book_id, title, authors, likes, image_path, release_date, lang, pages, genres, description, approved " +
-                "FROM view_book_list " +
-                "INNER JOIN book_author using (book_id) " +
-                "WHERE lower(title) LIKE :title " +
-                "AND release_date BETWEEN :from AND :to";
-        return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
+        return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleAndDate") , namedParameters, viewBooksMapper);
     }
 
     public List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, String genre, java.sql.Date from, java.sql.Date to) {
@@ -129,14 +114,7 @@ public class JdbcBookRepository implements BookRepository {
         namedParameters.addValue("genre", genre);
         namedParameters.addValue("from", from);
         namedParameters.addValue("to", to);
-        String sql = "SELECT * FROM view_book_list " +
-                "inner join book_author using (book_id)" +
-                "INNER JOIN book_genre USING (book_id)" +
-                "WHERE lower(title) LIKE :title " +
-                "AND author_id in (select author_id from author where fullname = :author)" +
-                "AND genre_id = (SELECT genre_id FROM genre WHERE genre_name = :genre) " +
-                "AND release_date BETWEEN :from AND :to";
-        return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
+        return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleAuthorGenre") , namedParameters, viewBooksMapper);
     }
 
     @Override
