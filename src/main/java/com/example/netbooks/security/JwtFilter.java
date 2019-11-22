@@ -32,18 +32,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        attemptAuthentication(httpServletRequest, httpServletResponse, filterChain);
-        String token = jwtProvider.resolveToken(httpServletRequest);
-        try {
-            logger.debug("bearer {}", token);
-            if (token != null && jwtProvider.validateToken(token)) {
-                Authentication auth = jwtProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+        attemptAuthentication(httpServletRequest,httpServletResponse,filterChain);
+            String token = jwtProvider.resolveToken(httpServletRequest);
+            try {
+                logger.debug("bearer {}", token);
+                if (token != null && jwtProvider.validateToken(token)) {
+                    Authentication auth = jwtProvider.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (CustomException ex) {
+                logger.debug("next layer {}", ex.getMessage());
+                throw ex;
             }
-        } catch (CustomException ex) {
-            logger.debug("next layer {}", ex.getMessage());
-            throw ex;
-        }
+        
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
@@ -55,6 +56,5 @@ public class JwtFilter extends OncePerRequestFilter {
             return null;
         }
     }
-
 
 }
