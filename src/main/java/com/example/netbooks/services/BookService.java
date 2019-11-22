@@ -88,4 +88,16 @@ public class BookService {
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
         return jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to);
     }
+
+    public List<ViewBook> getFavouriteBooksByUserId(Long id, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getFavouriteBooksByUserId");
+    }
+
+    public List<ViewBook> getReadingBooksByUserId(long id, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadingBooksByUserId");
+    }
+
+    public List<ViewBook> getReadBooksByUserId(long id, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadBooksByUserId");
+    }
 }
