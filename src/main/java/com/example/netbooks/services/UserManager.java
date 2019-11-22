@@ -70,6 +70,12 @@ public class UserManager {
 		return userRepository.findByUserId(id);
 	}
 
+        public Boolean isExistByLogin(String login) {
+		return userRepository.isExistByLogin(login);
+	}
+        public Boolean isExistByMail(String mail) {
+		return userRepository.isExistByMail(mail);
+	}
 	public User getUserByLogin(String login) {
 		try{
 			return userRepository.findByLogin(login);
