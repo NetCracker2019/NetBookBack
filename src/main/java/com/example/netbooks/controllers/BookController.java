@@ -1,16 +1,14 @@
 package com.example.netbooks.controllers;
 
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
-import com.example.netbooks.models.Announcement;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Review;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -59,21 +57,22 @@ public class BookController {
     }
     @GetMapping("/home/find-books")
     public List<ViewBook> getFoundBook(@RequestParam("title") String title){
+        logger.info("Books by title "+title+":  "+bookService.findBooks(title));
         return bookService.findBooks(title);
     }
 
-    @GetMapping("/home/filter-books")
-    public List<Book> getFilteredBooks
-            (@RequestParam(value = "title", required = false, defaultValue = "") String title,
-             @RequestParam(value = "author", required = false, defaultValue = "") String author,
-             @RequestParam(value = "genre", required = false, defaultValue = "All") String genre,
-             @RequestParam(value = "date1", required = false, defaultValue = "0001-01-01") String dateFrom,
-             @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String dateTo,
-             @RequestParam(value = "page1", required = false, defaultValue = "0") int pageFrom,
-             @RequestParam(value = "page2", required = false, defaultValue = "1000000") int pageTo
-            ){
-        return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
-    }
+//    @GetMapping("/home/filter-books")
+//    public List<Book> getFilteredBooks
+//            (@RequestParam(value = "title", required = false, defaultValue = "") String title,
+//             @RequestParam(value = "author", required = false, defaultValue = "") String author,
+//             @RequestParam(value = "genre", required = false, defaultValue = "All") String genre,
+//             @RequestParam(value = "date1", required = false, defaultValue = "0001-01-01") String dateFrom,
+//             @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String dateTo,
+//             @RequestParam(value = "page1", required = false, defaultValue = "0") int pageFrom,
+//             @RequestParam(value = "page2", required = false, defaultValue = "1000000") int pageTo
+//            ){
+//        return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
+//    }
     @GetMapping("/home/search/{id}")
     public List<Review> getReviewForSearchBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
         return bookService.getPeaceOfReviewByBook(bookId, count, offset);
@@ -88,7 +87,45 @@ public class BookController {
         return bookService.getViewBookById(bookId);
     }
     @GetMapping("home/books/amount")
-    public int countBooks(){
+    public int countBooks() {
         return bookService.countBooks();
+    }
+    @GetMapping("/filter-books-genre")
+    public List<ViewBook> getBooksByTitleAndGenre
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "genre") String genre,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        return bookService.getBooksByTitleAndGenre(title, genre, from, to);
+    }
+
+    @GetMapping("/filter-books-author")
+    public List<ViewBook> getBooksByTitleAndAuthor
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "author") String author,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        logger.info("Books by title and author: " + title + ", " + author);
+        return bookService.getBooksByTitleAndAuthor(title, author, from, to);
+    }
+
+    @GetMapping("/filter-books")
+    public List<ViewBook> getBooksByTitleAndDate
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+        return bookService.getBooksByTitleAndDate(title, from, to);
+    }
+
+    @GetMapping("/filter-books-author-genre")
+    public List<ViewBook> getBooksByTitleAndAuthorAndGenre
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "author") String author,
+             @RequestParam(value = "genre") String genre,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+        return bookService.getBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
     }
 }

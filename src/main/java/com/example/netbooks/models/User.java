@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
+import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,17 +53,17 @@ public class User {
 	}
 
     public void compareAndReplace(User user) {
-		this.name = ((user.name == null || user.name.equals("")) && this.name != null) ? this.name : user.name;
-		this.email = ((user.email == null || user.email.equals("")) && this.email != null) ? this.email : user.email;
-		this.password = ((user.password == null || user.password.equals(""))
+		this.name = (Strings.isNullOrEmpty(user.getName()) && this.name != null) ? this.name : user.name;
+		this.email = (Strings.isNullOrEmpty(user.getEmail()) && this.email != null) ? this.email : user.email;
+		this.password = (Strings.isNullOrEmpty(user.getPassword())
 				&& this.password != null) ? this.password : user.password;
-		this.sex = ((user.sex == null || user.sex.equals("")) && this.sex != null) ? this.sex : user.sex;
-		this.avatarFilePath = ((user.avatarFilePath == null || user.avatarFilePath.equals(""))
+		this.sex = (Strings.isNullOrEmpty(user.getSex()) && this.sex != null) ? this.sex : user.sex;
+		this.avatarFilePath = (Strings.isNullOrEmpty(user.getAvatarFilePath())
 				&& this.avatarFilePath != null) ? this.avatarFilePath : user.avatarFilePath;
-		this.country = ((user.country == null || user.country.equals(""))
+		this.country = (Strings.isNullOrEmpty(user.getCountry())
 				&& this.country != null) ? this.country : user.country;
-		this.city = ((user.city == null || user.city.equals("")) && this.city != null) ? this.city : user.city;
-		this.status = ((user.status == null || user.status.equals(""))
+		this.city = (Strings.isNullOrEmpty(user.getCity()) && this.city != null) ? this.city : user.city;
+		this.status = (Strings.isNullOrEmpty(user.getStatus())
 				&& this.status != null) ? this.status: user.status;
 		this.turnOnNotif = user.turnOnNotif;
     }
