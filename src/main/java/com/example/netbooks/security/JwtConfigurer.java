@@ -20,9 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class JwtConfigurer extends WebSecurityConfigurerAdapter {
-
-  @Autowired
   private JwtProvider jwtProvider;
+  @Autowired
+  public JwtConfigurer(JwtProvider jwtProvider) {
+    this.jwtProvider = jwtProvider;
+  }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {

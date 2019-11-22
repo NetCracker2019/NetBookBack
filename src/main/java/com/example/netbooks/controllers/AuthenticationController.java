@@ -1,5 +1,6 @@
 package com.example.netbooks.controllers;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,21 +36,28 @@ import javax.servlet.http.HttpServletRequest;
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/user-service")
 public class AuthenticationController {
-
     private final Logger logger = LogManager.getLogger(AuthenticationController.class);
-    @Autowired
     private UserManager userManager;
-    @Autowired
     EmailSender emailSender;
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
     private JwtProvider jwtProvider;
-    @Autowired
     private VerificationTokenManager verificationTokenManager;
 
+    @Autowired
+    public AuthenticationController(UserManager userManager,
+                                    EmailSender emailSender,
+                                    PasswordEncoder passwordEncoder,
+                                    AuthenticationManager authenticationManager,
+                                    JwtProvider jwtProvider,
+                                    VerificationTokenManager verificationTokenManager) {
+        this.userManager = userManager;
+        this.emailSender = emailSender;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
+        this.verificationTokenManager = verificationTokenManager;
+    }
     @PutMapping("/interrupt-sessions/{login}")
     public void interruptr(@PathVariable("login") String login) {
         userManager.setMinRefreshDate(login, null);
@@ -118,6 +128,19 @@ public class AuthenticationController {
         return userManager.getAllUsers();
     }
 
+    @GetMapping("/refresh-token")
+    public ResponseEntity<Map> refreshToken(){
+        Map<Object, Object> response = new HashMap<>();
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails currentUserDetails =
+                ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        response.put("token", jwtProvider.createToken(
+                currentUserDetails.getUsername(),
+                (Role)(currentUserDetails.getAuthorities().stream().findFirst().get())));
+        response.put("username", currentUserDetails.getUsername());
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/remove/{id}")
     public void removeUser(@PathVariable("id") long id) {
         userManager.removeUserById(id);
@@ -171,7 +194,7 @@ public class AuthenticationController {
         response.put("msg", "Successful registration");
         return ResponseEntity.ok(response);
     }
-
+    //request for recovery password
     @PostMapping("/recovery/password")
     public ResponseEntity<Map> recoveryPassRequest(@RequestParam("email") String email) {
         User user = userManager.getUserByEmail(email);
