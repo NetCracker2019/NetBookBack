@@ -1,13 +1,11 @@
 package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Genre;
-import com.example.netbooks.models.Review;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,8 @@ public class BookService {
     JdbcBookRepository jdbcBookRepository;
     @Autowired
     GenreRepository genreRepository;
+    @Autowired
+    AuthorRepository authorRepository;
     @Autowired
     ReviewRepository reviewRepository;
 
@@ -65,8 +65,17 @@ public class BookService {
         return genreRepository.getAllGenres();
     }
 
+    public List<Author> getAllAuthors() {
+        return authorRepository.getAllAuthors();
+    }
+
     public List<ViewBook> getBooksByTitleAndGenre(String title, String genre) {
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
         return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre);
+    }
+
+    public List<ViewBook> getBooksByTitleAndAuthor(String title, String author) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndAuthor(processedTitle, author);
     }
 }

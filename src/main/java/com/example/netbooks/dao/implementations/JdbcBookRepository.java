@@ -92,6 +92,17 @@ public class JdbcBookRepository implements BookRepository {
         return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
     }
 
+    public List<ViewBook> findBooksByTitleAndAuthor(String title, String author) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", "%"+title+"%");
+        namedParameters.addValue("author", author);
+        String sql = "SELECT * FROM view_book_list " +
+                "inner join book_author using (book_id)" +
+                "WHERE lower(title) LIKE :title " +
+                "AND author_id in (select author_id from author where fullname = :author)";
+        return namedParameterJdbcTemplate.query(sql , namedParameters, viewBooksMapper);
+    }
+
     @Override
     public List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();

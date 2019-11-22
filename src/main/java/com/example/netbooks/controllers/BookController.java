@@ -76,12 +76,19 @@ public class BookController {
     }
     */
 
-    @GetMapping("/home/filter-books")
-    public List<ViewBook> getBooksByTitleAndGenre(
-            @RequestParam(value = "title") String title,
-            @RequestParam(value = "genre") String genre
-            ){
+    @GetMapping("/home/filter-books-genre")
+    public List<ViewBook> getBooksByTitleAndGenre
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "genre") String genre){
         return bookService.getBooksByTitleAndGenre(title, genre);
+    }
+
+    @GetMapping("/home/filter-books-author")
+    public List<ViewBook> getBooksByTitleAndAuthor
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "author") String author){
+        logger.info("Books by title and author: " + title + ", " + author);
+        return bookService.getBooksByTitleAndAuthor(title, author);
     }
 
     @GetMapping("/home/search/{id}")
@@ -98,5 +105,10 @@ public class BookController {
     @GetMapping("/genres")
     public List<Genre> getAllGenres() {
         return bookService.getAllGenres();
+    }
+
+    @GetMapping("/authors")
+    public List<Author> getAllAuthors() {
+        return bookService.getAllAuthors();
     }
 }
