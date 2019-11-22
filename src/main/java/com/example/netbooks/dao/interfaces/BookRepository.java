@@ -16,6 +16,9 @@ public interface BookRepository {
     void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
     List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
+    List<ViewBook> getPeaceOfSearchBook(String titleOrAuthor, int page, int offset);
+    List<ViewBook> getPeaceOfBook(int page, int offset);
+
 
     List<ViewBook> findAllViewBooks();
     List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);

@@ -34,10 +34,8 @@ public class JdbcBookRepository implements BookRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    RowMapper viewBooksMapper = new ViewBookMapper();
+    private final RowMapper viewBooksMapper = new ViewBookMapper();
 
 
     @Override
@@ -58,13 +56,34 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
+    public List<ViewBook> getPeaceOfSearchBook(String titleOrAuthor, int count, int offset) {
         titleOrAuthor = "%" + titleOrAuthor + "%";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("titleOrAuthor", titleOrAuthor);
-        return namedParameterJdbcTemplate.query(env.getProperty("findBooksByTitleOrAuthor"), namedParameters, viewBooksMapper);
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("titleOrAuthor", titleOrAuthor);
+        namedParameters.addValue("count", count);
+        namedParameters.addValue("offset", offset);
+        return namedJdbcTemplate.query(env.getProperty("getPeaceOfSearchBooks"), namedParameters, viewBooksMapper);
+    }
+
+    @Override
+    public List<ViewBook> getPeaceOfBook(int count, int offset) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("count", count);
+        namedParameters.addValue("offset", offset);
+        return namedJdbcTemplate.query(env.getProperty("getPeaceOfBooks"), namedParameters, viewBooksMapper);
     }
 
 
+    @Override
+    public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
+        titleOrAuthor = "%" + titleOrAuthor + "%";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("titleOrAuthor", titleOrAuthor);
+        return namedJdbcTemplate.query(env.getProperty("findBooksByTitleOrAuthor"), namedParameters, viewBooksMapper);
+    }
+
+    public int countBooks(){
+        return jdbcTemplate.queryForObject(env.getProperty("countBooks"), Integer.class);
+    }
     @Override
     public List<ViewBook> findViewBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2) {
         return null;
@@ -73,7 +92,7 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public ViewBook getBookById(int id) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
-        return (ViewBook) namedParameterJdbcTemplate.query(env.getProperty("getBookById"), namedParameters, viewBooksMapper).get(0);
+        return (ViewBook) namedJdbcTemplate.query(env.getProperty("getBookById"), namedParameters, viewBooksMapper).get(0);
     }
 
     @Override
@@ -112,7 +131,7 @@ public class JdbcBookRepository implements BookRepository {
                         "and release_date between :date1 and :date2 " +
                         "and pages between :page1 and :page2";
 
-        return namedParameterJdbcTemplate.query(sql, namedParameters, new BookRowMapper());
+        return namedJdbcTemplate.query(sql, namedParameters, new BookRowMapper());
     }
 
     @Override

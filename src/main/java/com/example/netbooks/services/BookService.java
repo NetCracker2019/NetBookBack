@@ -37,6 +37,9 @@ public class BookService {
         return jdbcBookRepository.findAllViewBooks();
 
     }
+    public int countBooks(){
+        return jdbcBookRepository.countBooks();
+    }
     public List<Book> filterBooks(String title, String author, String genre, String strDate1, String strDate2, int page1, int page2){
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
         String processedAuthor = author.toLowerCase().trim().replaceAll(" +", " ");
@@ -58,5 +61,14 @@ public class BookService {
     }
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
+    }
+    public List<ViewBook> getPeaceOfSearchBook(String searchString, int count, int offset){
+        return jdbcBookRepository.getPeaceOfSearchBook(searchString, count, offset);
+    }
+    public List<Review> getPeaceOfReviewByBook(int bookId, int count, int offset){
+        return reviewRepository.getPeaceOfReviewByBook(bookId, count, offset);
+    }
+    public List<ViewBook> getPeaceOfBooks(int count, int offset){
+        return jdbcBookRepository.getPeaceOfBook(count, offset);
     }
 }

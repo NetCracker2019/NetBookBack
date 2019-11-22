@@ -54,13 +54,11 @@ public class BookController {
         return jdbcBookRepository.getPeaceAnnouncement(page,booksPerPage);
     }
     @GetMapping("/home/view-books")
-    public List<ViewBook> getAllViewBooks() {
-        logger.info("Books: "+bookService.getAllViewBooks());
-        return bookService.getAllViewBooks();
+    public List<ViewBook> getPeaceViewBooks(@RequestParam("count") int count, @RequestParam("offset") int offset) {
+        return bookService.getPeaceOfBooks(count, offset);
     }
     @GetMapping("/home/find-books")
     public List<ViewBook> getFoundBook(@RequestParam("title") String title){
-        logger.info("Books by title "+title+":  "+bookService.findBooks(title));
         return bookService.findBooks(title);
     }
 
@@ -77,13 +75,20 @@ public class BookController {
         return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
     }
     @GetMapping("/home/search/{id}")
-    public List<Review> getReviewForBook(@PathVariable("id") int bookId){
-        logger.info(bookService.getReviewsForBook(bookId));
-        return bookService.getReviewsForBook(bookId);
+    public List<Review> getReviewForSearchBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
+        return bookService.getPeaceOfReviewByBook(bookId, count, offset);
     }
-    @GetMapping("/home/find-book-by-id")
+    @GetMapping("/home/books/{id}")
+    public List<Review> getReviewForBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
+        return bookService.getPeaceOfReviewByBook(bookId, count, offset);
+    }
+    @GetMapping("/home/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
         logger.info(bookService.getViewBookById(bookId));
         return bookService.getViewBookById(bookId);
+    }
+    @GetMapping("home/books/amount")
+    public int countBooks(){
+        return bookService.countBooks();
     }
 }
