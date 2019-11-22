@@ -69,13 +69,23 @@ public class BookService {
         return authorRepository.getAllAuthors();
     }
 
-    public List<ViewBook> getBooksByTitleAndGenre(String title, String genre) {
+    public List<ViewBook> getBooksByTitleAndGenre(String title, String genre, java.sql.Date from, java.sql.Date to) {
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
-        return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre);
+        return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre, from, to);
     }
 
-    public List<ViewBook> getBooksByTitleAndAuthor(String title, String author) {
+    public List<ViewBook> getBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to) {
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
-        return jdbcBookRepository.findBooksByTitleAndAuthor(processedTitle, author);
+        return jdbcBookRepository.findBooksByTitleAndAuthor(processedTitle, author, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndDate(String title, java.sql.Date from, java.sql.Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndDate(processedTitle, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndAuthorAndGenre(String title, String author, String genre, java.sql.Date from, java.sql.Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to);
     }
 }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -76,19 +77,43 @@ public class BookController {
     }
     */
 
-    @GetMapping("/home/filter-books-genre")
+    @GetMapping("/filter-books-genre")
     public List<ViewBook> getBooksByTitleAndGenre
             (@RequestParam(value = "title") String title,
-             @RequestParam(value = "genre") String genre){
-        return bookService.getBooksByTitleAndGenre(title, genre);
+             @RequestParam(value = "genre") String genre,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        return bookService.getBooksByTitleAndGenre(title, genre, from, to);
     }
 
-    @GetMapping("/home/filter-books-author")
+    @GetMapping("/filter-books-author")
     public List<ViewBook> getBooksByTitleAndAuthor
             (@RequestParam(value = "title") String title,
-             @RequestParam(value = "author") String author){
+             @RequestParam(value = "author") String author,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
         logger.info("Books by title and author: " + title + ", " + author);
-        return bookService.getBooksByTitleAndAuthor(title, author);
+        return bookService.getBooksByTitleAndAuthor(title, author, from, to);
+    }
+
+    @GetMapping("/filter-books")
+    public List<ViewBook> getBooksByTitleAndDate
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+        return bookService.getBooksByTitleAndDate(title, from, to);
+    }
+
+    @GetMapping("/filter-books-author-genre")
+    public List<ViewBook> getBooksByTitleAndAuthorAndGenre
+            (@RequestParam(value = "title") String title,
+             @RequestParam(value = "author") String author,
+             @RequestParam(value = "genre") String genre,
+             @RequestParam(value = "from") Date from,
+             @RequestParam(value = "to") Date to){
+        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+        return bookService.getBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
     }
 
     @GetMapping("/home/search/{id}")

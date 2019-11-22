@@ -21,5 +21,5 @@ public interface BookRepository {
     List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);
     List<ViewBook> findViewBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2);
     ViewBook getBookById(int id);
-    List<ViewBook> findBooksByTitleAndGenre(String title, String genre);
+    List<ViewBook> findBooksByTitleAndGenre(String title, String genre, java.sql.Date from, java.sql.Date to);
 }
