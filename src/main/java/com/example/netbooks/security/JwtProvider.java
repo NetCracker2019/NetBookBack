@@ -40,11 +40,14 @@ public class JwtProvider {
     @Value("${jwt.token.secondPause}")
     private long secondPause;
 
-    @Autowired
     private JwtUserDetails JwtUserDetails;
-
-    @Autowired
     private UserManager userManager;
+    @Autowired
+    public JwtProvider(com.example.netbooks.security.JwtUserDetails jwtUserDetails, UserManager userManager) {
+        JwtUserDetails = jwtUserDetails;
+        this.userManager = userManager;
+    }
+    public JwtProvider(){}
 
     @PostConstruct
     protected void init() {

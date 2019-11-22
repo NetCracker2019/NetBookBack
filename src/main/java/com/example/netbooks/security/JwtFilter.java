@@ -1,6 +1,8 @@
 package com.example.netbooks.security;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -9,8 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.netbooks.models.Role;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final Logger logger = LogManager.getLogger(JwtFilter.class);
     private JwtProvider jwtProvider;
-
+    @Autowired
     public JwtFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
@@ -36,16 +40,22 @@ public class JwtFilter extends OncePerRequestFilter {
         attemptAuthentication(httpServletRequest, httpServletResponse, filterChain);
         String token = jwtProvider.resolveToken(httpServletRequest);
         try {
-            logger.debug("bearer {}", token);
+            logger.debug("bearer_{}", token);
             if (token != null && jwtProvider.validateToken(token)) {
                 Authentication auth = jwtProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
-                //logger.debug("auth {}", ((UserDetails)auth.getPrincipal()).getUsername());
             }
         } catch (CustomException ex) {
             logger.debug("next layer {}", ex.getMessage());
-            //throw ex;
             SecurityContextHolder.clearContext();
+            HttpServletResponse response = (HttpServletResponse) httpServletResponse;
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+            response.setHeader("Access-Control-Max-Age", "3600");
+            response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, " +
+                    "Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, " +
+                    "Access-Control-Request-Headers");
             httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
             return;
         }

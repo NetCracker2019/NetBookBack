@@ -5,7 +5,6 @@ import com.example.netbooks.dao.mappers.BookRowMapper;
 import com.example.netbooks.dao.mappers.ViewBookMapper;
 import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
-import com.example.netbooks.models.ShortBookDescription;
 import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -175,12 +174,11 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("description"),
                 resultSet.getString("image_path"));
     }
-    private final class ShortDescriptionMapper implements RowMapper<ShortBookDescription> {
+    private final class ShortViewBookMapper implements RowMapper<ViewBook> {
         @Override
-        public ShortBookDescription mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            ShortBookDescription book = new ShortBookDescription();
+        public ViewBook mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            ViewBook book = new ViewBook();
             book.setImagePath(resultSet.getString("image_path"));
-            book.setLikes(resultSet.getInt("likes"));
             book.setTitle(resultSet.getString("title"));
             Array tmpArray = resultSet.getArray("authors");
             book.setAuthors((String[])tmpArray.getArray());
@@ -188,14 +186,14 @@ public class JdbcBookRepository implements BookRepository {
         }
     }
 
-    public List<ShortBookDescription> getBooksByUserId(Long id, int cntBooks, int offset, String property) {
+    public List<ViewBook> getBooksByUserId(Long id, int cntBooks, int offset, String property) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("offset", offset);
             namedParams.put("cnt", cntBooks);
             namedParams.put("user_id", id);
             return namedJdbcTemplate.query(env.getProperty(property),
-                    namedParams, new ShortDescriptionMapper());
+                    namedParams, new ShortViewBookMapper());
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
