@@ -1,12 +1,11 @@
 package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Review;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,8 @@ public class BookService {
     JdbcBookRepository jdbcBookRepository;
     @Autowired
     GenreRepository genreRepository;
+    @Autowired
+    AuthorRepository authorRepository;
     @Autowired
     ReviewRepository reviewRepository;
 
@@ -58,6 +59,34 @@ public class BookService {
     }
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
+    }
+
+    public List<Genre> getAllGenres() {
+        return genreRepository.getAllGenres();
+    }
+
+    public List<Author> getAllAuthors() {
+        return authorRepository.getAllAuthors();
+    }
+
+    public List<ViewBook> getBooksByTitleAndGenre(String title, String genre, java.sql.Date from, java.sql.Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndAuthor(processedTitle, author, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndDate(String title, java.sql.Date from, java.sql.Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndDate(processedTitle, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndAuthorAndGenre(String title, String author, String genre, java.sql.Date from, java.sql.Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to);
     }
 
     public List<ViewBook> getFavouriteBooksByUserId(Long id, int cntBooks, int offset) {
