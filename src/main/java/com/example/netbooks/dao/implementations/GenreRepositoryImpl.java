@@ -8,14 +8,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class GenreRepositoryImpl implements GenreRepository {
-    @Autowired
+    //@Autowired
     JdbcTemplate jdbcTemplate;
+
+    public GenreRepositoryImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
     @Override
     public List<String> getAllGenreNames() {
         return jdbcTemplate.queryForList("SELECT genre_name FROM genre", String.class);

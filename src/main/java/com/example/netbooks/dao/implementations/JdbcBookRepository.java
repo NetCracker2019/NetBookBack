@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,12 +31,16 @@ import java.util.Map;
 public class JdbcBookRepository implements BookRepository {
     @Autowired
     Environment env;
-    @Autowired
+    //@Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    RowMapper viewBooksMapper = new ViewBookMapper();
+    private final RowMapper viewBooksMapper = new ViewBookMapper();
 
+    public JdbcBookRepository(DataSource dataSource) {
+        namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     @Override
     public List<ViewBook> findAllViewBooks() {
@@ -57,9 +62,7 @@ public class JdbcBookRepository implements BookRepository {
         return jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY announcment_id LIMIT " + booksPerPage + " OFFSET " + startIndex, this::mapRowToAnnouncement);
     }
 
-    public int countReviews(){
-        return jdbcTemplate.queryForObject(env.getProperty("countReviews"), Integer.class);
-    }
+
     @Override
     public List<ViewBook> getPeaceOfSearchBook(String titleOrAuthor, int count, int offset) {
         titleOrAuthor = "%" + titleOrAuthor + "%";

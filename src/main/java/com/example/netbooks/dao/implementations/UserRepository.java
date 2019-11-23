@@ -29,12 +29,15 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+
 @PropertySource("classpath:queries/user.properties")
 @Repository
 public class UserRepository {
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment env;
+
 
     private final class UserMapper implements RowMapper<User> {
         @Override
@@ -72,9 +75,8 @@ public class UserRepository {
 
     
     @Autowired
-    public UserRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment env) {
-		super();
-		this.namedJdbcTemplate = namedJdbcTemplate;
+    public UserRepository(DataSource dataSource, Environment env) {
+		this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.env = env;
 	}
    
