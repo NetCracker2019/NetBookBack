@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ViewBookMapper implements RowMapper {
+public class ViewBookMapper implements RowMapper<ViewBook> {
 
     @Override
     public ViewBook mapRow(ResultSet resultSet, int i) throws SQLException {
