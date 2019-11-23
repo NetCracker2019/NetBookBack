@@ -29,6 +29,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+
 @PropertySource("classpath:queries/user.properties")
 @Repository
 public class UserRepository {
