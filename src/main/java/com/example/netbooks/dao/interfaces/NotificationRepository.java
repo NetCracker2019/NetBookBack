@@ -13,5 +13,5 @@ public interface NotificationRepository {
 
     void markAsRead();
 
-    Notification getNotification(int notificationId);
+   // Notification getNotification(int notificationId);
 }
