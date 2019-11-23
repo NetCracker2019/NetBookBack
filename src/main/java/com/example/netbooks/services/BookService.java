@@ -39,7 +39,7 @@ public class BookService {
 
     }
     public int countReviews(){
-        jdbcBookRepository.countReviews();
+        return jdbcBookRepository.countReviews();
     }
     public int countBooks(){
         return jdbcBookRepository.countBooks();
