@@ -1,6 +1,5 @@
 package com.example.netbooks.security;
 
-import com.example.netbooks.exceptions.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -24,7 +23,7 @@ public class JwtFilterConfigurer extends SecurityConfigurerAdapter<DefaultSecuri
   }
 
   @Override
-  public void configure(HttpSecurity http) throws CustomException {
+  public void configure(HttpSecurity http) throws Exception {
     JwtFilter customFilter = new JwtFilter(jwtProvider);
     http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
   }

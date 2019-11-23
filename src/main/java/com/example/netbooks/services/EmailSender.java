@@ -13,12 +13,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class EmailSender {
-    private JavaMailSender emailSender;
+	
 	private final Logger logger = LogManager.getLogger(EmailSender.class);
-    @Autowired
-    public EmailSender(JavaMailSender emailSender) {
-        this.emailSender = emailSender;
-    }
+	
+	@Autowired
+	private JavaMailSender emailSender;
+	
 	
 	public void sendMessage(String emailTo, String subject, String message){
         SimpleMailMessage simpleMessage = new SimpleMailMessage();

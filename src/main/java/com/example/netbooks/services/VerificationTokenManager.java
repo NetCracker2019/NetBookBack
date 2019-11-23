@@ -7,11 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class VerificationTokenManager {
-    VerificationTokenRepository verificationTokenRepository;
+    
     @Autowired
-    public VerificationTokenManager(VerificationTokenRepository verificationTokenRepository) {
-        this.verificationTokenRepository = verificationTokenRepository;
-    }
+    VerificationTokenRepository verificationTokenRepository;
     
     public VerificationToken findVerificationToken(String verificationToken) {
         return verificationTokenRepository.findByVerificationToken(verificationToken);

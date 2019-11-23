@@ -25,14 +25,10 @@ import com.example.netbooks.models.User;
 
 @Service
 public class UserManager {
-	UserRepository userRepository;
-	AchievementRepository achievementRepository;
-
 	@Autowired
-	public UserManager(UserRepository userRepository, AchievementRepository achievementRepository) {
-		this.userRepository = userRepository;
-		this.achievementRepository = achievementRepository;
-	}
+	UserRepository userRepository;
+	@Autowired
+	AchievementRepository achievementRepository;
 
 	public User getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
@@ -70,18 +66,8 @@ public class UserManager {
 		return userRepository.findByUserId(id);
 	}
 
-        public Boolean isExistByLogin(String login) {
-		return userRepository.isExistByLogin(login);
-	}
-        public Boolean isExistByMail(String mail) {
-		return userRepository.isExistByMail(mail);
-	}
 	public User getUserByLogin(String login) {
-		try{
-			return userRepository.findByLogin(login);
-		}catch (CustomException ex){
-			throw ex;
-		}
+		return userRepository.findByLogin(login);
 	}
 
 	public Iterable<User> getAllUsers() {
@@ -90,6 +76,7 @@ public class UserManager {
 
 	public void setMinRefreshDate(String login, Date date) {
 		userRepository.setMinRefreshDate(login, date);
+
 	}
 
     public Achievement getAchievementByLogin(String login) {
@@ -107,25 +94,5 @@ public class UserManager {
 
 	public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
 		return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
-	}
-
-    public int getCountPersonsBySought(String sought) {
-		return userRepository.getCountPersonsBySought(sought);
-    }
-
-	public int getCountFriendsBySought(String login, String sought) {
-		return userRepository.getCountFriendsBySought(login, sought);
-	}
-
-	public void addFriend(String ownLogin, String friendLogin) {
-		userRepository.addFriend(ownLogin, friendLogin);
-	}
-
-	public boolean isFriend(String ownLogin, String friendLogin) {
-		return userRepository.isFriend(ownLogin, friendLogin);
-	}
-
-	public void deleteFriend(String ownLogin, String friendLogin) {
-		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
 }

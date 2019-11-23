@@ -1,7 +1,5 @@
 package com.example.netbooks.models;
 
-
-
 public class Announcement {
     private int announcment_id;
     private int announcement_book_id;

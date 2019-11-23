@@ -1,6 +1,5 @@
 package com.example.netbooks.controllers;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,27 +35,18 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthenticationController {
 
     private final Logger logger = LogManager.getLogger(AuthenticationController.class);
-    private UserManager userManager;
-    EmailSender emailSender;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-    private JwtProvider jwtProvider;
-    private VerificationTokenManager verificationTokenManager;
-
     @Autowired
-    public AuthenticationController(UserManager userManager,
-            EmailSender emailSender,
-            PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager,
-            JwtProvider jwtProvider,
-            VerificationTokenManager verificationTokenManager) {
-        this.userManager = userManager;
-        this.emailSender = emailSender;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtProvider = jwtProvider;
-        this.verificationTokenManager = verificationTokenManager;
-    }
+    private UserManager userManager;
+    @Autowired
+    EmailSender emailSender;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    private VerificationTokenManager verificationTokenManager;
 
     @PutMapping("/interrupt-sessions/{login}")
     public void interruptr(@PathVariable("login") String login) {
@@ -67,8 +55,8 @@ public class AuthenticationController {
 
     @PostMapping("/register/user")
     public ResponseEntity<Map> register(@RequestBody User user) {
-        if (!userManager.isExistByLogin(user.getLogin())
-                && !userManager.isExistByMail(user.getEmail())) {
+        if (userManager.getUserByLogin(user.getLogin()) == null
+                && userManager.getUserByEmail(user.getEmail()) == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole(Role.ROLE_CLIENT);
             userManager.saveUser(user);
@@ -130,19 +118,6 @@ public class AuthenticationController {
         return userManager.getAllUsers();
     }
 
-    @GetMapping("/refresh-token")
-    public ResponseEntity<Map> refreshToken() {
-        Map<Object, Object> response = new HashMap<>();
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails currentUserDetails
-                = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        response.put("token", jwtProvider.createToken(
-                currentUserDetails.getUsername(),
-                (Role) (currentUserDetails.getAuthorities().stream().findFirst().get())));
-        response.put("username", currentUserDetails.getUsername());
-        return ResponseEntity.ok(response);
-    }
-
     @DeleteMapping("/remove/{id}")
     public void removeUser(@PathVariable("id") long id) {
         userManager.removeUserById(id);
@@ -150,8 +125,8 @@ public class AuthenticationController {
 
     @PostMapping("/register/admin")
     public ResponseEntity<Map> register(@RequestBody User user, @RequestParam("token") String verificationToken) {
-        if (!userManager.isExistByLogin(user.getLogin())
-                && !userManager.isExistByMail(user.getEmail())) {
+        if (userManager.getUserByLogin(user.getLogin()) == null
+                && userManager.getUserByEmail(user.getEmail()) == null) {
             VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
             if (token != null) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -196,8 +171,8 @@ public class AuthenticationController {
         response.put("msg", "Successful admin mail snet!");
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/send-moder-reg-mail")//TODO change mapping
+    
+     @PostMapping("/send-moder-reg-mail")//TODO change mapping
     public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) {
         User user = new User();
         String tempLogPass = UUID.randomUUID().toString();
@@ -222,7 +197,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    //request for recovery password
     @PostMapping("/recovery/password")
     public ResponseEntity<Map> recoveryPassRequest(@RequestParam("email") String email) {
         User user = userManager.getUserByEmail(email);
