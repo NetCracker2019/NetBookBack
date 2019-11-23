@@ -65,6 +65,13 @@ public class JwtFilter extends OncePerRequestFilter {
     protected JwtProvider attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         if (CorsUtils.isPreFlightRequest(httpServletRequest)) {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+            httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+            httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+            httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+            httpServletResponse.setHeader("Access-Control-Allow-Headers", "X-Requested-With, " +
+                    "Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, " +
+                    "Access-Control-Request-Headers");
             return new JwtProvider();
         } else {
             return null;

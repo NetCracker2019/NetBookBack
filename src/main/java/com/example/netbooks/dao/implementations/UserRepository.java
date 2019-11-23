@@ -32,15 +32,17 @@ import org.springframework.stereotype.Repository;
 @PropertySource("classpath:queries/user.properties")
 @Repository
 public class UserRepository {
-	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
-	private final NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    private final Logger logger = LogManager.getLogger(AuthenticationController.class);
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment env;
 
     private final class UserMapper implements RowMapper<User> {
+
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             User user = new User();
-            
+
             user.setUserId(resultSet.getLong("person_id"));
             user.setLogin(resultSet.getString("login"));
             user.setPassword(resultSet.getString("passw"));
@@ -59,7 +61,9 @@ public class UserRepository {
             return user;
         }
     }
+
     private final class FriendMapper implements RowMapper<User> {
+
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             User user = new User();
@@ -70,14 +74,13 @@ public class UserRepository {
         }
     }
 
-    
     @Autowired
     public UserRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment env) {
-		super();
-		this.namedJdbcTemplate = namedJdbcTemplate;
-		this.env = env;
-	}
-   
+        super();
+        this.namedJdbcTemplate = namedJdbcTemplate;
+        this.env = env;
+    }
+
     public void save(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -93,11 +96,11 @@ public class UserRepository {
         namedParams.put("turn_on_notif", user.isTurnOnNotif());
         namedParams.put("reg_date", user.getRegDate());
         namedParams.put("role_id", user.getRole().ordinal() + 1);
-        namedParams.put("min_refresh_date",  user.getMinRefreshDate());
+        namedParams.put("min_refresh_date", user.getMinRefreshDate());
 
         namedJdbcTemplate.update(env.getProperty("saveUser"), namedParams);
     }
-    
+
     public void updateUser(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -113,11 +116,11 @@ public class UserRepository {
         namedParams.put("turn_on_notif", user.isTurnOnNotif());
         namedParams.put("reg_date", user.getRegDate());
         namedParams.put("role_id", user.getRole().ordinal() + 1);
-        namedParams.put("min_refresh_date",  user.getMinRefreshDate());
+        namedParams.put("min_refresh_date", user.getMinRefreshDate());
 
         namedJdbcTemplate.update(env.getProperty("updateUser"), namedParams);
     }
-    
+
     public void updateUserById(User user, Long id) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -133,16 +136,16 @@ public class UserRepository {
         namedParams.put("turn_on_notif", user.isTurnOnNotif());
         namedParams.put("reg_date", user.getRegDate());
         namedParams.put("role_id", user.getRole().ordinal() + 1);
-        namedParams.put("min_refresh_date",  user.getMinRefreshDate());
+        namedParams.put("min_refresh_date", user.getMinRefreshDate());
         namedParams.put("person_id", id);
 
         namedJdbcTemplate.update(env.getProperty("updateUserById"), namedParams);
     }
-    
+
     public Iterable<User> getAllUsers() {
         return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
     }
-    
+
     public User findByEmail(String email) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -153,7 +156,7 @@ public class UserRepository {
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
     }
-    
+
     public User findByLogin(String login) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -175,31 +178,55 @@ public class UserRepository {
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
     }
-    
+
+    public Boolean isExistByLogin(String login) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("login", login);
+            namedJdbcTemplate.queryForObject(env.getProperty("findByLogin"), namedParams, new UserMapper());
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("User not found by login - " + login);
+            return false;
+        }
+    }
+
+    public Boolean isExistByMail(String mail) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("login", mail);
+            namedJdbcTemplate.queryForObject(env.getProperty("findByLogin"), namedParams, new UserMapper());
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("User not found by mail - " + mail);
+            return false;
+        }
+    }
+
     public void removeUserById(Long id) {
-    	Map<String, Object> namedParams = new HashMap<>();
+        Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("removeUserById"), namedParams);
     }
-    
+
     public void activateUser(Long id) {
-    	Map<String, Object> namedParams = new HashMap<>();
+        Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("activateUser"), namedParams);
     }
-    
+
     public void deActivateUser(Long id) {
-    	Map<String, Object> namedParams = new HashMap<>();
+        Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("deActivateUser"), namedParams);
     }
 
-	public void setMinRefreshDate(String login, Date date) {
-		Map<String, Object> namedParams = new HashMap<>();
-		namedParams.put("min_refresh_date", date);
-		namedParams.put("login", login);
+    public void setMinRefreshDate(String login, Date date) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("min_refresh_date", date);
+        namedParams.put("login", login);
         namedJdbcTemplate.update(env.getProperty("setMinRefreshDate"), namedParams);
-	}
+    }
 
     public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
         try {
@@ -212,6 +239,7 @@ public class UserRepository {
             throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
         }
     }
+
     public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -223,6 +251,7 @@ public class UserRepository {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
+
     public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -235,6 +264,7 @@ public class UserRepository {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
+
     public int getCountFriendsBySought(String login, String sought) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -270,8 +300,9 @@ public class UserRepository {
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         return namedJdbcTemplate.queryForObject(
-                env.getProperty("isFriend"), namedParams, Integer.class) > 0 ;
+                env.getProperty("isFriend"), namedParams, Integer.class) > 0;
     }
+
     public void deleteFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
@@ -279,4 +310,3 @@ public class UserRepository {
         namedJdbcTemplate.update(env.getProperty("deleteFriend"), namedParams);
     }
 }
-
