@@ -19,12 +19,20 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     @Autowired
     Environment env;
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    RowMapper reviewMapper = new ReviewMapper();
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final RowMapper reviewMapper = new ReviewMapper();
 
     @Override
     public List<Review> getReviewsByBookId(long bookId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("bookId", bookId);
-        return namedParameterJdbcTemplate.query(env.getProperty("getReviewsByBookId"), namedParameters, reviewMapper);
+        return namedJdbcTemplate.query(env.getProperty("getReviewsByBookId"), namedParameters, reviewMapper);
+    }
+    @Override
+    public List<Review> getPeaceOfReviewByBook(int bookId, int page, int offset) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("bookId", bookId);
+        namedParameters.addValue("count", page);
+        namedParameters.addValue("offset", offset);
+        return namedJdbcTemplate.query(env.getProperty("getReviewPeaceByBookId"), namedParameters, reviewMapper);
     }
 }
