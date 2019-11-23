@@ -128,4 +128,17 @@ public class BookController {
         logger.info("Books by title and date: " + title + ", " + from + ", " + to);
         return bookService.getBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
     }
+    @GetMapping("/genres")
+    public List<Genre> getAllGenres() {
+        return bookService.getAllGenres();
+    }
+
+    @GetMapping("/authors")
+    public List<Author> getAllAuthors() {
+        return bookService.getAllAuthors();
+    }
+    @GetMapping("/count-reviews")
+    public int countReviews(){
+        return  bookService.countReviews();
+    }
 }

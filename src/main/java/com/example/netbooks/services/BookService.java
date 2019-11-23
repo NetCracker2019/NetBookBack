@@ -1,6 +1,7 @@
 package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
@@ -36,6 +37,9 @@ public class BookService {
     public List<ViewBook> getAllViewBooks(){
         return jdbcBookRepository.findAllViewBooks();
 
+    }
+    public int countReviews(){
+        jdbcBookRepository.countReviews();
     }
     public int countBooks(){
         return jdbcBookRepository.countBooks();
