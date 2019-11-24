@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.netbooks.services.NotificationEnum.ADD_FRIEND_NOTIF;
+
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/profile")
@@ -25,6 +27,7 @@ public class ProfileController {
     private UserManager userManager;
     private BookService bookService;
     private FileStorageService fileStorageService;
+    @Autowired
     private NotificationService notificationService;
     @Autowired
     public ProfileController(PasswordEncoder passwordEncoder,
@@ -94,12 +97,12 @@ public class ProfileController {
     public void register(@PathVariable("ownLogin")String ownLogin,
                          @PathVariable("friendLogin") String friendLogin) {
         log.info("ffggg {} ", friendLogin);
-        if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
-                getAuthentication().getPrincipal()).getUsername())){
-            return;
-        }
+      //  if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
+      //          getAuthentication().getPrincipal()).getUsername())){
+      //      return;
+      //  }
         userManager.addFriend(ownLogin, friendLogin);
-        notificationService.addNotification((int)(userManager.getUserByLogin(friendLogin).getUserId()),"addFriend");
+        notificationService.addNotification((int)(userManager.getUserByLogin(friendLogin).getUserId()),ADD_FRIEND_NOTIF);
 
 
     }

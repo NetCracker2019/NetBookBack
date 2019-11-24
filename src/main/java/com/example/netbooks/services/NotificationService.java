@@ -21,12 +21,12 @@ public class NotificationService {
         return notificationRepository.getAllNotificationsByUserId(userId);
     }
 
-    public void addNotification(int userId,String notifName) throws IllegalArgumentException{
+    public void addNotification(int userId,NotificationEnum notifName ) throws IllegalArgumentException{
         Notification notification;
         switch (notifName){
-            case "addFriend":
+            case ADD_FRIEND_NOTIF:
                 notification= new Notification(userId,"addFriend","Friend Request","check your frinds somebody want to add you",
-                        LocalDate.now().toString(),LocalTime.now().toString(),false);
+                        LocalDate.now().toString(),false);
                 notificationRepository.addNotification(notification.getResult());
                 break;
             default:

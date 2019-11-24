@@ -46,9 +46,8 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParams.put("notif_name", notification.getNotifName());
         namedParams.put("notif_title", notification.getNotifTitle());
         namedParams.put("notif_text", notification.getNotifText());
-        namedParams.put("date", notification.getDate());
-        namedParams.put("time", notification.getTime());
-        namedParams.put("is_read", notification.isRead());
+        namedParams.put("notif_date", notification.getDate());
+        namedParams.put("is_read", notification.getIsRead());
         namedParameterJdbcTemplate.update(environment.getProperty("addNotification"), namedParams);
     }
 

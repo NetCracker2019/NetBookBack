@@ -20,24 +20,22 @@ public class Notification {
     private String notifTitle;
     private String notifText;
     private String date;
-    private String time;
     private boolean isRead;
 
-    public Notification(int userId, String notifName, String notifTitle, String notifText, String date, String time, boolean isRead) {
+    public Notification(int userId, String notifName, String notifTitle, String notifText, String date, boolean isRead) {
         this.userId = userId;
         this.notifName = notifName;
         this.notifTitle = notifTitle;
         this.notifText =notifText;
         this.date =date;
-        this.time=time;
         this.isRead=isRead;
     }
 
     public Notification getResult() {
-        return new Notification(userId, notifName, notifTitle, notifText, date, time, isRead);
+        return new Notification(userId, notifName, notifTitle, notifText, date, isRead);
     }
 
-    public boolean isRead() {
+    public boolean getIsRead() {
         return isRead;
     }
 }

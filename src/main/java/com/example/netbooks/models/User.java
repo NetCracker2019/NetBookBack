@@ -68,5 +68,9 @@ public class User {
 				&& this.status != null) ? this.status: user.status;
 		this.turnOnNotif = user.turnOnNotif;
     }
+
+	public long getUserId() {
+		return userId;
+	}
 }
 
