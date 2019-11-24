@@ -1,23 +1,14 @@
 package com.example.netbooks.models;
 
+import lombok.Data;
+
+@Data
 public class Author {
-    private long author_id;
-    private String fullname;
+    private long authorId;
+    private String fullName;
 
-    public long getAuthor_id() {
-        return author_id;
-    }
-
-    public void setAuthor_id(long author_id) {
-        this.author_id = author_id;
-    }
-
-    public Author(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public Author(long author_id, String fullname) {
-        this.author_id = author_id;
-        this.fullname = fullname;
+    public Author(long authorId, String fullName) {
+        this.authorId = authorId;
+        this.fullName = fullName;
     }
 }
