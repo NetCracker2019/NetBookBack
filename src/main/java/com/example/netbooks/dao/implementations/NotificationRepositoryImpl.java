@@ -5,8 +5,10 @@ import com.example.netbooks.dao.mappers.NotificationMapper;
 import com.example.netbooks.models.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@PropertySource("classpath:queries/notification.properties")
 @Repository
 public class NotificationRepositoryImpl implements NotificationRepository {
 
@@ -25,7 +28,9 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     Environment environment;
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    RowMapper notificationMapper = new NotificationMapper();
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+    private final RowMapper notificationMapper = new NotificationMapper();
 
     @Override
     public List<Notification> getAllNotificationsByUserId(long userId) {

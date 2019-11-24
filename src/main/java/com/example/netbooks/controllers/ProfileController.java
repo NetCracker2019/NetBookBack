@@ -99,8 +99,8 @@ public class ProfileController {
             return;
         }
         userManager.addFriend(ownLogin, friendLogin);
-        notificationService.addNotification(userManager.getUserByLogin(friendLogin).getUserId(),"addFriend");
-        //TODO send notification to friend
+        notificationService.addNotification((int)(userManager.getUserByLogin(friendLogin).getUserId()),"addFriend");
+
 
     }
     @GetMapping("/is-friend/{ownLogin}/{friendLogin}")

@@ -19,11 +19,11 @@ public class Notification {
     private String notifName;
     private String notifTitle;
     private String notifText;
-    private LocalDate date;
-    private LocalTime time;
+    private String date;
+    private String time;
     private boolean isRead;
 
-    public Notification(int userId, String notifName, String notifTitle, String notifText, LocalDate date, LocalTime time, boolean isRead) {
+    public Notification(int userId, String notifName, String notifTitle, String notifText, String date, String time, boolean isRead) {
         this.userId = userId;
         this.notifName = notifName;
         this.notifTitle = notifTitle;
@@ -35,5 +35,9 @@ public class Notification {
 
     public Notification getResult() {
         return new Notification(userId, notifName, notifTitle, notifText, date, time, isRead);
+    }
+
+    public boolean isRead() {
+        return isRead;
     }
 }

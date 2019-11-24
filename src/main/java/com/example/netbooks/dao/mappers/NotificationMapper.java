@@ -15,8 +15,8 @@ public class NotificationMapper implements RowMapper {
                 resultSet.getString("notif_name"),
                 resultSet.getString("notif_title"),
                 resultSet.getString("notif_text"),
-                resultSet.getDate("date"),
-                resultSet.getTime("time"),
+                resultSet.getString("date"),
+                resultSet.getString("time"),
                 resultSet.getBoolean("is_read"));
 
     }

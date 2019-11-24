@@ -18,7 +18,8 @@ import lombok.Data;
 
 
 @Data
-@Getter @Setter
+@Getter
+@Setter
 public class User {
 	@JsonProperty("id")
 	private long userId;

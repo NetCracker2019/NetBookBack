@@ -22,16 +22,11 @@ public class NotificationService {
     }
 
     public void addNotification(int userId,String notifName) throws IllegalArgumentException{
-        Notification notification = new Notification();
+        Notification notification;
         switch (notifName){
             case "addFriend":
-                notification.setUserId(userId);
-                notification.setNotifName("addFriend");
-                notification.setNotifTitle("Add to frind request");
-                notification.setNotifText("Check your friends-page somebody want to add you!)");
-                notification.setDate(LocalDate.now());
-                notification.setTime(LocalTime.now());
-                notification.setRead(false);
+                notification= new Notification(userId,"addFriend","Friend Request","check your frinds somebody want to add you",
+                        LocalDate.now().toString(),LocalTime.now().toString(),false);
                 notificationRepository.addNotification(notification.getResult());
                 break;
             default:
