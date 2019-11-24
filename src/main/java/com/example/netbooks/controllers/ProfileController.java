@@ -4,6 +4,7 @@ import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
 import com.example.netbooks.services.FileStorageService;
+import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class ProfileController {
     private UserManager userManager;
     private BookService bookService;
     private FileStorageService fileStorageService;
+    private NotificationService notificationService;
     @Autowired
     public ProfileController(PasswordEncoder passwordEncoder,
                              UserManager userManager,
@@ -97,7 +99,7 @@ public class ProfileController {
             return;
         }
         userManager.addFriend(ownLogin, friendLogin);
-
+        notificationService.addNotification(userManager.getUserByLogin(friendLogin).getUserId(),"addFriend");
         //TODO send notification to friend
 
     }

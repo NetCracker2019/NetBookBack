@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -20,15 +22,17 @@ public class NotificationService {
     }
 
     public void addNotification(int userId,String notifName) throws IllegalArgumentException{
-        NotificationTypeEnum notifType;
-        NotificationBuilder notificationBuilder=new NotificationBuilder();
-
+        Notification notification = new Notification();
         switch (notifName){
-            case "ADD":
-                notifType=NotificationTypeEnum.ADD_FRIEND_NOTIFICATION;
-
-                notificationRepository.addNotification(notifType.buildAddNotification(notificationBuilder,userId));
-
+            case "addFriend":
+                notification.setUserId(userId);
+                notification.setNotifName("addFriend");
+                notification.setNotifTitle("Add to frind request");
+                notification.setNotifText("Check your friends-page somebody want to add you!)");
+                notification.setDate(LocalDate.now());
+                notification.setTime(LocalTime.now());
+                notification.setRead(false);
+                notificationRepository.addNotification(notification.getResult());
                 break;
             default:
                 throw new IllegalArgumentException("notification type incorect");

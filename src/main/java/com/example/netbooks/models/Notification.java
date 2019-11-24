@@ -32,4 +32,8 @@ public class Notification {
         this.time=time;
         this.isRead=isRead;
     }
+
+    public Notification getResult() {
+        return new Notification(userId, notifName, notifTitle, notifText, date, time, isRead);
+    }
 }

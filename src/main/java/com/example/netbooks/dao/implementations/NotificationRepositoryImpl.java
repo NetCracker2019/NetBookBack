@@ -47,7 +47,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParameterJdbcTemplate.update(environment.getProperty("addNotification"), namedParams);
     }
 
-    //todo sho ce za dych????
+
     @Override
     public void markAsRead() {
         Map<String, Object> namedParams = new HashMap<>();
