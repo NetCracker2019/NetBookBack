@@ -18,8 +18,12 @@ public class BookController {
     Logger logger = LogManager.getLogger(BookController.class);
     @Autowired
     private JdbcBookRepository jdbcBookRepository;
-    @Autowired
+    final
     BookService bookService;
+
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping("/home/books")
     public List<ViewBook> getAllBooks() {
