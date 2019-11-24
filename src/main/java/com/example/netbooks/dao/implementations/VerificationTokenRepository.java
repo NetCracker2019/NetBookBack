@@ -20,6 +20,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+
 @Repository
 @PropertySource("classpath:queries/token.properties")
 public class VerificationTokenRepository {
@@ -27,10 +29,11 @@ public class VerificationTokenRepository {
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment env;
+
     @Autowired
-    public VerificationTokenRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment env) {
+    public VerificationTokenRepository(DataSource dataSource, Environment env) {
 		super();
-		this.namedJdbcTemplate = namedJdbcTemplate;
+		this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.env = env;
 	}
     

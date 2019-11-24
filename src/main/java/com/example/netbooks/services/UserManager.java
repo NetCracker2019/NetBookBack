@@ -119,7 +119,6 @@ public class UserManager {
 
 	public void addFriend(String ownLogin, String friendLogin) {
 		userRepository.addFriend(ownLogin, friendLogin);
-
 	}
 
 	public boolean isFriend(String ownLogin, String friendLogin) {
