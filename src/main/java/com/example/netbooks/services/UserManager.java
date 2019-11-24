@@ -95,4 +95,8 @@ public class UserManager {
 	public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
 		return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
 	}
+
+	public String getUserRole(String login) {
+		return userRepository.getUserRole(login);
+	}
 }

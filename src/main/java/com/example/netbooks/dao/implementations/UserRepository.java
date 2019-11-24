@@ -233,5 +233,11 @@ public class UserRepository {
             return null;
         }
     }
+
+    public String getUserRole (String login) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("login", login);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserRole"), namedParams, String.class);
+    }
 }
 

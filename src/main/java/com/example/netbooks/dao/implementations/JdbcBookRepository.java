@@ -1,12 +1,13 @@
 package com.example.netbooks.dao.implementations;
 
+import com.example.netbooks.controllers.ProfileController;
 import com.example.netbooks.dao.interfaces.BookRepository;
 import com.example.netbooks.dao.mappers.BookRowMapper;
+import com.example.netbooks.dao.mappers.ViewAnnouncementMapper;
 import com.example.netbooks.dao.mappers.ViewBookMapper;
-import com.example.netbooks.models.Announcement;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.ShortBookDescription;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -38,11 +39,18 @@ public class JdbcBookRepository implements BookRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
     RowMapper viewBooksMapper = new ViewBookMapper();
+    RowMapper viewAnnouncementMapper = new ViewAnnouncementMapper();
+    private final Logger logger = LogManager.getLogger(ProfileController.class);
 
 
     @Override
     public List<ViewBook> findAllViewBooks() {
         return jdbcTemplate.query(env.getProperty("getAllBooks"), viewBooksMapper);
+    }
+
+    @Override
+    public List<ViewAnnouncement> findViewUnApproveBooks() {
+        return jdbcTemplate.query(env.getProperty("getUnApprove"), viewAnnouncementMapper);
     }
 
     @Override
@@ -137,33 +145,66 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public String addBook(Book book) {
-        int isThisBookExist = jdbcTemplate.queryForObject("select count(*) from book where title='" + book.getTitle() + "'", Integer.class);
-        if(isThisBookExist == 0){
-            jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?)",
-                    new Object[] {book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false});
+    public String confirmAnnouncement(long announcementId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("announcment_id", announcementId);
+        jdbcTemplate.update("UPDATE announcement SET approved = true WHERE announcment_id = " + announcementId);
+        return "ok";
+    }
 
-            String[] subStrAuthors = book.getAuthor().split(", ");
-            for (int i = 0; i < subStrAuthors.length; i++) {
-                int isThisAuthorExist = jdbcTemplate.queryForObject("select count(*) from author where fullname='" + subStrAuthors[i] + "'", Integer.class);
-                if(isThisAuthorExist == 0){
-                    jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {subStrAuthors[i]});
-                }
-                jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
-                        "\t\t   (select author_id from author where fullname ='" +  subStrAuthors[i] + "'))");
-            }
+    @Override
+    public String cancelAnnouncement(long announcementId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("announcment_id", announcementId);
+        jdbcTemplate.update("DELETE FROM announcement WHERE announcment_id = " + announcementId);
+        return "ok";
+    }
 
-            String[] subStrGenres = book.getGenre().split(", ");
-            for (int i = 0; i < subStrGenres.length; i++) {
-                int isThisGenreExist = jdbcTemplate.queryForObject("select count(*) from genre where genre_name='" + subStrGenres[i] + "'", Integer.class);
-                if(isThisGenreExist == 0){
-                    jdbcTemplate.update("insert into genre (genre_name) values (?)", new Object[] {subStrGenres[i]});
-                }
-                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
-                        "\t\t   (select genre_id from genre where genre_name ='" +  subStrGenres[i] + "'))");
+    @Override
+    public String addRowIntoBookAuthor(Book book) {
+        for (String item : book.getAuthor()) {
+            //for (int i = 0; i < book.getGenre().size(); i++) {
+            boolean isThisAuthorExist = jdbcTemplate.queryForObject("select exists(select 1 from author where fullname='" + item + "')", Boolean.class);
+            if (isThisAuthorExist == false) {
+                jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {item});
             }
+            jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
+                        "\t\t   (select author_id from author where fullname ='" +  item + "'))");
         }
-        return "Complete!";
+        return "Add Author";
+    }
+
+    public boolean checkIsExist(Book book) {
+        boolean isThisBookExist;
+        return isThisBookExist = jdbcTemplate.queryForObject("select exists(select 1 from book where title='" + book.getTitle() + "')", Boolean.class);
+    }
+
+    @Override
+    public String addBook(Book book) {
+            jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?)",
+                    new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false});
+
+//            String[] subStrAuthors = book.getAuthor().split(", ");
+//            for (int i = 0; i < subStrAuthors.length; i++) {
+//                int isThisAuthorExist = jdbcTemplate.queryForObject("select count(*) from author where fullname='" + subStrAuthors[i] + "'", Integer.class);
+//                if(isThisAuthorExist == 0){
+//                    jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {subStrAuthors[i]});
+//                }
+//                jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
+//                        "\t\t   (select author_id from author where fullname ='" +  subStrAuthors[i] + "'))");
+//            }
+//
+//            String[] subStrGenres = book.getGenre().split(", ");
+//            for (int i = 0; i < subStrGenres.length; i++) {
+//                int isThisGenreExist = jdbcTemplate.queryForObject("select count(*) from genre where genre_name='" + subStrGenres[i] + "'", Integer.class);
+//                if(isThisGenreExist == 0){
+//                    jdbcTemplate.update("insert into genre (genre_name) values (?)", new Object[] {subStrGenres[i]});
+//                }
+//                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
+//                        "\t\t   (select genre_id from genre where genre_name ='" +  subStrGenres[i] + "'))");
+//            }
+//        }
+        return "Complete adding!";
     }
     private Announcement mapRowToAnnouncement(ResultSet resultSet, int i) throws SQLException {
         return new Announcement(
@@ -175,6 +216,7 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("description"),
                 resultSet.getString("image_path"));
     }
+
     private final class ShortDescriptionMapper implements RowMapper<ShortBookDescription> {
         @Override
         public ShortBookDescription mapRow(ResultSet resultSet, int rowNum) throws SQLException {

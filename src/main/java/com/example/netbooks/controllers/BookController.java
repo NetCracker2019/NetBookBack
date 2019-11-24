@@ -1,10 +1,7 @@
 package com.example.netbooks.controllers;
 
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
-import com.example.netbooks.models.Announcement;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Review;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,8 +26,15 @@ public class BookController {
     }
 
     @PostMapping("/home/books/addBook")
-    public String add (@RequestBody Book book){
-        return jdbcBookRepository.addBook(book);
+    public String add (@RequestParam(name = "value") String value, @RequestBody Book book){
+        logger.info(book);
+        logger.info(value);
+        return bookService.addBook(book, value);
+    }
+
+    @GetMapping("/genres")
+    public List<Genre> getAllGenres() {
+        return bookService.getAllGenres();
     }
 
     @PostMapping("/home/books/addAnnouncement")

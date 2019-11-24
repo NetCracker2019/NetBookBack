@@ -103,10 +103,12 @@ public class AuthenticationController {
             logger.info("Try to login " + user.getLogin() + " ---- " + user.getPassword());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
-
+            String role = userManager.getUserRole(user.getLogin());
+            logger.info("User role: " + role);
             Map<Object, Object> response = new HashMap<>();
             response.put("token", jwtProvider.createToken(user.getLogin(), user.getRole()));
             response.put("username", user.getLogin());
+            response.put("role", role);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);

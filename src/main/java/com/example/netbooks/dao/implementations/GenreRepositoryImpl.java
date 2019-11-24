@@ -2,6 +2,7 @@ package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.mappers.GenreMapper;
+import com.example.netbooks.models.Book;
 import com.example.netbooks.models.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,6 +26,19 @@ public class GenreRepositoryImpl implements GenreRepository {
     public List<Genre> getAllGenres() {
         return jdbcTemplate.query("SELECT * FROM genre", new GenreMapper());
     }
+
+    @Override
+    public String addRowIntoBookGenre(Book book) {
+        for (String item : book.getGenre()) {
+            //for (int i = 0; i < book.getGenre().size(); i++) {
+                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
+                        "\t\t   (select genre_id from genre where genre_name ='" + item + "'))");
+            //}
+        }
+            return "Add Genre";
+
+    }
+
 }
 
 

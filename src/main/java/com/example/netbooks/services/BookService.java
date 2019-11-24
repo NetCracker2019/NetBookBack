@@ -1,12 +1,11 @@
 package com.example.netbooks.services;
 
+import com.example.netbooks.dao.implementations.GenreRepositoryImpl;
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Review;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class BookService {
     @Autowired
     JdbcBookRepository jdbcBookRepository;
     @Autowired
-    GenreRepository genreRepository;
+    GenreRepositoryImpl genreRepository;
     @Autowired
     ReviewRepository reviewRepository;
 
@@ -29,13 +28,17 @@ public class BookService {
         List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(processedString);
         return books;
     }
+
     public List<Book> getAllBooks(){
         return jdbcBookRepository.findAllBooks();
-
     }
+
     public List<ViewBook> getAllViewBooks(){
         return jdbcBookRepository.findAllViewBooks();
+    }
 
+    public List<ViewAnnouncement> getViewUnApproveBooks(){
+        return jdbcBookRepository.findViewUnApproveBooks();
     }
     public List<Book> filterBooks(String title, String author, String genre, String strDate1, String strDate2, int page1, int page2){
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
@@ -59,4 +62,30 @@ public class BookService {
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
     }
+    public List<Genre> getAllGenres() {return genreRepository.getAllGenres();}
+
+
+    public String addBook(Book book, String value)
+    {
+        if (!jdbcBookRepository.checkIsExist(book)) {
+            jdbcBookRepository.addBook(book);
+            genreRepository.addRowIntoBookGenre(book);
+            jdbcBookRepository.addRowIntoBookAuthor(book);
+        }
+        if (value.equals("announcement")) {
+            jdbcBookRepository.addNewAnnouncement(book);
+        }
+        return "Ok";
+    }
+
+    public String confirmAnnouncement(long announcementId) {
+        jdbcBookRepository.confirmAnnouncement(announcementId);
+        return "ok";
+    }
+
+    public String cancelAnnouncement(long announcementId) {
+        jdbcBookRepository.cancelAnnouncement(announcementId);
+        return "ok";
+    }
+
 }
