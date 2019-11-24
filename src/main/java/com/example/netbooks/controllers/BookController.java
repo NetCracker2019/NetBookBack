@@ -31,9 +31,12 @@ public class BookController {
     }
 
     @PostMapping("/home/books/addBook")
-    public String add (@RequestBody Book book){
-        return jdbcBookRepository.addBook(book);
+    public String add (@RequestParam(name = "value") String value, @RequestBody Book book){
+        logger.info(book);
+        logger.info(value);
+        return bookService.addBook(book, value);
     }
+
 
     @PostMapping("/home/books/addAnnouncement")
     public String addAnnouncement (@RequestBody Book book){

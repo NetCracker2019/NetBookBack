@@ -1,5 +1,6 @@
 package com.example.netbooks.services;
 
+import com.example.netbooks.dao.implementations.GenreRepositoryImpl;
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
@@ -19,7 +20,7 @@ public class BookService {
     @Autowired
     JdbcBookRepository jdbcBookRepository;
     @Autowired
-    GenreRepository genreRepository;
+    GenreRepositoryImpl genreRepository;
     @Autowired
     AuthorRepository authorRepository;
     @Autowired
@@ -30,13 +31,17 @@ public class BookService {
         List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(processedString);
         return books;
     }
+
     public List<Book> getAllBooks(){
         return jdbcBookRepository.findAllBooks();
-
     }
+
     public List<ViewBook> getAllViewBooks(){
         return jdbcBookRepository.findAllViewBooks();
+    }
 
+    public List<ViewAnnouncement> getViewUnApproveBooks(){
+        return jdbcBookRepository.findViewUnApproveBooks();
     }
     public int countReviews(){
         return reviewRepository.countReviews();
@@ -66,6 +71,30 @@ public class BookService {
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
     }
+
+    public String addBook(Book book, String value)
+    {
+        if (!jdbcBookRepository.checkIsExist(book)) {
+            jdbcBookRepository.addBook(book);
+            genreRepository.addRowIntoBookGenre(book);
+            jdbcBookRepository.addRowIntoBookAuthor(book);
+        }
+        if (value.equals("announcement")) {
+            jdbcBookRepository.addNewAnnouncement(book);
+        }
+        return "Ok";
+    }
+
+    public String confirmAnnouncement(long announcementId) {
+        jdbcBookRepository.confirmAnnouncement(announcementId);
+        return "ok";
+    }
+
+    public String cancelAnnouncement(long announcementId) {
+        jdbcBookRepository.cancelAnnouncement(announcementId);
+        return "ok";
+    }
+
     public List<Genre> getAllGenres() {
         return genreRepository.getAllGenres();
     }

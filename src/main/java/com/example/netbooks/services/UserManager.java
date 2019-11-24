@@ -41,15 +41,15 @@ public class UserManager {
 	public void removeUserById(long id) {
 		userRepository.removeUserById(id);
 	}
-	
+
 	public void updateUser(User user) {
 		userRepository.updateUser(user);
 	}
-        
+
 	public void updateUserById(User user, Long id) {
-		userRepository.updateUserById(user,id);
+		userRepository.updateUserById(user, id);
 	}
-	
+
 	public void saveUser(User user) {
 		userRepository.save(user);
 	}
@@ -70,16 +70,18 @@ public class UserManager {
 		return userRepository.findByUserId(id);
 	}
 
-        public Boolean isExistByLogin(String login) {
+	public Boolean isExistByLogin(String login) {
 		return userRepository.isExistByLogin(login);
 	}
-        public Boolean isExistByMail(String mail) {
+
+	public Boolean isExistByMail(String mail) {
 		return userRepository.isExistByMail(mail);
 	}
+
 	public User getUserByLogin(String login) {
-		try{
+		try {
 			return userRepository.findByLogin(login);
-		}catch (CustomException ex){
+		} catch (CustomException ex) {
 			throw ex;
 		}
 	}
@@ -92,40 +94,44 @@ public class UserManager {
 		userRepository.setMinRefreshDate(login, date);
 	}
 
-    public Achievement getAchievementByLogin(String login) {
+	public Achievement getAchievementByLogin(String login) {
 		return achievementRepository.findByAchievementId(
 				userRepository.findByLogin(login).getUserId());
-    }
+	}
 
 	public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
 		return userRepository.getFriendsByLogin(login, cntFriends, offset);
 	}
 
-    public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
+	public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
 		return userRepository.getPersonsBySought(sought, cntPersons, offset);
-    }
+	}
 
 	public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
 		return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
 	}
 
-    public int getCountPersonsBySought(String sought) {
-		return userRepository.getCountPersonsBySought(sought);
-    }
-
-	public int getCountFriendsBySought(String login, String sought) {
-		return userRepository.getCountFriendsBySought(login, sought);
+	public String getUserRole(String login) {
+		return userRepository.getUserRole(login);
 	}
 
-	public void addFriend(String ownLogin, String friendLogin) {
-		userRepository.addFriend(ownLogin, friendLogin);
-	}
+		public int getCountPersonsBySought (String sought){
+			return userRepository.getCountPersonsBySought(sought);
+		}
 
-	public boolean isFriend(String ownLogin, String friendLogin) {
-		return userRepository.isFriend(ownLogin, friendLogin);
-	}
+		public int getCountFriendsBySought (String login, String sought){
+			return userRepository.getCountFriendsBySought(login, sought);
+		}
 
-	public void deleteFriend(String ownLogin, String friendLogin) {
-		userRepository.deleteFriend(ownLogin, friendLogin);
+		public void addFriend (String ownLogin, String friendLogin){
+			userRepository.addFriend(ownLogin, friendLogin);
+		}
+
+		public boolean isFriend (String ownLogin, String friendLogin){
+			return userRepository.isFriend(ownLogin, friendLogin);
+		}
+
+		public void deleteFriend (String ownLogin, String friendLogin){
+			userRepository.deleteFriend(ownLogin, friendLogin);
+		}
 	}
-}
