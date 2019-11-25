@@ -227,8 +227,7 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     public boolean checkIsExist(Book book) {
-        boolean isThisBookExist;
-        return isThisBookExist = jdbcTemplate.queryForObject("select exists(select 1 from book where title='" + book.getTitle() + "')", Boolean.class);
+        return jdbcTemplate.queryForObject("select exists(select 1 from book where title='" + book.getTitle() + "')", Boolean.class);
     }
 
     @Override
