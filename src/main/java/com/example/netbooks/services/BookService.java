@@ -26,10 +26,10 @@ public class BookService {
     @Autowired
     ReviewRepository reviewRepository;
 
-    public List<ViewBook> findBooks(String searchString){
+    public List<ViewBook> findBooks(String searchString, int size, int page){
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
-        List<ViewBook> books = jdbcBookRepository.findViewBooksByTitleOrAuthor(processedString);
-        return books;
+        int startIndex = size * (page - 1);
+        return jdbcBookRepository.findViewBooksByTitleOrAuthor(processedString, size, startIndex);
     }
     public List<Book> getAllBooks(){
         return jdbcBookRepository.findAllBooks();
@@ -83,24 +83,48 @@ public class BookService {
     public List<ViewBook> getPeaceOfBooks(int count, int offset){
         return jdbcBookRepository.getPeaceOfBook(count, offset);
     }
-    public List<ViewBook> getBooksByTitleAndGenre(String title, String genre, java.sql.Date from, java.sql.Date to) {
+    public List<ViewBook> getBooksByTitleAndGenre(String title, String genre, Date from, Date to, int size, int page) {
+        int startIndex = size * (page - 1);
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
-        return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre, from, to);
+        return jdbcBookRepository.findBooksByTitleAndGenre(processedTitle, genre, from, to, size, startIndex);
     }
 
-    public List<ViewBook> getBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to) {
+    public int getAmountBooksByTitleAndGenre(String title, String genre, Date from, Date to) {
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
-        return jdbcBookRepository.findBooksByTitleAndAuthor(processedTitle, author, from, to);
+        return jdbcBookRepository.getAmountBooksByTitleAndGenre(processedTitle, genre, from, to);
     }
 
-    public List<ViewBook> getBooksByTitleAndDate(String title, java.sql.Date from, java.sql.Date to) {
+    public List<ViewBook> getBooksByTitleAndAuthor(String title, String author, Date from, Date to, int size, int page) {
+        int startIndex = size * (page - 1);
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
-        return jdbcBookRepository.findBooksByTitleAndDate(processedTitle, from, to);
+        return jdbcBookRepository.findBooksByTitleAndAuthor(processedTitle, author, from, to, size, startIndex);
     }
 
-    public List<ViewBook> getBooksByTitleAndAuthorAndGenre(String title, String author, String genre, java.sql.Date from, java.sql.Date to) {
+    public int getAmountBooksByTitleAndAuthor(String title, String author, Date from, Date to) {
         String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
-        return jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to);
+        return jdbcBookRepository.getAmountBooksByTitleAndAuthor(processedTitle, author, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndDate(String title, Date from, Date to, int size, int page) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        int startIndex = size * (page - 1);
+        return jdbcBookRepository.findBooksByTitleAndDate(processedTitle, from, to, size, startIndex);
+    }
+
+    public int getAmountBooksByTitleAndDate(String title, Date from, Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.getAmountBooksByTitleAndDate(processedTitle, from, to);
+    }
+
+    public List<ViewBook> getBooksByTitleAndAuthorAndGenre(String title, String author, String genre, Date from, Date to, int size, int page) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        int startIndex = size * (page - 1);
+        return jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to, size, startIndex);
+    }
+
+    public int getAmountBooksByTitleAndAuthorAndGenre(String title, String author, String genre, Date from, Date to) {
+        String processedTitle = title.toLowerCase().trim().replaceAll(" +", " ");
+        return jdbcBookRepository.getAmountBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to);
     }
 
     public List<ViewBook> getFavouriteBooksByUserId(Long id, int cntBooks, int offset) {
@@ -121,5 +145,9 @@ public class BookService {
 
     public Date getMaxDateRelease() {
         return jdbcBookRepository.getMaxDateRelease();
+    }
+
+    public int getAmountOfSearchResult(String title) {
+        return jdbcBookRepository.getAmountOfSearchResult(title);
     }
 }
