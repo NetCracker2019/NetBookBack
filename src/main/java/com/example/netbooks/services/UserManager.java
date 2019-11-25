@@ -134,4 +134,6 @@ public class UserManager {
 		public void deleteFriend (String ownLogin, String friendLogin){
 			userRepository.deleteFriend(ownLogin, friendLogin);
 		}
+
+
 	}

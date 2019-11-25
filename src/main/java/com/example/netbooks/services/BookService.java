@@ -95,6 +95,30 @@ public class BookService {
         return "ok";
     }
 
+    public List<Event> calendarAnnouncement(String value) {
+        if (value.equals("all")) {
+            return jdbcBookRepository.getCalendarAllAnnouncement();
+        }else {
+            return jdbcBookRepository.getCalendarPersonalizeAnnouncement();
+        }
+    }
+
+    public String addAnnouncement(Book book) { return jdbcBookRepository.addAnnouncement(book);}
+
+    public List<Announcement> findAllAnnouncement() { return jdbcBookRepository.findAllAnnouncement(); }
+
+    public int getAmountOfAnnouncement() { return jdbcBookRepository.getAmountOfAnnouncement(); }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public int getAmountOfBook() { return jdbcBookRepository.getAmountOfBook(); }
+
+    public List<ViewBook> getPeaceBook(int page, int booksPerPage) {
+        return jdbcBookRepository.getPeaceBook(page, booksPerPage);
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
+        return jdbcBookRepository.getPeaceAnnouncement(page, booksPerPage);
+    }
+
     public List<Genre> getAllGenres() {
         return genreRepository.getAllGenres();
     }
