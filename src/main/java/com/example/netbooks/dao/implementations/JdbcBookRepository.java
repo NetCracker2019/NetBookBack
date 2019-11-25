@@ -107,6 +107,30 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.query(env.getProperty("getPeaceOfBooks"), namedParameters, viewBooksMapper);
     }
 
+    @Override
+    public boolean addBookToProfile(long userId, long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("bookId", bookId);
+        return namedJdbcTemplate.update(env.getProperty("addBookToProfile"), namedParameters) > 0;
+    }
+
+    @Override
+    public boolean checkBookInProfile(long userId, long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("bookId", bookId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("checkBookInProfile"), namedParameters, Integer.class) > 0;
+    }
+
+    @Override
+    public boolean removeBookFromProfile(long userId, long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("bookId", bookId);
+        return namedJdbcTemplate.update(env.getProperty("removeBookFromProfile"), namedParameters) > 0;
+    }
+
 
     @Override
     public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
@@ -151,7 +175,8 @@ public class JdbcBookRepository implements BookRepository {
     public List<String> getFavouriteAuthor(int id) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("value", id);
-        return namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthorOrGenre") , namedParameters, viewBooksMapper);
+        //return namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthorOrGenre") , namedParameters, viewBooksMapper);
+        return null;
     }
 
     @Override
@@ -239,8 +264,7 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     public boolean checkIsExist(Book book) {
-        boolean isThisBookExist;
-        return isThisBookExist = jdbcTemplate.queryForObject("select exists(select 1 from book where title='" + book.getTitle() + "')", Boolean.class);
+        return jdbcTemplate.queryForObject("select exists(select 1 from book where title='" + book.getTitle() + "')", Boolean.class);
     }
 
     @Override
@@ -258,14 +282,6 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("title"),
                 resultSet.getString("description"),
                 resultSet.getString("image_path"));
-    }
-    private Genre mapRowToGenre(ResultSet resultSet, int i) throws SQLException {
-        return new Genre(
-                resultSet.getString("title"));
-    }
-    private Author mapRowToAuthor(ResultSet resultSet, int i) throws SQLException {
-        return new Author(
-                resultSet.getString("fullname"));
     }
 
     private final class ShortViewBookMapper implements RowMapper<ViewBook> {

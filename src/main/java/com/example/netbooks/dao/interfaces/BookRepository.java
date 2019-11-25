@@ -20,6 +20,9 @@ public interface BookRepository {
 
     List<ViewBook> getPeaceOfSearchBook(String titleOrAuthor, int page, int offset);
     List<ViewBook> getPeaceOfBook(int page, int offset);
+    boolean addBookToProfile(long userId, long bookId);
+    boolean checkBookInProfile(long userId, long bookId);
+    boolean removeBookFromProfile(long userId, long bookId);
 
 
     List<ViewBook> findAllViewBooks();
