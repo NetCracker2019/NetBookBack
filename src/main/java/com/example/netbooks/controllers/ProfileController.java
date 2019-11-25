@@ -97,10 +97,10 @@ public class ProfileController {
     public void register(@PathVariable("ownLogin")String ownLogin,
                          @PathVariable("friendLogin") String friendLogin) {
         log.info("ffggg {} ", friendLogin);
-      //  if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
-      //          getAuthentication().getPrincipal()).getUsername())){
-      //      return;
-      //  }
+       if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
+               getAuthentication().getPrincipal()).getUsername())){
+           return;
+       }
         userManager.addFriend(ownLogin, friendLogin);
         notificationService.addNotification((int)(userManager.getUserByLogin(friendLogin).getUserId()),ADD_FRIEND_NOTIF);
 
