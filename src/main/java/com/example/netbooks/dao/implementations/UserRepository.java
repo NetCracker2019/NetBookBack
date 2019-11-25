@@ -26,7 +26,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -142,6 +144,10 @@ public class UserRepository {
     
     public Iterable<User> getAllUsers() {
         return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
+    }
+    public int getUserIdByName(String name){
+        SqlParameterSource namedParameters = new MapSqlParameterSource("userName", name);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByName"), namedParameters, Integer.class);
     }
     
     public User findByEmail(String email) {

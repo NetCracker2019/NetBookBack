@@ -38,6 +38,8 @@ public class UserManager {
 		return userRepository.findByEmail(email);
 	}
 
+	public int getUserIdByName(String name) { return userRepository.getUserIdByName(name); }
+
 	public void removeUserById(long id) {
 		userRepository.removeUserById(id);
 	}

@@ -16,4 +16,6 @@ public class Review {
     String reviewText;
     int rating;
     boolean approved;
+
+    public Review(){}
 }

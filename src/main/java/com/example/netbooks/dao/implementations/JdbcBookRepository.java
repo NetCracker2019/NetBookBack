@@ -81,6 +81,30 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.query(env.getProperty("getPeaceOfBooks"), namedParameters, viewBooksMapper);
     }
 
+    @Override
+    public boolean addBookToProfile(long userId, long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("bookId", bookId);
+        return namedJdbcTemplate.update(env.getProperty("addBookToProfile"), namedParameters) > 0;
+    }
+
+    @Override
+    public boolean checkBookInProfile(long userId, long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("bookId", bookId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("checkBookInProfile"), namedParameters, Integer.class) > 0;
+    }
+
+    @Override
+    public boolean removeBookFromProfile(long userId, long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("bookId", bookId);
+        return namedJdbcTemplate.update(env.getProperty("removeBookFromProfile"), namedParameters) > 0;
+    }
+
 
     @Override
     public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {

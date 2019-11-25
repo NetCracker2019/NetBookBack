@@ -1,6 +1,7 @@
 package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
@@ -16,14 +17,20 @@ import java.util.List;
 
 @Service
 public class BookService {
-    @Autowired
-    JdbcBookRepository jdbcBookRepository;
-    @Autowired
-    GenreRepository genreRepository;
-    @Autowired
-    AuthorRepository authorRepository;
-    @Autowired
-    ReviewRepository reviewRepository;
+    final JdbcBookRepository jdbcBookRepository;
+    final GenreRepository genreRepository;
+    final AuthorRepository authorRepository;
+    final ReviewRepository reviewRepository;
+    final UserRepository userRepository;
+
+    public BookService(JdbcBookRepository jdbcBookRepository, GenreRepository genreRepository, AuthorRepository authorRepository, ReviewRepository reviewRepository, UserRepository userRepository) {
+        this.jdbcBookRepository = jdbcBookRepository;
+        this.genreRepository = genreRepository;
+        this.authorRepository = authorRepository;
+        this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+    }
+
 
     public List<ViewBook> findBooks(String searchString){
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
@@ -112,5 +119,29 @@ public class BookService {
 
     public List<ViewBook> getReadBooksByUserId(long id, int cntBooks, int offset) {
         return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadBooksByUserId");
+    }
+    public boolean addReviewForUserBook(Review review) {
+        // review.setReviewText(review.getReviewText().trim());
+        review.setUserId(userRepository.getUserIdByName(review.getUserName()));
+        return reviewRepository.addReviewForUserBook(review);
+    }
+    public boolean addBookToProfile(String userName, long bookId){
+        long userId = userRepository.getUserIdByName(userName);
+        return jdbcBookRepository.addBookToProfile(userId, bookId);
+    }
+    public boolean approveReview(long reviewId) {
+        return reviewRepository.approveReview(reviewId);
+    }
+    public boolean cancelReview(long reviewId) {
+        return reviewRepository.cancelReview(reviewId);
+    }
+
+    public boolean removeBookFromProfile(String userName, long bookId){
+        long userId = userRepository.getUserIdByName(userName);
+        return jdbcBookRepository.removeBookFromProfile(userId, bookId);
+    }
+    public boolean checkBookInProfile(String userName, long bookId){
+        long userId = userRepository.getUserIdByName(userName);
+        return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 }
