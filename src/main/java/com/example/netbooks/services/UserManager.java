@@ -37,8 +37,7 @@ public class UserManager {
 	public User getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-
-	public int getUserIdByName(String name) { return userRepository.getUserIdByName(name); }
+    public int getUserIdByName(String name) { return userRepository.getUserIdByName(name); }
 
 	public void removeUserById(long id) {
 		userRepository.removeUserById(id);
@@ -72,10 +71,10 @@ public class UserManager {
 		return userRepository.findByUserId(id);
 	}
 
-        public Boolean isExistByLogin(String login) {
+	public Boolean isExistByLogin(String login) {
 		return userRepository.isExistByLogin(login);
 	}
-        public Boolean isExistByMail(String mail) {
+	public Boolean isExistByMail(String mail) {
 		return userRepository.isExistByMail(mail);
 	}
 	public User getUserByLogin(String login) {
@@ -110,6 +109,9 @@ public class UserManager {
 	public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
 		return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
 	}
+    public String getUserRole(String login) {
+        return userRepository.getUserRole(login);
+    }
 
     public int getCountPersonsBySought(String sought) {
 		return userRepository.getCountPersonsBySought(sought);

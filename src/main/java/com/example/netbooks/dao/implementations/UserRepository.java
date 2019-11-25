@@ -265,6 +265,13 @@ public class UserRepository {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
+
+    public String getUserRole(String login) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("login", login);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserRole"), namedParams, String.class);
+    }
+
     public int getCountFriendsBySought(String login, String sought) {
         try {
             Map<String, Object> namedParams = new HashMap<>();

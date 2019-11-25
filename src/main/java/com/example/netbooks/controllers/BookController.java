@@ -6,10 +6,9 @@ import com.example.netbooks.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
 import java.sql.Date;
 import java.util.List;
 
@@ -33,8 +32,10 @@ public class BookController {
     }
 
     @PostMapping("/books/addBook")
-    public String add (@RequestBody Book book){
-        return jdbcBookRepository.addBook(book);
+    public String add (@RequestParam(name = "value") String value, @RequestBody Book book){
+        logger.info(book);
+        logger.info(value);
+        return bookService.addBook(book, value);
     }
 
     @PostMapping("/books/addAnnouncement")
@@ -167,5 +168,4 @@ public class BookController {
     public int countReviews(){
         return  bookService.countReviews();
     }
-
 }
