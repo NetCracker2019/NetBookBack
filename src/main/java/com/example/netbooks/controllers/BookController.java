@@ -59,7 +59,7 @@ public class BookController {
     public List<ViewBook> getPeaceViewBooks(@RequestParam("count") int count, @RequestParam("offset") int offset) {
         return bookService.getPeaceOfBooks(count, offset);
     }
-    @GetMapping("/home/find-books")
+    @GetMapping("/find-books")
     public List<ViewBook> getFoundBook(@RequestParam("title") String title){
         logger.info("Books by title "+title+":  "+bookService.findBooks(title));
         return bookService.findBooks(title);
@@ -132,6 +132,17 @@ public class BookController {
         logger.info("Books by title and date: " + title + ", " + from + ", " + to);
         return bookService.getBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
     }
+
+    @GetMapping("/min-date-release")
+    public Date getMinDateRelease() {
+        return bookService.getMinDateRelease();
+    }
+
+    @GetMapping("/max-date-release")
+    public Date getMaxDateRelease() {
+        return bookService.getMaxDateRelease();
+    }
+
     @GetMapping("/genres")
     public List<Genre> getAllGenres() {
         return bookService.getAllGenres();

@@ -19,9 +19,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Array;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,6 +137,13 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.query(env.getProperty("findBooksByTitleAuthorGenre") , namedParameters, viewBooksMapper);
     }
 
+    public Date getMinDateRelease() {
+        return jdbcTemplate.queryForObject("SELECT MIN(release_date) FROM view_book_list", Date.class);
+    }
+
+    public Date getMaxDateRelease() {
+        return jdbcTemplate.queryForObject("SELECT MAX(release_date) FROM view_book_list", Date.class);
+    }
 
     @Override
     public List<Announcement> findAllAnnouncement() {

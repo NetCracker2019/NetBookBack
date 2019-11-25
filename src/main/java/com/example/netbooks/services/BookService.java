@@ -9,9 +9,10 @@ import com.example.netbooks.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -112,5 +113,13 @@ public class BookService {
 
     public List<ViewBook> getReadBooksByUserId(long id, int cntBooks, int offset) {
         return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadBooksByUserId");
+    }
+
+    public Date getMinDateRelease() {
+        return jdbcBookRepository.getMinDateRelease();
+    }
+
+    public Date getMaxDateRelease() {
+        return jdbcBookRepository.getMaxDateRelease();
     }
 }
