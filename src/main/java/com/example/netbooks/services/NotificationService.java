@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -25,8 +28,8 @@ public class NotificationService {
         Notification notification;
         switch (notifName){
             case ADD_FRIEND_NOTIF:
-                notification= new Notification(userId,"addFriend","Friend Request","check your frinds somebody want to add you",
-                        LocalDate.now().toString(),false);
+                java.util.Date now = new java.util.Date();
+                notification= new Notification(userId,"addFriend","Friend Request","check your frinds somebody want to add you", new Date(now.getTime()),false);
                 notificationRepository.addNotification(notification.getResult());
                 break;
             default:

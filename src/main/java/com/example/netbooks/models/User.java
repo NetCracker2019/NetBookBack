@@ -69,8 +69,5 @@ public class User {
 		this.turnOnNotif = user.turnOnNotif;
     }
 
-	public long getUserId() {
-		return userId;
-	}
 }
 

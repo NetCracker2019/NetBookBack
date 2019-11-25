@@ -19,10 +19,10 @@ public class Notification {
     private String notifName;
     private String notifTitle;
     private String notifText;
-    private String date;
+    private Date date;
     private boolean isRead;
 
-    public Notification(int userId, String notifName, String notifTitle, String notifText, String date, boolean isRead) {
+    public Notification(int userId, String notifName, String notifTitle, String notifText, Date date, boolean isRead) {
         this.userId = userId;
         this.notifName = notifName;
         this.notifTitle = notifTitle;
