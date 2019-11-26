@@ -250,6 +250,18 @@ public class UserRepository {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
+    
+    public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("sought", "%" + sought + "%");
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntPersons);
+            return namedJdbcTemplate.query(env.getProperty("getClientPersonsBySought"), namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
+        }
+    }
 
     public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
         try {

@@ -106,6 +106,10 @@ public class UserManager {
 	public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
 		return userRepository.getPersonsBySought(sought, cntPersons, offset);
 	}
+        
+        public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
+		return userRepository.getClientPersonsBySought(sought, cntPersons, offset);
+	}
 
 	public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
 		return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
