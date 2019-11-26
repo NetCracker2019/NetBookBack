@@ -122,4 +122,7 @@ public class UserManager {
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
+	public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
+		userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
+	}
 }

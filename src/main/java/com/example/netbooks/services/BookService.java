@@ -161,16 +161,16 @@ public class BookService {
         return jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(processedTitle, author, genre, from, to);
     }
 
-    public List<ViewBook> getFavouriteBooksByUserId(Long id, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getFavouriteBooksByUserId");
+    public List<ViewBook> getFavouriteBooksByUserId(Long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getFavouriteBooksByUserId");
     }
 
-    public List<ViewBook> getReadingBooksByUserId(long id, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadingBooksByUserId");
+    public List<ViewBook> getReadingBooksByUserId(long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getReadingBooksByUserId");
     }
 
-    public List<ViewBook> getReadBooksByUserId(long id, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, cntBooks, offset, "getReadBooksByUserId");
+    public List<ViewBook> getReadBooksByUserId(long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getReadBooksByUserId");
     }
     public boolean addReviewForUserBook(Review review) {
         // review.setReviewText(review.getReviewText().trim());

@@ -2,10 +2,7 @@ package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.ProfileController;
 import com.example.netbooks.dao.interfaces.BookRepository;
-import com.example.netbooks.dao.mappers.BookRowMapper;
-import com.example.netbooks.dao.mappers.EventMapper;
-import com.example.netbooks.dao.mappers.ViewAnnouncementMapper;
-import com.example.netbooks.dao.mappers.ViewBookMapper;
+import com.example.netbooks.dao.mappers.*;
 
 import com.example.netbooks.models.*;
 import org.apache.logging.log4j.LogManager;
@@ -284,29 +281,14 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("image_path"));
     }
 
-    private final class ShortViewBookMapper implements RowMapper<ViewBook> {
-        @Override
-        public ViewBook mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            ViewBook book = new ViewBook();
-            book.setImagePath(resultSet.getString("image_path"));
-            book.setTitle(resultSet.getString("title"));
-            Array tmpArray = resultSet.getArray("authors");
-            book.setAuthors((String[])tmpArray.getArray());
-            return book;
-        }
-    }
-
-    public List<ViewBook> getBooksByUserId(Long id, int cntBooks, int offset, String property) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntBooks);
-            namedParams.put("user_id", id);
-            return namedJdbcTemplate.query(env.getProperty(property),
-                    namedParams, new ShortViewBookMapper());
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+    public List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, String property) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("offset", offset);
+        namedParams.put("cnt", cntBooks);
+        namedParams.put("user_id", id);
+        namedParams.put("sought", "%" + sought + "%");
+        return namedJdbcTemplate.query(env.getProperty(property),
+                namedParams, new ShortViewBookMapper());
     }
 
 
