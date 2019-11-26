@@ -62,7 +62,9 @@ public class ProfileController {
             return;
         }
         User originalUser = userManager.getUserByLogin(login);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(!Strings.isNullOrEmpty(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         if(!Strings.isNullOrEmpty(originalUser.getAvatarFilePath())){
             fileStorageService.deleteFile(originalUser.getAvatarFilePath());
         }
@@ -77,24 +79,31 @@ public class ProfileController {
     }
     @GetMapping("/{login}/favourite-books")
     public List<ViewBook> getFavouriteBooks(@PathVariable("login")String login,
-                                                        @RequestParam("cnt")int cntBooks, @RequestParam("offset")int offset){
+                                            @RequestParam("sought")String sought,
+                                            @RequestParam("cnt")int cntBooks,
+                                            @RequestParam("offset")int offset){
         return bookService.getFavouriteBooksByUserId(
-                userManager.getUserByLogin(login).getUserId(), cntBooks, offset);
+                userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
     @GetMapping("/{login}/reading-books")
     public List<ViewBook> getReadingBooks(@PathVariable("login")String login,
-                                                        @RequestParam("cnt")int cntBooks, @RequestParam("offset")int offset){
+                                          @RequestParam("sought")String sought,
+                                          @RequestParam("cnt")int cntBooks,
+                                          @RequestParam("offset")int offset){
         return bookService.getReadingBooksByUserId(
-                userManager.getUserByLogin(login).getUserId(), cntBooks, offset);
+                userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
     @GetMapping("/{login}/read-books")
     public List<ViewBook> getReadBooks(@PathVariable("login")String login,
-                                       @RequestParam("cnt")int cntBooks, @RequestParam("offset")int offset){
+                                       @RequestParam("sought")String sought,
+                                       @RequestParam("cnt")int cntBooks,
+                                       @RequestParam("offset")int offset){
         return bookService.getReadBooksByUserId(
-                userManager.getUserByLogin(login).getUserId(), cntBooks, offset);
+                userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
     @PostMapping("/add-friend/{ownLogin}/{friendLogin}")
-    public void register(@PathVariable("ownLogin") String ownLogin,
+
+    public void addFriend(@PathVariable("ownLogin")String ownLogin,
                          @PathVariable("friendLogin") String friendLogin) {
         log.info("ffggg {} ", friendLogin);
        if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
@@ -121,4 +130,14 @@ public class ProfileController {
         }
         userManager.deleteFriend(ownLogin, friendLogin);
     }
+    @PutMapping("/{login}/{bookId}")
+    public void updateUserBookList(@PathVariable("login")String login,
+                                   @PathVariable("bookId") Long bookId,
+                                   @RequestParam("reading") boolean reading,
+                                   @RequestParam("favourite") boolean favourite,
+                                   @RequestParam("remove") boolean remove){
+        userManager.updateUserBookList(login, bookId, reading, favourite, remove);
+        //TODO send notification
+    }
+
 }
