@@ -1,6 +1,7 @@
 package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.AuthenticationController;
+import com.example.netbooks.dao.mappers.FriendMapper;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Book;
 import com.example.netbooks.models.Role;
@@ -63,18 +64,6 @@ public class UserRepository {
             return user;
         }
     }
-    private final class FriendMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            User user = new User();
-            user.setLogin(resultSet.getString("login"));
-            user.setName(resultSet.getString("person_name"));
-            user.setAvatarFilePath(resultSet.getString("avatar_filepath"));
-            return user;
-        }
-    }
-
-
     @Autowired
     public UserRepository(DataSource dataSource, Environment env) {
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -329,6 +318,18 @@ public class UserRepository {
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         namedJdbcTemplate.update(env.getProperty("deleteFriend"), namedParams);
+    }
+    public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", findByLogin(login).getUserId());
+        namedParams.put("book_id", bookId);
+        namedParams.put("reading", reading);
+        namedParams.put("favourite", favourite);
+        if(!remove){
+            namedJdbcTemplate.update(env.getProperty("updateUserBookList"), namedParams);
+        }else {
+            namedJdbcTemplate.update(env.getProperty("removeBookFromBookList"), namedParams);
+        }
     }
 }
 

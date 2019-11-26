@@ -42,7 +42,6 @@ public class FilesController {
     @GetMapping("/download")
     public ResponseEntity<Resource> getFile(@RequestParam(value = "filename", defaultValue = "default_avatar")
                                                         String filename){
-        if(Strings.isNullOrEmpty(filename)) log.info("gggggggggggggggg");
         Resource file = fileStorageService.loadFile(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
