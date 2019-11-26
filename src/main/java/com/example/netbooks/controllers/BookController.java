@@ -63,28 +63,14 @@ public class BookController {
     public List<ViewBook> getFoundBook(@RequestParam("title") String title,
                                        @RequestParam("size") int size,
                                        @RequestParam("page") int page){
-        logger.info("Books by title "+title+":  "+bookService.findBooks(title, size, page));
         return bookService.findBooks(title, size, page);
     }
 
     @GetMapping("/amount-of-search-result")
     public int getAmountOfSearchResult(@RequestParam("title") String title) {
-        logger.info("amount: " + title + ":" + bookService.getAmountOfSearchResult(title));
         return bookService.getAmountOfSearchResult(title);
     }
 
-//    @GetMapping("/home/filter-books")
-//    public List<Book> getFilteredBooks
-//            (@RequestParam(value = "title", required = false, defaultValue = "") String title,
-//             @RequestParam(value = "author", required = false, defaultValue = "") String author,
-//             @RequestParam(value = "genre", required = false, defaultValue = "All") String genre,
-//             @RequestParam(value = "date1", required = false, defaultValue = "0001-01-01") String dateFrom,
-//             @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String dateTo,
-//             @RequestParam(value = "page1", required = false, defaultValue = "0") int pageFrom,
-//             @RequestParam(value = "page2", required = false, defaultValue = "1000000") int pageTo
-//            ){
-//        return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
-//    }
     @GetMapping("/home/search/{id}")
     public List<Review> getReviewForSearchBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
         return bookService.getPeaceOfReviewByBook(bookId, count, offset);
@@ -104,88 +90,74 @@ public class BookController {
     }
 
     @GetMapping("/filter-books-genre")
-    public List<ViewBook> getBooksByTitleAndGenre
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "genre") String genre,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to,
-             @RequestParam("size") int size,
-             @RequestParam("page") int page){
+    public List<ViewBook> getBooksByTitleAndGenre(@RequestParam("title") String title,
+                                                  @RequestParam("genre") String genre,
+                                                  @RequestParam("from") Date from,
+                                                  @RequestParam("to") Date to,
+                                                  @RequestParam("size") int size,
+                                                  @RequestParam("page") int page){
         return bookService.getBooksByTitleAndGenre(title, genre, from, to, size, page);
     }
 
     @GetMapping("/amount-filter-books-genre")
-    public int getAmountBooksByTitleAndGenre
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "genre") String genre,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to){
+    public int getAmountBooksByTitleAndGenre(@RequestParam("title") String title,
+                                             @RequestParam("genre") String genre,
+                                             @RequestParam("from") Date from,
+                                             @RequestParam("to") Date to){
         return bookService.getAmountBooksByTitleAndGenre(title, genre, from, to);
     }
 
     @GetMapping("/filter-books-author")
-    public List<ViewBook> getBooksByTitleAndAuthor
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "author") String author,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to,
-             @RequestParam("size") int size,
-             @RequestParam("page") int page){
-        logger.info("Books by title and author: " + title + ", " + author);
+    public List<ViewBook> getBooksByTitleAndAuthor(@RequestParam("title") String title,
+                                                   @RequestParam("author") String author,
+                                                   @RequestParam("from") Date from,
+                                                   @RequestParam("to") Date to,
+                                                   @RequestParam("size") int size,
+                                                   @RequestParam("page") int page){
         return bookService.getBooksByTitleAndAuthor(title, author, from, to, size, page);
     }
 
     @GetMapping("/amount-filter-books-author")
-    public int getAmountBooksByTitleAndAuthor
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "author") String author,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to){
-        logger.info("Books by title and author: " + title + ", " + author);
+    public int getAmountBooksByTitleAndAuthor(@RequestParam("title") String title,
+                                              @RequestParam("author") String author,
+                                              @RequestParam("from") Date from,
+                                              @RequestParam("to") Date to){
         return bookService.getAmountBooksByTitleAndAuthor(title, author, from, to);
     }
 
     @GetMapping("/filter-books")
-    public List<ViewBook> getBooksByTitleAndDate
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to,
-             @RequestParam("size") int size,
-             @RequestParam("page") int page){
-        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+    public List<ViewBook> getBooksByTitleAndDate(@RequestParam("title") String title,
+                                                 @RequestParam("from") Date from,
+                                                 @RequestParam("to") Date to,
+                                                 @RequestParam("size") int size,
+                                                 @RequestParam("page") int page){
         return bookService.getBooksByTitleAndDate(title, from, to, size, page);
     }
 
     @GetMapping("/amount-filter-books")
-    public int getAmountBooksByTitleAndDate
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to){
-        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+    public int getAmountBooksByTitleAndDate(@RequestParam("title") String title,
+                                            @RequestParam("from") Date from,
+                                            @RequestParam("to") Date to){
         return bookService.getAmountBooksByTitleAndDate(title, from, to);
     }
 
     @GetMapping("/filter-books-author-genre")
-    public List<ViewBook> getBooksByTitleAndAuthorAndGenre
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "author") String author,
-             @RequestParam(value = "genre") String genre,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to,
-             @RequestParam("size") int size,
-             @RequestParam("page") int page){
-        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+    public List<ViewBook> getBooksByTitleAndAuthorAndGenre(@RequestParam("title") String title,
+                                                           @RequestParam("author") String author,
+                                                           @RequestParam("genre") String genre,
+                                                           @RequestParam("from") Date from,
+                                                           @RequestParam("to") Date to,
+                                                           @RequestParam("size") int size,
+                                                           @RequestParam("page") int page){
         return bookService.getBooksByTitleAndAuthorAndGenre(title, author, genre, from, to, size, page);
     }
 
     @GetMapping("/amount-filter-books-author-genre")
-    public int getAmountBooksByTitleAndAuthorAndGenre
-            (@RequestParam(value = "title") String title,
-             @RequestParam(value = "author") String author,
-             @RequestParam(value = "genre") String genre,
-             @RequestParam(value = "from") Date from,
-             @RequestParam(value = "to") Date to){
-        logger.info("Books by title and date: " + title + ", " + from + ", " + to);
+    public int getAmountBooksByTitleAndAuthorAndGenre(@RequestParam(value = "title") String title,
+                                                      @RequestParam(value = "author") String author,
+                                                      @RequestParam(value = "genre") String genre,
+                                                      @RequestParam(value = "from") Date from,
+                                                      @RequestParam(value = "to") Date to){
         return bookService.getAmountBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
     }
 
