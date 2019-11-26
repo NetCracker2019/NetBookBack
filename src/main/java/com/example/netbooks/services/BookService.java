@@ -1,6 +1,7 @@
 package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
@@ -17,14 +18,19 @@ import java.util.List;
 
 @Service
 public class BookService {
-    @Autowired
-    JdbcBookRepository jdbcBookRepository;
-    @Autowired
-    GenreRepository genreRepository;
-    @Autowired
-    AuthorRepository authorRepository;
-    @Autowired
-    ReviewRepository reviewRepository;
+    final JdbcBookRepository jdbcBookRepository;
+    final GenreRepository genreRepository;
+    final AuthorRepository authorRepository;
+    final ReviewRepository reviewRepository;
+    final UserRepository userRepository;
+
+    public BookService(JdbcBookRepository jdbcBookRepository, GenreRepository genreRepository, AuthorRepository authorRepository, ReviewRepository reviewRepository, UserRepository userRepository) {
+        this.jdbcBookRepository = jdbcBookRepository;
+        this.genreRepository = genreRepository;
+        this.authorRepository = authorRepository;
+        this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+    }
 
     public List<ViewBook> findBooks(String searchString, int size, int page){
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
@@ -33,11 +39,12 @@ public class BookService {
     }
     public List<Book> getAllBooks(){
         return jdbcBookRepository.findAllBooks();
-
     }
     public List<ViewBook> getAllViewBooks(){
         return jdbcBookRepository.findAllViewBooks();
-
+    }
+    public List<ViewAnnouncement> getViewUnApproveBooks(){
+        return jdbcBookRepository.findViewUnApproveBooks();
     }
     public int countReviews(){
         return reviewRepository.countReviews();
@@ -67,6 +74,58 @@ public class BookService {
     public ViewBook getViewBookById(int id){
         return jdbcBookRepository.getBookById(id);
     }
+    public String addBook(Book book, String value)
+    {
+        if (!jdbcBookRepository.checkIsExist(book)) {
+            jdbcBookRepository.addBook(book);
+            genreRepository.addRowIntoBookGenre(book);
+            jdbcBookRepository.addRowIntoBookAuthor(book);
+        }
+        if (value.equals("announcement")) {
+            jdbcBookRepository.addNewAnnouncement(book);
+        }
+        return "Ok";
+    }
+
+    public String confirmAnnouncement(long announcementId) {
+        jdbcBookRepository.confirmAnnouncement(announcementId);
+        return "ok";
+    }
+
+    public String cancelAnnouncement(long announcementId) {
+        jdbcBookRepository.cancelAnnouncement(announcementId);
+        return "ok";
+    }
+
+    public List<Event> calendarAnnouncement(String value) {
+        if (value.equals("all")) {
+            return jdbcBookRepository.getCalendarAllAnnouncement();
+        }else {
+            return jdbcBookRepository.getCalendarPersonalizeAnnouncement();
+        }
+    }
+
+    public String addAnnouncement(Book book) { return jdbcBookRepository.addAnnouncement(book);}
+
+    public List<Announcement> findAllAnnouncement() { return jdbcBookRepository.findAllAnnouncement(); }
+
+    public int getAmountOfAnnouncement() { return jdbcBookRepository.getAmountOfAnnouncement(); }
+
+
+
+    public int getAmountOfBook() { return jdbcBookRepository.getAmountOfBook(); }
+
+    public List<ViewBook> getPeaceBook(int page, int booksPerPage) {
+        return jdbcBookRepository.getPeaceBook(page, booksPerPage);
+    }
+
+
+
+    public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
+        return jdbcBookRepository.getPeaceAnnouncement(page, booksPerPage);
+    }
+
+
     public List<Genre> getAllGenres() {
         return genreRepository.getAllGenres();
     }
@@ -149,5 +208,29 @@ public class BookService {
 
     public int getAmountOfSearchResult(String title) {
         return jdbcBookRepository.getAmountOfSearchResult(title);
+    }
+    public boolean addReviewForUserBook(Review review) {
+        // review.setReviewText(review.getReviewText().trim());
+        review.setUserId(userRepository.getUserIdByName(review.getUserName()));
+        return reviewRepository.addReviewForUserBook(review);
+    }
+    public boolean addBookToProfile(String userName, long bookId){
+        long userId = userRepository.getUserIdByName(userName);
+        return jdbcBookRepository.addBookToProfile(userId, bookId);
+    }
+    public boolean approveReview(long reviewId) {
+        return reviewRepository.approveReview(reviewId);
+    }
+    public boolean cancelReview(long reviewId) {
+        return reviewRepository.cancelReview(reviewId);
+    }
+
+    public boolean removeBookFromProfile(String userName, long bookId){
+        long userId = userRepository.getUserIdByName(userName);
+        return jdbcBookRepository.removeBookFromProfile(userId, bookId);
+    }
+    public boolean checkBookInProfile(String userName, long bookId){
+        long userId = userRepository.getUserIdByName(userName);
+        return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 }

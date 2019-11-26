@@ -7,7 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.http.HttpStatus;
 import java.sql.Date;
 import java.util.List;
 
@@ -25,41 +26,60 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/home/books")
+    @GetMapping("/books")
     public List<ViewBook> getAllBooks() {
         return bookService.getAllViewBooks();
     }
 
-    @PostMapping("/home/books/addBook")
-    public String add (@RequestBody Book book){
-        return jdbcBookRepository.addBook(book);
+    @PostMapping("/books/addBook")
+    public String add (@RequestParam(name = "value") String value, @RequestBody Book book){
+        logger.info(book);
+        logger.info(value);
+        return bookService.addBook(book, value);
     }
 
-    @PostMapping("/home/books/addAnnouncement")
+    @PostMapping("/books/addAnnouncement")
     public String addAnnouncement (@RequestBody Book book){
-        return jdbcBookRepository.addAnnouncement(book);
+        return bookService.addAnnouncement(book);
     }
 
-    @GetMapping(value="/home/announcement")
+    @GetMapping(value="/announcement")
     public List<Announcement> getAllAnnouncement() {
-        return jdbcBookRepository.findAllAnnouncement();
-    }
-    @GetMapping(value="/home/amountOfAnnouncement")
-    public int getAmountOfAnnouncement() {
-        return jdbcBookRepository.getAmountOfAnnouncement();
+        return bookService.findAllAnnouncement();
     }
 
-    @GetMapping(value="/home/announcementListPeace")
+    @GetMapping(value="/amountOfAnnouncement")
+    public int getAmountOfAnnouncement() {
+        return bookService.getAmountOfAnnouncement();
+    }
+
+
+
+    @GetMapping(value="/amountOfBook")
+    public int getAmountOfBook() {
+        return bookService.getAmountOfBook();
+    }
+
+
+    @GetMapping(value="/bookListPeace")
+    public List<ViewBook> getPeaceBook(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
+        logger.info("page {} booksPerPage {}",page, booksPerPage);
+        return bookService.getPeaceBook(page,booksPerPage);
+    }
+
+
+
+    @GetMapping(value="/announcementListPeace")
     public List<Announcement> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
         logger.info("page {} booksPerPage {}",page, booksPerPage);
-        System.out.print(page + ' ' + booksPerPage);
-        return jdbcBookRepository.getPeaceAnnouncement(page,booksPerPage);
+        return bookService.getPeaceAnnouncement(page,booksPerPage);
     }
-    @GetMapping("/home/view-books")
+    @GetMapping("/view-books")
     public List<ViewBook> getPeaceViewBooks(@RequestParam("count") int count, @RequestParam("offset") int offset) {
         return bookService.getPeaceOfBooks(count, offset);
     }
     @GetMapping("/find-books")
+
     public List<ViewBook> getFoundBook(@RequestParam("title") String title,
                                        @RequestParam("size") int size,
                                        @RequestParam("page") int page){
@@ -72,19 +92,57 @@ public class BookController {
     }
 
     @GetMapping("/home/search/{id}")
+    public List<ViewBook> getFoundBook(@RequestParam("title") String title){
+        logger.info("Books by title "+title+":  "+bookService.findBooks(title));
+        return bookService.findBooks(title);
+    }
+    @PostMapping("/add-book-profile")
+    public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
+        logger.info(userName+boolId);
+        return bookService.addBookToProfile(userName, boolId);
+    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping("/add-review-user-book")
+    public boolean addReviewForUserBook(@RequestBody Review review){
+        logger.info(review);
+        return bookService.addReviewForUserBook(review);
+    }
+    @PostMapping("/remove-book-profile")
+    public boolean removeBookFromProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
+        logger.info("Deleted book: "+userName+bookId);
+        return bookService.removeBookFromProfile(userName, bookId);
+    }
+    @GetMapping("/check-book-profile")
+    public boolean checkBookInProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId) {
+        return bookService.checkBookInProfile(userName, bookId);
+    }
+
+//    @GetMapping("/home/filter-books")
+//    public List<Book> getFilteredBooks
+//            (@RequestParam(value = "title", required = false, defaultValue = "") String title,
+//             @RequestParam(value = "author", required = false, defaultValue = "") String author,
+//             @RequestParam(value = "genre", required = false, defaultValue = "All") String genre,
+//             @RequestParam(value = "date1", required = false, defaultValue = "0001-01-01") String dateFrom,
+//             @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String dateTo,
+//             @RequestParam(value = "page1", required = false, defaultValue = "0") int pageFrom,
+//             @RequestParam(value = "page2", required = false, defaultValue = "1000000") int pageTo
+//            ){
+//        return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
+//    }
+    @GetMapping("/search/{id}")
     public List<Review> getReviewForSearchBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
         return bookService.getPeaceOfReviewByBook(bookId, count, offset);
     }
-    @GetMapping("/home/books/{id}")
+    @GetMapping("/books/{id}")
     public List<Review> getReviewForBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
         return bookService.getPeaceOfReviewByBook(bookId, count, offset);
     }
-    @GetMapping("/home/find-book-id")
+    @GetMapping("/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
         logger.info(bookService.getViewBookById(bookId));
         return bookService.getViewBookById(bookId);
     }
-    @GetMapping("home/books/amount")
+    @GetMapping("/books/amount")
     public int countBooks() {
         return bookService.countBooks();
     }
@@ -183,5 +241,11 @@ public class BookController {
     @GetMapping("/count-reviews")
     public int countReviews(){
         return  bookService.countReviews();
+    }
+
+    @GetMapping("/calendar-announcement")
+    public List<Event> calendarAnnouncement(@RequestParam("value") String value) {
+        logger.info(value);
+        return bookService.calendarAnnouncement(value);
     }
 }

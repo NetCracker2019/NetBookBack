@@ -12,5 +12,6 @@ public interface ReviewRepository {
     List<Review> getPeaceOfReviewByBook(int bookId, int page, int offset);
     int countReviews();
     boolean addReviewForUserBook(Review review);
-    void approveReview(Review review);
+    boolean approveReview(long reviewId);
+    boolean cancelReview(long reviewId);
 }
