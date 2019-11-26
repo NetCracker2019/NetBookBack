@@ -60,6 +60,10 @@ public class AuthenticationController {
         this.verificationTokenManager = verificationTokenManager;
     }
 
+    @GetMapping("/get-id-name")
+    public int getIdByUserName(@RequestParam("name") String name){
+        return userManager.getUserIdByName(name);
+    }
     @PutMapping("/interrupt-sessions/{login}")
     public void interruptr(@PathVariable("login") String login) {
         userManager.setMinRefreshDate(login, null);

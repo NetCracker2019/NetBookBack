@@ -45,13 +45,21 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         namedParameters.addValue("bookId", review.getBookId());
         namedParameters.addValue("userId", review.getUserId());
         namedParameters.addValue("reviewText", review.getReviewText());
-        return false;
-        //return namedJdbcTemplate.update(env.getProperty("addReviewForUserBook"), namedParameters);
+        return namedJdbcTemplate.update(env.getProperty("addReviewForUserBook"), namedParameters) > 0;
     }
 
     @Override
-    public void approveReview(Review review) {
+    public boolean approveReview(long reviewId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("reviewId", reviewId);
+        return namedJdbcTemplate.update(env.getProperty("approveReview"), namedParameters) > 0;
+    }
 
+    @Override
+    public boolean cancelReview(long reviewId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("reviewId", reviewId);
+        return namedJdbcTemplate.update(env.getProperty("cancelReview"), namedParameters) > 0;
     }
 
     @Override

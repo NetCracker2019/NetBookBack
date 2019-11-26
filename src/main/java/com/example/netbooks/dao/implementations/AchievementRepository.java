@@ -1,4 +1,4 @@
-package com.example.netbooks.dao;
+package com.example.netbooks.dao.implementations;
 
 
 import com.example.netbooks.models.Achievement;
