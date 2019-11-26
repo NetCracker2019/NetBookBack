@@ -40,23 +40,39 @@ public class BookController {
 
     @PostMapping("/books/addAnnouncement")
     public String addAnnouncement (@RequestBody Book book){
-        return jdbcBookRepository.addAnnouncement(book);
+        return bookService.addAnnouncement(book);
     }
 
     @GetMapping(value="/announcement")
     public List<Announcement> getAllAnnouncement() {
-        return jdbcBookRepository.findAllAnnouncement();
+        return bookService.findAllAnnouncement();
     }
+
     @GetMapping(value="/amountOfAnnouncement")
     public int getAmountOfAnnouncement() {
-        return jdbcBookRepository.getAmountOfAnnouncement();
+        return bookService.getAmountOfAnnouncement();
     }
+
+
+
+    @GetMapping(value="/amountOfBook")
+    public int getAmountOfBook() {
+        return bookService.getAmountOfBook();
+    }
+
+
+    @GetMapping(value="/bookListPeace")
+    public List<ViewBook> getPeaceBook(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
+        logger.info("page {} booksPerPage {}",page, booksPerPage);
+        return bookService.getPeaceBook(page,booksPerPage);
+    }
+
+
 
     @GetMapping(value="/announcementListPeace")
     public List<Announcement> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
         logger.info("page {} booksPerPage {}",page, booksPerPage);
-        System.out.print(page + ' ' + booksPerPage);
-        return jdbcBookRepository.getPeaceAnnouncement(page,booksPerPage);
+        return bookService.getPeaceAnnouncement(page,booksPerPage);
     }
     @GetMapping("/view-books")
     public List<ViewBook> getPeaceViewBooks(@RequestParam("count") int count, @RequestParam("offset") int offset) {
@@ -167,5 +183,11 @@ public class BookController {
     @GetMapping("/count-reviews")
     public int countReviews(){
         return  bookService.countReviews();
+    }
+
+    @GetMapping("/calendar-announcement")
+    public List<Event> calendarAnnouncement(@RequestParam("value") String value) {
+        logger.info(value);
+        return bookService.calendarAnnouncement(value);
     }
 }

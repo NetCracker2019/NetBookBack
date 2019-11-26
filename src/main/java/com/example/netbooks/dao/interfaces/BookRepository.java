@@ -1,10 +1,8 @@
 package com.example.netbooks.dao.interfaces;
 
-import com.example.netbooks.models.Announcement;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.ViewAnnouncement;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +14,10 @@ public interface BookRepository {
     void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
     List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
+
+    int getAmountOfBook();
+    List<ViewBook> getPeaceBook(int page, int booksPerPage);
+
     List<ViewBook> getPeaceOfSearchBook(String titleOrAuthor, int page, int offset);
     List<ViewBook> getPeaceOfBook(int page, int offset);
     boolean addBookToProfile(long userId, long bookId);
@@ -35,4 +37,9 @@ public interface BookRepository {
 
     List<ViewBook> findBooksByTitleAndGenre(String title, String genre, java.sql.Date from, java.sql.Date to);
 
+    List<Event> getCalendarAllAnnouncement();
+    List<Event> getCalendarPersonalizeAnnouncement();
+
+    List<String> getFavouriteAuthor(int id);
+    List<String> getFavouriteGenre(int id);
 }
