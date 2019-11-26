@@ -18,7 +18,8 @@ import lombok.Data;
 
 
 @Data
-@Getter @Setter
+@Getter
+@Setter
 public class User {
 	@JsonProperty("id")
 	private long userId;
@@ -67,5 +68,6 @@ public class User {
 				&& this.status != null) ? this.status: user.status;
 		this.turnOnNotif = user.turnOnNotif;
     }
+
 }
 

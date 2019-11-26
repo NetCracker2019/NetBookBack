@@ -1,15 +1,14 @@
 package com.example.netbooks.dao.interfaces;
 
-import com.example.netbooks.models.Announcement;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.ViewBook;
+import com.example.netbooks.models.*;
 
-import java.util.Date;
+
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface BookRepository {
     List<Book> findAllBooks();
-    List<Book> findBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2);
     List<Announcement> findAllAnnouncement();
     String addBook(Book book);
     String addAnnouncement(Book book);
@@ -17,8 +16,31 @@ public interface BookRepository {
     int getAmountOfAnnouncement();
     List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
 
+    int getAmountOfBook();
+    List<ViewBook> getPeaceBook(int page, int booksPerPage);
+
+    List<ViewBook> getPeaceOfSearchBook(String titleOrAuthor, int page, int offset);
+    List<ViewBook> getPeaceOfBook(int page, int offset);
+    boolean addBookToProfile(long userId, long bookId);
+    boolean checkBookInProfile(long userId, long bookId);
+    boolean removeBookFromProfile(long userId, long bookId);
+
+
     List<ViewBook> findAllViewBooks();
-    List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);
-    List<ViewBook> findViewBooksByFilter(String title, String author, String genre, Date date1, Date date2, int page1, int page2);
+  
+    List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor, int size, int startIndex);
     ViewBook getBookById(int id);
+    List<ViewBook> findBooksByTitleAndGenre(String title, String genre, Date from, Date to, int size, int startIndex);
+    List<ViewAnnouncement> findViewUnApproveBooks();
+
+    public String addRowIntoBookAuthor(Book book);
+
+    public String confirmAnnouncement(long announcementId);
+    public String cancelAnnouncement(long announcementId);
+
+    List<Event> getCalendarAllAnnouncement();
+    List<Event> getCalendarPersonalizeAnnouncement();
+
+    List<String> getFavouriteAuthor(int id);
+    List<String> getFavouriteGenre(int id);
 }

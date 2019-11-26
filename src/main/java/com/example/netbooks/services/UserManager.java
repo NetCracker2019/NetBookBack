@@ -3,24 +3,14 @@ package com.example.netbooks.services;
 import java.util.Date;
 import java.util.List;
 
-import com.example.netbooks.dao.AchievementRepository;
+import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
-import com.example.netbooks.models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 
 @Service
@@ -37,6 +27,7 @@ public class UserManager {
 	public User getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
+    public int getUserIdByName(String name) { return userRepository.getUserIdByName(name); }
 
 	public void removeUserById(long id) {
 		userRepository.removeUserById(id);
@@ -70,6 +61,12 @@ public class UserManager {
 		return userRepository.findByUserId(id);
 	}
 
+	public Boolean isExistByLogin(String login) {
+		return userRepository.isExistByLogin(login);
+	}
+	public Boolean isExistByMail(String mail) {
+		return userRepository.isExistByMail(mail);
+	}
 	public User getUserByLogin(String login) {
 		try{
 			return userRepository.findByLogin(login);
@@ -97,11 +94,19 @@ public class UserManager {
 
     public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
 		return userRepository.getPersonsBySought(sought, cntPersons, offset);
-    }
+	}
+        
+        public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
+		return userRepository.getClientPersonsBySought(sought, cntPersons, offset);
+	}
+
 
 	public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
 		return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
 	}
+    public String getUserRole(String login) {
+        return userRepository.getUserRole(login);
+    }
 
     public int getCountPersonsBySought(String sought) {
 		return userRepository.getCountPersonsBySought(sought);
@@ -123,7 +128,7 @@ public class UserManager {
 		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
 
-    public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-		userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
+  public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
+	userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
 	}
 }
