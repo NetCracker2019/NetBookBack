@@ -55,8 +55,8 @@ public class User {
     public void compareAndReplace(User user) {
 		this.name = (Strings.isNullOrEmpty(user.getName()) && this.name != null) ? this.name : user.name;
 		this.email = (Strings.isNullOrEmpty(user.getEmail()) && this.email != null) ? this.email : user.email;
-		this.password = (Strings.isNullOrEmpty(user.getPassword())
-				&& this.password != null) ? this.password : user.password;
+		this.password = (Strings.isNullOrEmpty(user.getPassword()))
+				 ? this.password : user.password;
 		this.sex = (Strings.isNullOrEmpty(user.getSex()) && this.sex != null) ? this.sex : user.sex;
 		this.avatarFilePath = (Strings.isNullOrEmpty(user.getAvatarFilePath())
 				&& this.avatarFilePath != null) ? this.avatarFilePath : user.avatarFilePath;
