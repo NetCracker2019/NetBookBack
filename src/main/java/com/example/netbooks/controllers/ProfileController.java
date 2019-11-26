@@ -102,6 +102,7 @@ public class ProfileController {
                 userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
     @PostMapping("/add-friend/{ownLogin}/{friendLogin}")
+
     public void addFriend(@PathVariable("ownLogin")String ownLogin,
                          @PathVariable("friendLogin") String friendLogin) {
         log.info("ffggg {} ", friendLogin);
