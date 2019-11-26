@@ -94,7 +94,7 @@ public class ProfileController {
                 userManager.getUserByLogin(login).getUserId(), cntBooks, offset);
     }
     @PostMapping("/add-friend/{ownLogin}/{friendLogin}")
-    public void register(@PathVariable("ownLogin")String ownLogin,
+    public void register(@PathVariable("ownLogin") String ownLogin,
                          @PathVariable("friendLogin") String friendLogin) {
         log.info("ffggg {} ", friendLogin);
        if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
