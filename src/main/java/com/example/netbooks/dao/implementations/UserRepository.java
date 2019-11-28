@@ -64,6 +64,7 @@ public class UserRepository {
             return user;
         }
     }
+
     @Autowired
     public UserRepository(DataSource dataSource, Environment env) {
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);

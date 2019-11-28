@@ -102,7 +102,8 @@ public class ProfileController {
                 userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
     @PostMapping("/add-friend/{ownLogin}/{friendLogin}")
-    public void addFriend(@PathVariable("ownLogin") String ownLogin,
+
+    public void addFriend(@PathVariable("ownLogin")String ownLogin,
                          @PathVariable("friendLogin") String friendLogin) {
         log.info("ffggg {} ", friendLogin);
        if(!ownLogin.equals(((UserDetails) SecurityContextHolder.getContext().
@@ -117,6 +118,7 @@ public class ProfileController {
     @GetMapping("/is-friend/{ownLogin}/{friendLogin}")
     public boolean isFriend(@PathVariable("ownLogin")String ownLogin,
                             @PathVariable("friendLogin") String friendLogin){
+        log.info("fffgggg {} {} ", friendLogin, userManager.isFriend(ownLogin, friendLogin));
         return userManager.isFriend(ownLogin, friendLogin);
     }
     @DeleteMapping("/delete-friend/{ownLogin}/{friendLogin}")
@@ -130,11 +132,12 @@ public class ProfileController {
     }
     @PutMapping("/{login}/{bookId}")
     public void updateUserBookList(@PathVariable("login")String login,
-                                      @PathVariable("bookId") Long bookId,
-                                      @RequestParam("reading") boolean reading,
-                                      @RequestParam("favourite") boolean favourite,
-                                      @RequestParam("remove") boolean remove){
+                                   @PathVariable("bookId") Long bookId,
+                                   @RequestParam("reading") boolean reading,
+                                   @RequestParam("favourite") boolean favourite,
+                                   @RequestParam("remove") boolean remove){
         userManager.updateUserBookList(login, bookId, reading, favourite, remove);
         //TODO send notification
     }
+
 }

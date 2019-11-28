@@ -2,13 +2,7 @@ package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.ProfileController;
 import com.example.netbooks.dao.interfaces.BookRepository;
-import com.example.netbooks.dao.mappers.BookRowMapper;
-import com.example.netbooks.dao.mappers.ShortViewBookMapper;
-
-import com.example.netbooks.dao.mappers.EventMapper;
-import com.example.netbooks.dao.mappers.ViewAnnouncementMapper;
-
-import com.example.netbooks.dao.mappers.ViewBookMapper;
+import com.example.netbooks.dao.mappers.*;
 
 import com.example.netbooks.models.*;
 import org.apache.logging.log4j.LogManager;
@@ -210,7 +204,7 @@ public class JdbcBookRepository implements BookRepository {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<ViewBook> findBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to) {
+    public List<ViewBook> findBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to, int size, int startIndex) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("author", author);
@@ -350,13 +344,13 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     public List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, String property) {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntBooks);
-            namedParams.put("user_id", id);
-            namedParams.put("sought", "%" + sought + "%");
-            return namedJdbcTemplate.query(env.getProperty(property),
-                    namedParams, new ShortViewBookMapper());
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("offset", offset);
+        namedParams.put("cnt", cntBooks);
+        namedParams.put("user_id", id);
+        namedParams.put("sought", "%" + sought + "%");
+        return namedJdbcTemplate.query(env.getProperty(property),
+                namedParams, new ShortViewBookMapper());
     }
 
 
