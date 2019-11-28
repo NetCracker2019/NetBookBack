@@ -3,7 +3,7 @@ package com.example.netbooks.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
+//todo модификаторы доступа
 @Data
 @AllArgsConstructor
 public class ViewAnnouncement {
