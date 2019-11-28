@@ -144,6 +144,7 @@ public class AuthenticationController {
                 = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         response.put("token", jwtProvider.createToken(
                 currentUserDetails.getUsername(),
+                //todo
                 (Role) (currentUserDetails.getAuthorities().stream().findFirst().get())));
         response.put("username", currentUserDetails.getUsername());
         return ResponseEntity.ok(response);
@@ -247,7 +248,7 @@ public class AuthenticationController {
             throw new CustomException("User with this email not found " + email, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
-
+//todo copypast
     @PutMapping("/change/password")
     public ResponseEntity<Map> recoveryPass(@RequestParam("token") String verificationToken,
             @RequestParam("pass") String newPass) {
