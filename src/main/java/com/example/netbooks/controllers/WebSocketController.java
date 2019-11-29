@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.Map;
 
 import com.example.netbooks.models.Message;
+import com.example.netbooks.security.WebSocketConfig;
 import com.example.netbooks.services.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping(value = "/socket")
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
+@Import(WebSocketConfig.class)
 public class WebSocketController {
     private SimpMessagingTemplate simpMessagingTemplate;
     private ChatService chatService;

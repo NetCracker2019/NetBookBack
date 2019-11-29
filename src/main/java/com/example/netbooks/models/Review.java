@@ -13,9 +13,10 @@ public class Review {
     long bookId;
     String userName;
     String userAvatarPath;
+    String title;
+    String[] authors;
     String reviewText;
     int rating;
     boolean approved;
 
-    public Review(){}
 }

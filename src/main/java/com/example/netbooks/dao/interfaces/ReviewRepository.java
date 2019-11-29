@@ -10,8 +10,9 @@ import java.util.List;
 public interface ReviewRepository {
     List<Review> getReviewsByBookId(long id);
     List<Review> getPeaceOfReviewByBook(int bookId, int page, int offset);
-    int countReviews();
+    int countReviews(boolean approved);
     boolean addReviewForUserBook(Review review);
     boolean approveReview(long reviewId);
     boolean cancelReview(long reviewId);
+    List<Review> getReviewsForApprove(int page, int offset);
 }

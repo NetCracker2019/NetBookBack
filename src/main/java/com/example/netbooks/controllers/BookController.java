@@ -91,11 +91,6 @@ public class BookController {
         return bookService.getAmountOfSearchResult(title);
     }
 
-    @GetMapping("/home/search/{id}")
-    public List<ViewBook> getFoundBook(@RequestParam("title") String title){
-        logger.info("Books by title "+title+":  "+bookService.findBooks(title));
-        return bookService.findBooks(title);
-    }
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
         logger.info(userName+boolId);
@@ -239,8 +234,9 @@ public class BookController {
         return bookService.getAllAuthors();
     }
     @GetMapping("/count-reviews")
-    public int countReviews(){
-        return  bookService.countReviews();
+    public int countReviews(@RequestParam("approved") boolean approved){
+        logger.info("Количетсво ревьюшек: "+bookService.countReviews(approved));
+        return  bookService.countReviews(approved);
     }
 
     @GetMapping("/calendar-announcement")
