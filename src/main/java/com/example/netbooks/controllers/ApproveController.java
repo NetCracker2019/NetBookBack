@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/approve-service")
-public class ApproveControler {
+public class ApproveController {
     private final Logger logger = LogManager.getLogger(ProfileController.class);
     @Autowired
     private BookService bookService;
@@ -44,6 +44,22 @@ public class ApproveControler {
         bookService.cancelAnnouncement(id);
         return "ok";
     }
+
+    @GetMapping("/reviews-for-approve")
+    public List<Review> getReviewsForApprove(@RequestParam("page") int page,
+                                             @RequestParam("itemPerPage") int offset){
+        logger.info(bookService.getReviewsForApprove(page, offset));
+        return bookService.getReviewsForApprove(page, offset);
+    }
+    @PostMapping("confirm-review")
+    public boolean confirmReview(@RequestParam("reviewId") long reviewId){
+        return bookService.approveReview(reviewId);
+    }
+    @PostMapping("cancel-review")
+    public boolean cancelReview(@RequestParam("reviewId") long reviewId){
+        return bookService.cancelReview(reviewId);
+    }
+
 
 
 }
