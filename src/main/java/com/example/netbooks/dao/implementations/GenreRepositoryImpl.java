@@ -36,6 +36,7 @@ public class GenreRepositoryImpl implements GenreRepository {
     public String addRowIntoBookGenre(Book book) {
         for (String item : book.getGenre()) {
             //for (int i = 0; i < book.getGenre().size(); i++) {
+            //todo prepared statement
                 jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
                         "\t\t   (select genre_id from genre where genre_name ='" + item + "'))");
             //}
