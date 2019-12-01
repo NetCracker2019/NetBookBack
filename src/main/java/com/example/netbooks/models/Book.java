@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 
 @Data
-
 public class Book {
     private long bookId;
     private String title;
