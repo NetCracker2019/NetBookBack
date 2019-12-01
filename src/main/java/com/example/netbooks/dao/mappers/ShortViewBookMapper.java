@@ -13,9 +13,11 @@ public class ShortViewBookMapper implements RowMapper<ViewBook> {
         ViewBook book = new ViewBook();
         book.setImagePath(resultSet.getString("image_path"));
         book.setTitle(resultSet.getString("title"));
+        book.setReleaseDate(resultSet.getDate("release_date"));
         book.setBookId(resultSet.getLong("book_id"));
         book.setFavourite(resultSet.getBoolean("favourite"));
         book.setReading(resultSet.getBoolean("reading"));
+        book.setRead(resultSet.getDate("read_date") != null);
         Array tmpArray = resultSet.getArray("authors");
         book.setAuthors((String[])tmpArray.getArray());
         return book;

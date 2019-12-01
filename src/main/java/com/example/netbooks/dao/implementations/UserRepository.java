@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import com.example.netbooks.models.ViewBook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -304,33 +305,31 @@ public class UserRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
+        if(namedJdbcTemplate.queryForObject(
+                env.getProperty("isSubscribe"), namedParams, Integer.class) > 0) {
+            namedJdbcTemplate.update(env.getProperty("acceptFriendRequest"), namedParams);
+        }
         namedJdbcTemplate.update(env.getProperty("addFriend"), namedParams);
     }
 
-    public boolean isFriend(String ownLogin, String friendLogin) {
+    public int isFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        return namedJdbcTemplate.queryForObject(
-                env.getProperty("isFriend"), namedParams, Integer.class) > 0 ;
+        if(namedJdbcTemplate.queryForObject(
+                env.getProperty("isFriend"), namedParams, Integer.class) > 0){
+            return 1;
+        }else if(namedJdbcTemplate.queryForObject(
+                env.getProperty("isSubscribe"), namedParams, Integer.class) > 0){
+            return 0;
+        } else return -1;
+
     }
     public void deleteFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         namedJdbcTemplate.update(env.getProperty("deleteFriend"), namedParams);
-    }
-    public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("user_id", findByLogin(login).getUserId());
-        namedParams.put("book_id", bookId);
-        namedParams.put("reading", reading);
-        namedParams.put("favourite", favourite);
-        if(!remove){
-            namedJdbcTemplate.update(env.getProperty("updateUserBookList"), namedParams);
-        }else {
-            namedJdbcTemplate.update(env.getProperty("removeBookFromBookList"), namedParams);
-        }
     }
 }
 

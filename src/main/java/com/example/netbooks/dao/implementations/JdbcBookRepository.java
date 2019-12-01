@@ -12,6 +12,7 @@ import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
 import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -342,16 +343,55 @@ public class JdbcBookRepository implements BookRepository {
                 resultSet.getString("description"),
                 resultSet.getString("image_path"));
     }
-
-    public List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, String property) {
+    @Override
+    public List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, boolean read,
+                                           boolean favourite, boolean reading, boolean notSet, String sortBy, String order) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("offset", offset);
         namedParams.put("cnt", cntBooks);
         namedParams.put("user_id", id);
+        namedParams.put("read", read);
+        namedParams.put("favourite", favourite);
+        namedParams.put("reading", reading);
+        namedParams.put("not_set", notSet);
+        //namedParams.put("user_id", id);
+        //namedParams.put("user_id", id);
         namedParams.put("sought", "%" + sought + "%");
-        return namedJdbcTemplate.query(env.getProperty(property),
+        return namedJdbcTemplate.query(env.getProperty("getBookList"),
                 namedParams, new ShortViewBookMapper());
     }
+    @Override
+    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("booksId", booksId);
+        namedParams.put("user_id", userId);
+        if(shelf.equals("reading")){
+            namedJdbcTemplate.update(env.getProperty("addBookBatchToReading"), namedParams);
+        }else if(shelf.equals("read")){
+            namedJdbcTemplate.update(env.getProperty("addBookBatchToRead"), namedParams);
+        }else {
+            namedJdbcTemplate.update(env.getProperty("addBookBatchToFavourite"), namedParams);
+        }
+    }
 
-
+    @Override
+    public void removeBookBatchFrom(Long userId, String shelf, List<Long> booksId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("booksId", booksId);
+        namedParams.put("user_id", userId);
+        if(shelf.equals("reading")){
+            namedJdbcTemplate.update(env.getProperty("removeBookBatchFromReading"), namedParams);
+        }else if(shelf.equals("read")){
+            namedJdbcTemplate.update(env.getProperty("removeBookBatchFromRead"), namedParams);
+        }else {
+            namedJdbcTemplate.update(env.getProperty("removeBookBatchFromFavourite"), namedParams);
+        }
+    }
+    @Override
+    public void removeBookBatch(long userId, List<Long> booksId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("booksId", booksId);
+        namedParams.put("user_id", userId);
+        namedJdbcTemplate.update(env.getProperty("removeBookBatch"), namedParams);
+    }
 }
