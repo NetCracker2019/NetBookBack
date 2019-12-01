@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
-@RequestMapping("/notifications}")
+@RequestMapping("/notifications")
 @Slf4j
 public class NotificationController {
 
@@ -31,14 +31,14 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
     }
 
-    @GetMapping("/user/{type}")
-    public ResponseEntity<?> getNotificationsForUserByType(@PathVariable long type) {
-        log.debug("Getting notification for user in {}: ", this.getClass().getName());
-        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
-                .getContext().getAuthentication()
-                .getPrincipal()).getUsername());
-        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
-    }
+//    @GetMapping("/user/{type}")
+//    public ResponseEntity<?> getNotificationsForUserByType(@PathVariable long type) {
+//        log.debug("Getting notification for user in {}: ", this.getClass().getName());
+//        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+//                .getContext().getAuthentication()
+//                .getPrincipal()).getUsername());
+//        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
+//    }
 
     @GetMapping("/user")
     public ResponseEntity<?> getNotificationsForUser() {
