@@ -46,5 +46,7 @@ public class ViewBook {
     private Boolean favourite;
     @JsonProperty("reading")
     private Boolean reading;
+    @JsonProperty("read")
+    private Boolean read;
     public ViewBook() {}
 }
