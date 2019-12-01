@@ -155,6 +155,7 @@ public class UserManager {
         userRepository.addFriend(ownLogin, friendLogin);
     }
 
+//если не работает поменя бул на инт
     public boolean isFriend(String ownLogin, String friendLogin) {
         return userRepository.isFriend(ownLogin, friendLogin);
     }
@@ -166,4 +167,5 @@ public class UserManager {
     public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
         userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
     }
+
 }

@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import javax.websocket.server.PathParam;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,9 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/user-service")
+@Slf4j
 public class AuthenticationController {
-
-    private final Logger logger = LogManager.getLogger(AuthenticationController.class);
     private UserManager userManager;
     EmailSender emailSender;
     private PasswordEncoder passwordEncoder;
@@ -65,7 +64,7 @@ public class AuthenticationController {
         return userManager.getUserIdByName(name);
     }
     @PutMapping("/interrupt-sessions/{login}")
-    public void interruptr(@PathVariable("login") String login) {
+    public void interrupt(@PathVariable("login") String login) {
         userManager.setMinRefreshDate(login, null);
     }
 
@@ -85,7 +84,7 @@ public class AuthenticationController {
                     + "https://netbooksfront.herokuapp.com/verification-account?token="
                     + verificationToken.getVerificationToken();
             emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
-            logger.info("Complete Registration for {}", user.getLogin());
+            log.info("Complete Registration for {}", user.getLogin());
 
             Map<Object, Object> response = new HashMap<>();
             response.put("msg", "Successful registration");
@@ -100,7 +99,7 @@ public class AuthenticationController {
         VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
         if (token != null) {
             userManager.activateUser(token.getUserId());
-            logger.info("successRegister for {}", verificationToken);
+            log.info("successRegister for {}", verificationToken);
             verificationTokenManager.removeVerificationToken(verificationToken);
             // TODO del addled tokens
 
@@ -108,7 +107,7 @@ public class AuthenticationController {
             response.put("msg", "Successful account verification");
             return ResponseEntity.ok(response);
         } else {
-            logger.info("Fail Register!" + verificationToken);
+            log.info("Fail Register!" + verificationToken);
             throw new CustomException("Invalid token", HttpStatus.NOT_FOUND);
         }
     }
@@ -116,11 +115,11 @@ public class AuthenticationController {
     @PostMapping("/signin")
     public ResponseEntity<Map> signin(@RequestBody User user) {
         try {
-            logger.info("Try to login " + user.getLogin() + " ---- " + user.getPassword());
+            log.info("Try to login " + user.getLogin() + " ---- " + user.getPassword());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
             String role = userManager.getUserRole(user.getLogin());
-            logger.info("User role: " + role);
+            log.info("User role: " + role);
             Map<Object, Object> response = new HashMap<>();
             response.put("token", jwtProvider.createToken(user.getLogin(), user.getRole()));
             response.put("username", user.getLogin());
@@ -144,8 +143,8 @@ public class AuthenticationController {
                 = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         response.put("token", jwtProvider.createToken(
                 currentUserDetails.getUsername(),
-                //todo
-                (Role) (currentUserDetails.getAuthorities().stream().findFirst().get())));
+
+                (Role) (currentUserDetails.getAuthorities().iterator().next())));
         response.put("username", currentUserDetails.getUsername());
         return ResponseEntity.ok(response);
     }
@@ -166,7 +165,7 @@ public class AuthenticationController {
                 userManager.updateUserById(user, token.getUserId());
                 userManager.activateUser(token.getUserId());
                 verificationTokenManager.removeVerificationToken(verificationToken);
-                logger.info("Complete Admin Registration! {}", user.getLogin());
+                log.info("Complete Admin Registration! {}", user.getLogin());
 
                 Map<Object, Object> response = new HashMap<>();
                 response.put("msg", "Successful registration");
@@ -190,7 +189,7 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register admin account!", message);
-        logger.info("Admin registration mail sent! {}", user.getLogin() + message);
+        log.info("Admin registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful admin mail snet!");
@@ -208,7 +207,7 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register moderator account!", message);
-        logger.info("Moderator registration mail sent! {}", user.getLogin() + message);
+        log.info("Moderator registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful moder mail snet!");
@@ -238,7 +237,7 @@ public class AuthenticationController {
     @PutMapping("/change/password")
     public ResponseEntity<Map> recoveryPass(@RequestParam("token") String verificationToken,
             @RequestParam("pass") String newPass) {
-        logger.info("success recovery request " + newPass + " " + verificationToken);
+        log.info("success recovery request " + newPass + " " + verificationToken);
         VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
         if (token != null) {
             User user = userManager.getUserById(token.getUserId());

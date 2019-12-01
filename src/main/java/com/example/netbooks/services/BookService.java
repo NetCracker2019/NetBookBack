@@ -208,15 +208,18 @@ public class BookService {
     }
 
     public List<ViewBook> getFavouriteBooksByUserId(Long id, String sought, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getFavouriteBooksByUserId");
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, false, true,
+                false, false,"", "");
     }
 
-    public List<ViewBook> getReadingBooksByUserId(long id, String sought, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getReadingBooksByUserId");
+    public List<ViewBook> getReadingBooksByUserId(Long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, false, false,
+                true, false, "", "");
     }
 
-    public List<ViewBook> getReadBooksByUserId(long id, String sought, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getReadBooksByUserId");
+    public List<ViewBook> getReadBooksByUserId(Long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, true, false,
+                false, false,"", "");
     }
 
     public Date getMinDateRelease() {
@@ -263,5 +266,23 @@ public class BookService {
     public boolean checkBookInProfile(String userName, long bookId) {
         long userId = userRepository.getUserIdByName(userName);
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
+    }
+
+    public List<ViewBook> getBooksByUserId(long userId, String sought, int cntBooks, boolean read, boolean favourite,
+                                           boolean reading, boolean notSet, String sortBy, String order, int offset) {
+        return jdbcBookRepository.getBooksByUserId(userId, sought, cntBooks, offset, read, favourite, reading, notSet,
+                sortBy, order);
+    }
+
+    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
+        jdbcBookRepository.addBookBatchTo(userId, shelf, booksId);
+    }
+
+    public void removeBookBatchFrom(long userId, String shelf, List<Long> booksId) {
+        jdbcBookRepository.removeBookBatchFrom(userId, shelf, booksId);
+    }
+
+    public void removeBookBatch(long userId, List<Long> booksId) {
+        jdbcBookRepository.removeBookBatch(userId, booksId);
     }
 }
