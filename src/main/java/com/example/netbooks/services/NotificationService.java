@@ -20,6 +20,8 @@ public class NotificationService {
 
     @Autowired
     NotificationRepository notificationRepository;
+    @Autowired
+    UserManager userManager;
 
     public List<Notification> getAllNotificationsByUserId(long userId) {
         return notificationRepository.getAllNotificationsByUserId(userId);
@@ -53,7 +55,7 @@ public class NotificationService {
         for (User user : friends) {
             Notification notification = new Notification();
             notification.setNotifTypeId(4);
-            notification.setUserId((int) user.getUserId());
+            notification.setUserId((int) userManager.getUserIdByName(user.getName()));
             notification.setFromUserId((int) fromUserId);
             notification.setBookId((int) bookId);
             notification.setReviewId((int) reviewId);

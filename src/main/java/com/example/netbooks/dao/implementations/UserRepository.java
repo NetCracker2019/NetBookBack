@@ -236,7 +236,7 @@ public class UserRepository {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("id", findByLogin(login).getUserId());
-            return namedJdbcTemplate.query(env.getProperty("getFriendsByLogin"), namedParams, new FriendMapper());
+            return namedJdbcTemplate.query(env.getProperty("getFriendsByUsername"), namedParams, new FriendMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
         }

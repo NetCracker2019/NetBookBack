@@ -60,8 +60,8 @@ public class ApproveController {
     @PostMapping("confirm-review")
     public boolean confirmReview(@RequestParam("reviewId") long reviewId){
         Review review = bookService.getReviewById(reviewId);
-        List<User> friends = userManager.getFriendsByUsername(userManager.getUserById(review.getUserId()).getName());
-        notificationService.createAndSaveReviewNotif(reviewId, friends, review.getBookId() , reviewId);
+        List<User> friends = userManager.getFriendsByUsername(userManager.getUserById(review.getUserId()).getLogin());
+        notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId() , reviewId);
         return bookService.approveReview(reviewId);
     }
     @PostMapping("cancel-review")
