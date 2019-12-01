@@ -17,17 +17,21 @@ import com.example.netbooks.models.User;
 public class UserManager {
 	UserRepository userRepository;
 	AchievementRepository achievementRepository;
+	AchievementService achievementService;
 
 	@Autowired
-	public UserManager(UserRepository userRepository, AchievementRepository achievementRepository) {
+	public UserManager(UserRepository userRepository,
+					   AchievementRepository achievementRepository,
+					   AchievementService achievementService) {
 		this.userRepository = userRepository;
 		this.achievementRepository = achievementRepository;
+		this.achievementService = achievementService;
 	}
 
 	public User getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-    public int getUserIdByName(String name) { return userRepository.getUserIdByName(name); }
+    public int getUserIdByName(String name) { return userRepository.getUserIdByLogin(name); }
 
 	public void removeUserById(long id) {
 		userRepository.removeUserById(id);
@@ -117,6 +121,13 @@ public class UserManager {
 	}
 
 	public void addFriend(String ownLogin, String friendLogin) {
+		long userId = userRepository.getUserIdByLogin(ownLogin);
+		int friendsAmountForUser = userRepository.countFriendsForUser(userId);
+		long achvId = achievementService.getAchvIdByParameters(friendsAmountForUser, "friends", 1);
+		if (achvId > 0){
+			achievementRepository.addAchievementForUser(achvId, userId);
+
+		}
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
 

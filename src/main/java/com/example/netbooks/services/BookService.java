@@ -1,19 +1,15 @@
 package com.example.netbooks.services;
 
-import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,14 +19,19 @@ public class BookService {
     final AuthorRepository authorRepository;
     final ReviewRepository reviewRepository;
     final UserRepository userRepository;
+    final AchievementRepository achievementRepository;
+    final AchievementService achievementService;
 
-    public BookService(JdbcBookRepository jdbcBookRepository, GenreRepository genreRepository, AuthorRepository authorRepository, ReviewRepository reviewRepository, UserRepository userRepository) {
+    public BookService(JdbcBookRepository jdbcBookRepository, GenreRepository genreRepository, AuthorRepository authorRepository, ReviewRepository reviewRepository, UserRepository userRepository, AchievementRepository achievementRepository, AchievementService achievementService) {
         this.jdbcBookRepository = jdbcBookRepository;
         this.genreRepository = genreRepository;
         this.authorRepository = authorRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.achievementRepository = achievementRepository;
+        this.achievementService = achievementService;
     }
+
 
     public List<ViewBook> findBooks(String searchString, int size, int page) {
         String processedString = searchString.toLowerCase().trim().replaceAll(" +", " ");
@@ -232,18 +233,36 @@ public class BookService {
 
     public boolean addReviewForUserBook(Review review) {
         // review.setReviewText(review.getReviewText().trim());
-        review.setUserId(userRepository.getUserIdByName(review.getUserName()));
+        review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
         return reviewRepository.addReviewForUserBook(review);
     }
 
+
     public boolean addBookToProfile(String userName, long bookId) {
-        long userId = userRepository.getUserIdByName(userName);
-        return jdbcBookRepository.addBookToProfile(userId, bookId);
+        long userId = userRepository.getUserIdByLogin(userName);
+        boolean executionResult = jdbcBookRepository.addBookToProfile(userId, bookId);
+        int booksForUser = jdbcBookRepository.countBooksForUser(userId);
+        long achvId = achievementService.getAchvIdByParameters(booksForUser, "book", 10);
+
+        if (achvId > 0){
+            achievementRepository.addAchievementForUser(achvId, userId);
+
+        }
+        return executionResult;
     }
 
 
-    public boolean approveReview(long reviewId) {
-        return reviewRepository.approveReview(reviewId);
+    public boolean approveReview(long reviewId, long userId) {
+        boolean executionResult = reviewRepository.approveReview(reviewId);
+        int reviewsForUser = reviewRepository.countReviewsForUser(userId);
+        long achvId = achievementService.getAchvIdByParameters(reviewsForUser, "review", 1);
+        System.out.println(achvId);
+        System.out.println(reviewsForUser);
+        if (achvId > 0){
+            achievementRepository.addAchievementForUser(achvId, userId);
+
+        }
+        return executionResult;
     }
 
     public boolean cancelReview(long reviewId) {
@@ -255,12 +274,12 @@ public class BookService {
     }
 
     public boolean removeBookFromProfile(String userName, long bookId) {
-        long userId = userRepository.getUserIdByName(userName);
+        long userId = userRepository.getUserIdByLogin(userName);
         return jdbcBookRepository.removeBookFromProfile(userId, bookId);
     }
 
     public boolean checkBookInProfile(String userName, long bookId) {
-        long userId = userRepository.getUserIdByName(userName);
+        long userId = userRepository.getUserIdByLogin(userName);
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 

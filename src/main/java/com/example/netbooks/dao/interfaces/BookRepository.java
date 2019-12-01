@@ -44,6 +44,7 @@ public interface BookRepository {
     List<String> getFavouriteAuthor(int id);
     List<String> getFavouriteGenre(int id);
 
+    int countBooksForUser(long userId);
     void addBookBatchTo(Long userId, String shelf, List<Long> booksId);
     List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, boolean read,
                                     boolean favourite, boolean reading, boolean notSet, String sortBy, String order);

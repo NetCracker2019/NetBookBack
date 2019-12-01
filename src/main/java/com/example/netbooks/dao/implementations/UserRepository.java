@@ -3,22 +3,15 @@ package com.example.netbooks.dao.implementations;
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.dao.mappers.FriendMapper;
 import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
-import com.example.netbooks.models.ViewBook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +19,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -136,11 +128,14 @@ public class UserRepository {
     public Iterable<User> getAllUsers() {
         return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
     }
-    public int getUserIdByName(String name){
-        SqlParameterSource namedParameters = new MapSqlParameterSource("userName", name);
-        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByName"), namedParameters, Integer.class);
+    public int getUserIdByLogin(String login){
+        SqlParameterSource namedParameters = new MapSqlParameterSource("login", login);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByLogin"), namedParameters, Integer.class);
     }
-    
+    public int countFriendsForUser(long userId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("userId", userId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countFriendsForUser"), namedParameters, Integer.class);
+    }
     public User findByEmail(String email) {
         try {
             Map<String, Object> namedParams = new HashMap<>();

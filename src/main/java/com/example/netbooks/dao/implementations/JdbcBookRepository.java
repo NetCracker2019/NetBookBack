@@ -203,6 +203,13 @@ public class JdbcBookRepository implements BookRepository {
     public List<String> getFavouriteGenre(int id) {
         return null;
     }
+
+    @Override
+    public int countBooksForUser(long userId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countBooksForUser"), namedParameters, Integer.class);
+    }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<ViewBook> findBooksByTitleAndAuthor(String title, String author, java.sql.Date from, java.sql.Date to, int size, int startIndex) {
