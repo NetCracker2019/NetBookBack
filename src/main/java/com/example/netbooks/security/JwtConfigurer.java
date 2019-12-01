@@ -35,6 +35,7 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
         .antMatchers("/user-service/send-admin-reg-mail").hasRole("SUPER_ADMIN")
         .antMatchers("/user-service/send-moder-reg-mail").hasRole("SUPER_ADMIN")
+        .antMatchers("/notifications}/user").authenticated()
         //.antMatchers("/user-service/users").authenticated()
         //.antMatchers("/user-service/users").hasRole("ADMIN")
         .anyRequest().permitAll();
