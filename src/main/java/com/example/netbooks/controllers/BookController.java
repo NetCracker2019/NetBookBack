@@ -3,6 +3,8 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
+import com.example.netbooks.services.NotificationService;
+import com.example.netbooks.services.UserManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class BookController {
     private JdbcBookRepository jdbcBookRepository;
     final
     BookService bookService;
+    UserManager userManager;
+    NotificationService notificationService;
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
@@ -94,6 +98,15 @@ public class BookController {
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
         logger.info(userName+boolId);
+        List<User>friends=userManager.getFriendsByUsername(userName);
+        for (User user:friends){
+            Notification notification = new Notification();
+            notification.setNotifTypeId(2);
+            notification.setUserId(user.getUserId());
+            notification.setFromUserId((int)(userManager.getUserByLogin(userName).getUserId()));
+            notificationService.addNotification(notification);
+
+        }
         return bookService.addBookToProfile(userName, boolId);
     }
     @ResponseStatus(value = HttpStatus.OK)

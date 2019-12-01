@@ -2,6 +2,7 @@ package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.dao.interfaces.NotificationRepository;
 import com.example.netbooks.dao.mappers.NotificationMapper;
+import com.example.netbooks.dao.mappers.ViewNotificationMapper;
 import com.example.netbooks.models.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;;
@@ -31,6 +32,13 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
     private final RowMapper notificationMapper = new NotificationMapper();
+    private final RowMapper viewNotificationMapper = new ViewNotificationMapper();
+
+    @Override
+    public List<Notification> getAllViewNotificationsByUserId(long userId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
+        return namedParameterJdbcTemplate.query(environment.getProperty("getAllViewNotificationsByUserId"), namedParameters, viewNotificationMapper);
+    }
 
     @Override
     public List<Notification> getAllNotificationsByUserId(long userId) {
@@ -43,11 +51,14 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     public void addNotification(Notification notification) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("user_id", notification.getUserId());
-        namedParams.put("notif_name", notification.getNotifName());
-        namedParams.put("notif_title", notification.getNotifTitle());
-        namedParams.put("notif_text", notification.getNotifText());
+        namedParams.put("from_user_id", notification.getFromUserId());
+        namedParams.put("notif_type_id", notification.getNotifTypeId());
+        namedParams.put("overview_id", notification.getOverviewId());
+        namedParams.put("review_id", notification.getReviewId());
         namedParams.put("notif_date", notification.getDate());
         namedParams.put("is_read", notification.getIsRead());
+        namedParams.put("book_id", notification.getBookId());
+        namedParams.put("achiev_id", notification.getAchievId());
         namedParameterJdbcTemplate.update(environment.getProperty("addNotification"), namedParams);
     }
 

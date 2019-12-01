@@ -24,18 +24,16 @@ public class NotificationService {
         return notificationRepository.getAllNotificationsByUserId(userId);
     }
 
-    public void addNotification(int userId,NotificationEnum notifName ) throws IllegalArgumentException{
-        Notification notification;
-        switch (notifName){
-            case ADD_FRIEND_NOTIF:
-                java.util.Date now = new java.util.Date();
-                notification= new Notification(userId,"addFriend","Friend Request","check your frinds somebody want to add you", new Date(now.getTime()),false);
-                notificationRepository.addNotification(notification.getResult());
-                break;
-            default:
-                throw new IllegalArgumentException("notification type incorect");
 
-        }
+
+
+    public void addNotification(Notification notification) {
+
+
+        java.util.Date now = new java.util.Date();
+        notification.setDate(new Date(now.getTime()));
+        notificationRepository.addNotification(notification);
+
     }
 
     public void markAsRead() {
