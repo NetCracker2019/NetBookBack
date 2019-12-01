@@ -102,7 +102,7 @@ public class BookController {
         for (User user:friends){
             Notification notification = new Notification();
             notification.setNotifTypeId(2);
-            notification.setUserId(user.getUserId());
+            notification.setUserId((int)user.getUserId());
             notification.setFromUserId((int)(userManager.getUserByLogin(userName).getUserId()));
             notificationService.addNotification(notification);
 
