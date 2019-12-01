@@ -58,10 +58,11 @@ public class Notification {
         this.fromUserName=fromUserName;
         this.notifTitle=notifTitle;
         this.notifText=notifText;
-
     }
 
-
+    
+    
+    
     public boolean getIsRead() {
         return isRead;
     }

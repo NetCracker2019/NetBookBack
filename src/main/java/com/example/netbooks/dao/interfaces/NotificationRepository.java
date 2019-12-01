@@ -14,6 +14,10 @@ public interface NotificationRepository {
     void addNotification(Notification notification);
 
     void markAsRead();
+    
+    List<Notification> getAllUnreadViewNotificationsByUserId(long userId);
+    
+    List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId);
 
    // Notification getNotification(int notificationId);
 }

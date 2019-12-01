@@ -13,6 +13,8 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.http.HttpStatus;
 import java.sql.Date;
 import java.util.List;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
@@ -102,8 +104,9 @@ public class BookController {
         for (User user:friends){
             Notification notification = new Notification();
             notification.setNotifTypeId(2);
-            notification.setUserId(user.getUserId());
+            notification.setUserId((int)user.getUserId());
             notification.setFromUserId((int)(userManager.getUserByLogin(userName).getUserId()));
+            notification.setBookId(boolId);
             notificationService.addNotification(notification);
 
         }

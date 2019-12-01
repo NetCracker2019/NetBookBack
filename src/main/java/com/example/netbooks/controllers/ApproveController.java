@@ -3,6 +3,8 @@ package com.example.netbooks.controllers;
 
 import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
+import com.example.netbooks.services.NotificationService;
+import com.example.netbooks.services.UserManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,10 @@ public class ApproveController {
     private final Logger logger = LogManager.getLogger(ProfileController.class);
     @Autowired
     private BookService bookService;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private UserManager userManager;
 
     @GetMapping("/books")
     public List<ViewAnnouncement> getUnApproveBooks() {
@@ -53,6 +59,9 @@ public class ApproveController {
     }
     @PostMapping("confirm-review")
     public boolean confirmReview(@RequestParam("reviewId") long reviewId){
+        Review review = bookService.getReviewById(reviewId);
+        List<User> friends = userManager.getFriendsByUsername(userManager.getUserById(review.getUserId()).getName());
+        notificationService.createAndSaveReviewNotif(reviewId, friends, review.getBookId() , reviewId);
         return bookService.approveReview(reviewId);
     }
     @PostMapping("cancel-review")

@@ -5,7 +5,8 @@ import com.example.netbooks.dao.mappers.NotificationMapper;
 import com.example.netbooks.dao.mappers.ViewNotificationMapper;
 import com.example.netbooks.models.Notification;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;;
+import org.springframework.beans.factory.annotation.Autowired;
+;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 
 @Slf4j
 @PropertySource("classpath:queries/notification.properties")
@@ -46,6 +49,18 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         return namedParameterJdbcTemplate.query(environment.getProperty("getAllNotificationsByUserId"), namedParameters, notificationMapper);
     }
 
+    @Override
+    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
+        return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParameters, notificationMapper);
+    }
+
+    @Override
+    public List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
+        namedParameters.addValue("notif_type_id", typeId);
+        return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParameters, notificationMapper);
+    }
 
     @Override
     public void addNotification(Notification notification) {
@@ -62,7 +77,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParameterJdbcTemplate.update(environment.getProperty("addNotification"), namedParams);
     }
 
-
     @Override
     public void markAsRead() {
         Map<String, Object> namedParams = new HashMap<>();
@@ -70,4 +84,3 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
 }
-

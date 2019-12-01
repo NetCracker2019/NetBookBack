@@ -154,6 +154,10 @@ public class BookService {
     public List<Review> getPeaceOfReviewByBook(int bookId, int count, int offset) {
         return reviewRepository.getPeaceOfReviewByBook(bookId, count, offset);
     }
+    
+    public Review getReviewById(long reviewId){
+        return reviewRepository.getReviewById(reviewId);
+    }
 
     public List<ViewBook> getPeaceOfBooks(int count, int offset) {
         return jdbcBookRepository.getPeaceOfBook(count, offset);
