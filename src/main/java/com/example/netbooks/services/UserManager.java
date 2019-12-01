@@ -120,14 +120,11 @@ public class UserManager {
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
 
-	public boolean isFriend(String ownLogin, String friendLogin) {
+	public int isFriend(String ownLogin, String friendLogin) {
 		return userRepository.isFriend(ownLogin, friendLogin);
 	}
 
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
-	}
-	public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-		userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
 	}
 }
