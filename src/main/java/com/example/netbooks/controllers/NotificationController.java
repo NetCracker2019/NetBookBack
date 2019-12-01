@@ -1,7 +1,11 @@
 package com.example.netbooks.controllers;
 
+import com.example.netbooks.models.Notification;
 import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

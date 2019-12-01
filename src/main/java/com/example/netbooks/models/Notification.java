@@ -1,5 +1,6 @@
 package com.example.netbooks.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.sql.Date;
@@ -12,9 +13,12 @@ public class Notification {
 
     private Integer notificationId;
     private Integer userId;
+    @JsonProperty("date")
     private Date date;
+    @JsonProperty("isRead")
     private boolean isRead;
     private Integer fromUserId;
+    @JsonProperty("notifTypeId")
     private Integer notifTypeId;
     private Integer overviewId;
     private Integer reviewId;
@@ -25,7 +29,9 @@ public class Notification {
     private String fromUserName;
     private String bookName;
     private String achievName;
+    @JsonProperty("notifTitle")
     private String notifTitle;
+    @JsonProperty("notifText")
     private String notifText;
 
     public Notification() {

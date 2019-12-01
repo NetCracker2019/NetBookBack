@@ -26,15 +26,27 @@ public class NotificationService {
     }
 
     public List<Notification> getAllViewNotificationsByUserId(long userId) {
-        return notificationRepository.getAllViewNotificationsByUserId(userId);
+        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId);
+        for (Notification notif : notifList) {
+            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
+        }
+        return notifList;
     }
 
     public List<Notification> getAllUnreadViewNotificationsByUserId(long userId) {
-        return notificationRepository.getAllUnreadViewNotificationsByUserId(userId);
+        List<Notification> notifList = notificationRepository.getAllUnreadViewNotificationsByUserId(userId);
+        for (Notification notif : notifList) {
+            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
+        }
+        return notifList;
     }
 
     public List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long notif_type_id) {
-        return notificationRepository.getAllViewNotificationsByUserIdAndTypeId(userId, notif_type_id);
+        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserIdAndTypeId(userId, notif_type_id);
+        for (Notification notif : notifList) {
+            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
+        }
+        return notifList;
     }
 
     public void createAndSaveReviewNotif(long fromUserId, List<User> friends, long bookId, long reviewId) {
@@ -50,7 +62,11 @@ public class NotificationService {
     }
 
     public Notification parseViewNotif(Notification notif) {
-
+        String notifText = notif.getNotifText();
+        notifText = notifText.replaceAll("user_name", notif.getFromUserName());
+        notifText = notifText.replaceAll("book_name", notif.getBookName());
+        notifText = notifText.replaceAll("achiev_name", notif.getAchievName());
+        notif.setNotifText(notifText);
         return notif;
     }
 
