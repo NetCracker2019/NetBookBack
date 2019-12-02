@@ -241,8 +241,8 @@ public class BookController {
     }
 
     @GetMapping("/calendar-announcement")
-    public List<Event> calendarAnnouncement(@RequestParam("value") String value) {
-        logger.info(value);
-        return bookService.calendarAnnouncement(value);
+    public List<Event> calendarAnnouncement(@RequestParam("value") String value, @RequestParam("userName") String userName) {
+        logger.info(userName);
+        return bookService.calendarAnnouncement(value, userName);
     }
 }

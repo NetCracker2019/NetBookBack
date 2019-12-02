@@ -134,11 +134,12 @@ public class BookService {
         return ResponseEntity.ok(response);
     }
 
-    public List<Event> calendarAnnouncement(String value) {
+    public List<Event> calendarAnnouncement(String value, String userName) {
+        int userId = userRepository.getUserIdByLogin(userName);
         if (value.equals("all")) {
             return jdbcBookRepository.getCalendarAllAnnouncement();
         } else {
-            return jdbcBookRepository.getCalendarPersonalizeAnnouncement();
+            return jdbcBookRepository.getCalendarPersonalizeAnnouncement(userId);
         }
     }
 

@@ -39,7 +39,7 @@ public interface BookRepository {
     void cancelAnnouncement(long announcementId);
 
     List<Event> getCalendarAllAnnouncement();
-    List<Event> getCalendarPersonalizeAnnouncement();
+    List<Event> getCalendarPersonalizeAnnouncement(int userId);
 
     List<String> getFavouriteAuthor(int id);
     List<String> getFavouriteGenre(int id);

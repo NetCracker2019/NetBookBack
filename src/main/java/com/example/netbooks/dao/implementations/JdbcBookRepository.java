@@ -190,11 +190,11 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public List<Event> getCalendarPersonalizeAnnouncement() {
-        int tmp = 26;
+    public List<Event> getCalendarPersonalizeAnnouncement(int userId) {
+        logger.info(userId);
         List<Event> result;
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("value", tmp);
+        namedParameters.addValue("value", userId);
 
         List<Genre> favouriteGenre = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenre"),namedParameters,genreNameMapper);
         List<Author> favouriteAuthor = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthor"),namedParameters,authorNameMapper);
