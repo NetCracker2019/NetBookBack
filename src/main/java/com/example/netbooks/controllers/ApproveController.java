@@ -51,8 +51,8 @@ public class ApproveController {
         return bookService.getReviewsForApprove(page, offset);
     }
     @PostMapping("confirm-review")
-    public boolean confirmReview(@RequestParam("reviewId") long reviewId){
-        return bookService.approveReview(reviewId);
+    public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId){
+        return bookService.approveReview(reviewId, userId);
     }
     @PostMapping("cancel-review")
     public boolean cancelReview(@RequestParam("reviewId") long reviewId){

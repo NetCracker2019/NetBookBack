@@ -17,17 +17,21 @@ import com.example.netbooks.models.User;
 public class UserManager {
 	UserRepository userRepository;
 	AchievementRepository achievementRepository;
+	AchievementService achievementService;
 
 	@Autowired
-	public UserManager(UserRepository userRepository, AchievementRepository achievementRepository) {
+	public UserManager(UserRepository userRepository,
+					   AchievementRepository achievementRepository,
+					   AchievementService achievementService) {
 		this.userRepository = userRepository;
 		this.achievementRepository = achievementRepository;
+		this.achievementService = achievementService;
 	}
 
 	public User getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-    public int getUserIdByName(String name) { return userRepository.getUserIdByName(name); }
+    public int getUserIdByName(String name) { return userRepository.getUserIdByLogin(name); }
 
 	public void removeUserById(long id) {
 		userRepository.removeUserById(id);
@@ -117,17 +121,21 @@ public class UserManager {
 	}
 
 	public void addFriend(String ownLogin, String friendLogin) {
+		long userId = userRepository.getUserIdByLogin(ownLogin);
+		int friendsAmountForUser = userRepository.countFriendsForUser(userId);
+		long achvId = achievementService.getAchvIdByParameters(friendsAmountForUser, "friends", 1);
+		if (achvId > 0){
+			achievementRepository.addAchievementForUser(achvId, userId);
+
+		}
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
 
-	public boolean isFriend(String ownLogin, String friendLogin) {
+	public int isFriend(String ownLogin, String friendLogin) {
 		return userRepository.isFriend(ownLogin, friendLogin);
 	}
 
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
-	}
-	public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-		userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
 	}
 }
