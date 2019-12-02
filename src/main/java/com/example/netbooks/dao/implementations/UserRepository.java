@@ -137,7 +137,7 @@ public class UserRepository {
     }
     public int getUserIdByName(String name){
         SqlParameterSource namedParameters = new MapSqlParameterSource("userName", name);
-        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByName"), namedParameters, Integer.class);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByLogin"), namedParameters, Integer.class);
     }
     
     public User findByEmail(String email) {
