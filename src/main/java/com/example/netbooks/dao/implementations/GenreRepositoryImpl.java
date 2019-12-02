@@ -37,7 +37,6 @@ public class GenreRepositoryImpl implements GenreRepository {
 
     @Override
     public String addRowIntoBookGenre(String title, List<String> id) {
-        logger.info("Я добавил жанр");
         for (String item : id) {
             //for (int i = 0; i < book.getGenre().size(); i++) {
             //todo prepared statement

@@ -43,11 +43,13 @@ public class JdbcBookRepository implements BookRepository {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    RowMapper viewAnnouncementMapper = new ViewAnnouncementMapper();
     private final Logger logger = LogManager.getLogger(ProfileController.class);
+    private final RowMapper viewAnnouncementMapper = new ViewAnnouncementMapper();
     private final RowMapper viewBooksMapper = new ViewBookMapper();
     private final RowMapper eventMapper = new EventMapper();
     private final RowMapper announcementMapper = new BookRowMapper();
+    private final RowMapper genreNameMapper = new GenreNameMapper();
+    private final RowMapper authorNameMapper = new AuthorNameMapper();
 
     public JdbcBookRepository(DataSource dataSource) {
         namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -75,8 +77,8 @@ public class JdbcBookRepository implements BookRepository {
     public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
         int startIndex = booksPerPage * (page - 1);
 //        int amount = startIndex + booksPerPage;
-//        logger.info(jdbcTemplate.query("SELECT * FROM announcement WHERE approved = true ORDER BY title LIMIT 5 OFFSET 1", this::mapRowToAnnouncement));
-        return jdbcTemplate.query("SELECT book_id, title, description, image_path, release_date FROM book WHERE approved = true AND release_date >= now() ORDER BY book_id LIMIT " + booksPerPage + " OFFSET " + startIndex, announcementMapper);
+        logger.info(jdbcTemplate.query("SELECT book_id, title, authors, likes, image_path, release_date, lang, pages, genres, description FROM view_book_list WHERE approved = true AND release_date >= now() ORDER BY book_id LIMIT " + booksPerPage + " OFFSET " + startIndex, viewBooksMapper));
+        return jdbcTemplate.query("SELECT book_id, title, description, image_path, release_date, pages, genres, authors, likes, lang FROM view_book_list WHERE approved = true AND release_date >= now() ORDER BY book_id LIMIT " + booksPerPage + " OFFSET " + startIndex, viewBooksMapper);
     }
 /////////////////////////////////////////////////////////////////////////////////////////////
     @Override
@@ -189,7 +191,40 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<Event> getCalendarPersonalizeAnnouncement() {
-        return null;
+        int tmp = 26;
+        List<Event> result;
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("value", tmp);
+
+        List<Genre> favouriteGenre = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenre"),namedParameters,genreNameMapper);
+        List<Author> favouriteAuthor = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthor"),namedParameters,authorNameMapper);
+        logger.info(favouriteGenre);
+        logger.info(favouriteAuthor);
+        String authors = "{";
+        String genres = "{";
+
+        for (Author item : favouriteAuthor) {
+            logger.info(item.getFullName());
+
+            authors += item.getFullName() + ", ";
+        }
+        authors = authors.replaceAll(", $", "");
+        authors += "}";
+
+        logger.info(authors);
+        for (Genre item : favouriteGenre) {
+            logger.info(item.getGenreName());
+            genres += item.getGenreName() + ", ";
+        }
+        genres = genres.replaceAll(", $", "");
+        genres += "}";
+
+
+        namedParameters.addValue("authors", authors);
+        namedParameters.addValue("genres", genres);
+        logger.info(namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncement"),namedParameters,eventMapper));
+
+        return namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncement"),namedParameters,eventMapper);
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
