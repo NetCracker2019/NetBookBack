@@ -205,6 +205,13 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
+    public void likeBook(long bookId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("bookId", bookId);
+        namedJdbcTemplate.update(env.getProperty("likeBook"), namedParameters);
+    }
+
+    @Override
     public int countBooksForUser(long userId) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("userId", userId);

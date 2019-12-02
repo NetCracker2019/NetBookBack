@@ -102,10 +102,21 @@ public class BookController {
         logger.info(review);
         return bookService.addReviewForUserBook(review);
     }
-    @PostMapping("/remove-book-profile")
+    @DeleteMapping("/remove-book-profile")
     public boolean removeBookFromProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
         logger.info("Deleted book: "+userName+bookId);
         return bookService.removeBookFromProfile(userName, bookId);
+    }
+    @PutMapping("/like-book")
+    public boolean likeBook(@RequestParam("bookId") long bookId){
+        bookService.likeBook(bookId);
+        logger.info("Book id : "+ bookId);
+        return true;
+    }
+    @PutMapping("/like-review")
+    public boolean likeReview(@RequestParam("reviewId") long reviewId){
+        bookService.likeReview(reviewId);
+        return true;
     }
     @GetMapping("/check-book-profile")
     public boolean checkBookInProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId) {

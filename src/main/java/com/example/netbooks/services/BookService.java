@@ -269,6 +269,12 @@ public class BookService {
         return reviewRepository.cancelReview(reviewId);
     }
 
+    public void likeReview(long reviewId){
+        reviewRepository.likeReview(reviewId);
+    }
+    public void likeBook(long bookId){
+        jdbcBookRepository.likeBook(bookId);
+    }
     public List<Review> getReviewsForApprove(int page, int itemPerPage){
         return reviewRepository.getReviewsForApprove(page, itemPerPage);
     }
