@@ -1,5 +1,9 @@
 package com.example.netbooks.services;
 
+
+import com.example.netbooks.controllers.BookController;
+import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
@@ -7,10 +11,25 @@ import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.springframework.stereotype.Service;
+
+import java.sql.Date;
+
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookService {
@@ -22,7 +41,9 @@ public class BookService {
     final AchievementRepository achievementRepository;
     final AchievementService achievementService;
 
+
     public BookService(JdbcBookRepository jdbcBookRepository, GenreRepository genreRepository, AuthorRepository authorRepository, ReviewRepository reviewRepository, UserRepository userRepository, AchievementRepository achievementRepository, AchievementService achievementService) {
+
         this.jdbcBookRepository = jdbcBookRepository;
         this.genreRepository = genreRepository;
         this.authorRepository = authorRepository;
@@ -83,39 +104,48 @@ public class BookService {
         return jdbcBookRepository.getBookById(id);
     }
 
-    public String addBook(Book book, String value) {
-        if (!jdbcBookRepository.checkIsExist(book)) {
-            jdbcBookRepository.addBook(book);
-            genreRepository.addRowIntoBookGenre(book);
-            jdbcBookRepository.addRowIntoBookAuthor(book);
-        }
-        if (value.equals("announcement")) {
-            jdbcBookRepository.addNewAnnouncement(book);
-        }
-        return "Ok";
+    public ResponseEntity<Map> addBook(Book book) {
+
+        int userId = userRepository.getUserIdByLogin(book.getUser());
+        // TODO add validation of same title
+        jdbcBookRepository.addBook(book, userId);
+        genreRepository.addRowIntoBookGenre(book.getTitle(),book.getGenre());
+        authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getAuthor());
+
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("status", "ok");
+        return ResponseEntity.ok(response);
     }
 
-    public String confirmAnnouncement(long announcementId) {
+    public ResponseEntity<Map> confirmAnnouncement(long announcementId) {
         jdbcBookRepository.confirmAnnouncement(announcementId);
-        return "ok";
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("status", "ok");
+        return ResponseEntity.ok(response);
     }
 
-    public String cancelAnnouncement(long announcementId) {
+    public ResponseEntity<Map> cancelAnnouncement(long announcementId) {
         jdbcBookRepository.cancelAnnouncement(announcementId);
-        return "ok";
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("status", "ok");
+        return ResponseEntity.ok(response);
     }
 
-    public List<Event> calendarAnnouncement(String value) {
+    public List<Event> calendarAnnouncement(String value, String userName) {
+        int userId = userRepository.getUserIdByLogin(userName);
         if (value.equals("all")) {
             return jdbcBookRepository.getCalendarAllAnnouncement();
         } else {
-            return jdbcBookRepository.getCalendarPersonalizeAnnouncement();
+            return jdbcBookRepository.getCalendarPersonalizeAnnouncement(userId);
         }
     }
 
-    public String addAnnouncement(Book book) {
-        return jdbcBookRepository.addAnnouncement(book);
-    }
+//    public String addAnnouncement(Book book) {
+//        return jdbcBookRepository.addAnnouncement(book);
+//    }
 
     public List<Announcement> findAllAnnouncement() {
         return jdbcBookRepository.findAllAnnouncement();

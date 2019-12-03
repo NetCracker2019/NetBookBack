@@ -6,11 +6,13 @@ import com.example.netbooks.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.http.HttpStatus;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
@@ -31,17 +33,16 @@ public class BookController {
         return bookService.getAllViewBooks();
     }
 
-    @PostMapping("/books/addBook")
-    public String add (@RequestParam(name = "value") String value, @RequestBody Book book){
+    @PostMapping("/book")
+    public ResponseEntity addBook (@RequestBody Book book){
         logger.info(book);
-        logger.info(value);
-        return bookService.addBook(book, value);
+        return bookService.addBook(book);
     }
 
-    @PostMapping("/books/addAnnouncement")
-    public String addAnnouncement (@RequestBody Book book){
-        return bookService.addAnnouncement(book);
-    }
+//    @PostMapping("/books/addAnnouncement")
+//    public String addAnnouncement (@RequestBody Book book){
+//        return bookService.addAnnouncement(book);
+//    }
 
     @GetMapping(value="/announcement")
     public List<Announcement> getAllAnnouncement() {
@@ -251,8 +252,8 @@ public class BookController {
     }
 
     @GetMapping("/calendar-announcement")
-    public List<Event> calendarAnnouncement(@RequestParam("value") String value) {
-        logger.info(value);
-        return bookService.calendarAnnouncement(value);
+    public List<Event> calendarAnnouncement(@RequestParam("value") String value, @RequestParam("userName") String userName) {
+        logger.info(userName);
+        return bookService.calendarAnnouncement(value, userName);
     }
 }

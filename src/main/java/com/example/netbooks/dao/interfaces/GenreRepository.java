@@ -11,5 +11,5 @@ import java.util.List;
 public interface GenreRepository {
     public List<String> getAllGenreNames();
     public List<Genre> getAllGenres();
-    public String addRowIntoBookGenre(Book book);
+    public String addRowIntoBookGenre(String title, List<String> id);
 }
