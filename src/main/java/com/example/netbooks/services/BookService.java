@@ -1,8 +1,6 @@
 package com.example.netbooks.services;
 
 
-import com.example.netbooks.controllers.BookController;
-import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.implementations.UserRepository;
@@ -10,23 +8,18 @@ import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Collections;
 import java.sql.Date;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +39,9 @@ public class BookService {
                        GenreRepository genreRepository,
                        AuthorRepository authorRepository,
                        ReviewRepository reviewRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       AchievementRepository achievementRepository,
+                       AchievementService achievementService) {
         this.jdbcBookRepository = jdbcBookRepository;
         this.genreRepository = genreRepository;
         this.authorRepository = authorRepository;
@@ -285,7 +280,7 @@ public class BookService {
     }
 
     public List<ViewBook> getSuggestions(String userName) {
-        long userId = userRepository.getUserIdByName(userName);
+        long userId = userRepository.getUserIdByLogin(userName);
         Map<String, Object> mapGenre = jdbcBookRepository.getFavouriteGenres(userId);
         Map<String, Object> mapAuthor = jdbcBookRepository.getFavouriteAuthors(userId);
         if (!mapGenre.isEmpty() && !mapAuthor.isEmpty()) {
