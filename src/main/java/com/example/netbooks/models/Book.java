@@ -5,14 +5,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
+
+import java.util.List;
 
 @Data
 public class Book {
     private long bookId;
     private String title;
-    private ArrayList<String> authors;
-    private ArrayList<String> genres;
+    private List<String> authors;
+    private List<String> genres;
     private int like;
     private String imagePath;
     private String release_date;
@@ -20,7 +21,12 @@ public class Book {
     private int pages;
     private String description;
     private boolean approved;
+    private String user;
 
+
+    public String getUser() {
+        return user;
+    }
 
     public long getBookId() {
         return bookId;
@@ -30,11 +36,11 @@ public class Book {
         return title;
     }
 
-    public ArrayList<String> getAuthor() {
+    public List<String> getAuthor() {
         return authors;
     }
 
-    public ArrayList<String> getGenre() {
+    public List<String> getGenre() {
         return genres;
     }
 
@@ -66,8 +72,13 @@ public class Book {
         return approved;
     }
 
+    //public Book() {}
 
-    public Book(long bookId, String title, ArrayList<String> authors, ArrayList<String> genre, int like, String imagePath, String release_date, String language, int pages, String description, boolean approved) {
+    public Book() {}
+
+    public Book(long bookId, String title, List<String> authors, List<String> genre, int like,
+                String imagePath, String release_date, String language, int pages, String description,
+                boolean approved, String user) {
         this.bookId = bookId;
         this.title = title;
         this.authors = authors;
@@ -79,7 +90,14 @@ public class Book {
         this.pages = pages;
         this.description = description;
         this.approved = approved;
+        this.user = user;
     }
 
-
+    public Book(long bookId, String title, String imagePath, String release_date, String description) {
+        this.bookId = bookId;
+        this.title = title;
+        this.imagePath = imagePath;
+        this.release_date = release_date;
+        this.description = description;
+    }
 }

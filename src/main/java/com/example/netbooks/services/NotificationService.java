@@ -24,7 +24,7 @@ public class NotificationService {
         return notificationRepository.getAllNotificationsByUserId(userId);
     }
 
-    public void addNotification(int userId,NotificationEnum notifName ) throws IllegalArgumentException{
+    public void addNotification(int userId, NotificationEnum notifName ) throws IllegalArgumentException{
         Notification notification;
         switch (notifName){
             case ADD_FRIEND_NOTIF:

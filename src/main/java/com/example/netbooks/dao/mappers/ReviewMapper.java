@@ -16,6 +16,8 @@ public class ReviewMapper implements RowMapper {
                 resultSet.getLong("b_id"),
                 resultSet.getString("u_name"),
                 resultSet.getString("av_path"),
+                resultSet.getString("title"),
+                (String[])resultSet.getArray("authors").getArray(),
                 resultSet.getString("r_text"),
                 resultSet.getInt("rating"),
                 resultSet.getBoolean("appr"));

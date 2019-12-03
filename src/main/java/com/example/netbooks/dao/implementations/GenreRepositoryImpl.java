@@ -1,9 +1,12 @@
 package com.example.netbooks.dao.implementations;
 
+import com.example.netbooks.controllers.ProfileController;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.mappers.GenreMapper;
 import com.example.netbooks.models.Book;
 import com.example.netbooks.models.Genre;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,7 +21,7 @@ import java.util.List;
 public class GenreRepositoryImpl implements GenreRepository {
     //@Autowired
     JdbcTemplate jdbcTemplate;
-
+    private final Logger logger = LogManager.getLogger(GenreRepositoryImpl.class);
     public GenreRepositoryImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -33,12 +36,12 @@ public class GenreRepositoryImpl implements GenreRepository {
     }
 
     @Override
-    public String addRowIntoBookGenre(Book book) {
-        for (String item : book.getGenre()) {
+    public String addRowIntoBookGenre(String title, List<String> id) {
+        for (String item : id) {
             //for (int i = 0; i < book.getGenre().size(); i++) {
             //todo prepared statement
-                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + book.getTitle() + "'), \n" +
-                        "\t\t   (select genre_id from genre where genre_name ='" + item + "'))");
+                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + title
+                        + "'), " + item + ")");
             //}
         }
             return "Add Genre";

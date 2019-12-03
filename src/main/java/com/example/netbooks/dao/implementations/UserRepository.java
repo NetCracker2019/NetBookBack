@@ -3,19 +3,13 @@ package com.example.netbooks.dao.implementations;
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.dao.mappers.FriendMapper;
 import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.Book;
-import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +19,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -45,7 +38,7 @@ public class UserRepository {
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             User user = new User();
-            
+
             user.setUserId(resultSet.getLong("person_id"));
             user.setLogin(resultSet.getString("login"));
             user.setPassword(resultSet.getString("passw"));
@@ -70,7 +63,7 @@ public class UserRepository {
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.env = env;
     }
-   
+
     public void save(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -90,7 +83,7 @@ public class UserRepository {
 
         namedJdbcTemplate.update(env.getProperty("saveUser"), namedParams);
     }
-    
+
     public void updateUser(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -110,7 +103,7 @@ public class UserRepository {
 
         namedJdbcTemplate.update(env.getProperty("updateUser"), namedParams);
     }
-    
+
     public void updateUserById(User user, Long id) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -131,15 +124,20 @@ public class UserRepository {
 
         namedJdbcTemplate.update(env.getProperty("updateUserById"), namedParams);
     }
-    
+
     public Iterable<User> getAllUsers() {
         return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
     }
-    public int getUserIdByName(String name){
-        SqlParameterSource namedParameters = new MapSqlParameterSource("userName", name);
-        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByName"), namedParameters, Integer.class);
+
+    public int getUserIdByLogin(String login){
+        SqlParameterSource namedParameters = new MapSqlParameterSource("login", login);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByLogin"), namedParameters, Integer.class);
     }
-    
+    public int countFriendsForUser(long userId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("userId", userId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countFriendsForUser"), namedParameters, Integer.class);
+
+    }
     public User findByEmail(String email) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -150,7 +148,7 @@ public class UserRepository {
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
     }
-    
+
     public User findByLogin(String login) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -195,19 +193,19 @@ public class UserRepository {
             return false;
         }
     }
-    
+
     public void removeUserById(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("removeUserById"), namedParams);
     }
-    
+
     public void activateUser(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("activateUser"), namedParams);
     }
-    
+
     public void deActivateUser(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
@@ -244,7 +242,7 @@ public class UserRepository {
         }
     }
 
-    
+
     public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -304,33 +302,31 @@ public class UserRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
+        if(namedJdbcTemplate.queryForObject(
+                env.getProperty("isSubscribe"), namedParams, Integer.class) > 0) {
+            namedJdbcTemplate.update(env.getProperty("acceptFriendRequest"), namedParams);
+        }
         namedJdbcTemplate.update(env.getProperty("addFriend"), namedParams);
     }
 
-    public boolean isFriend(String ownLogin, String friendLogin) {
+    public int isFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        return namedJdbcTemplate.queryForObject(
-                env.getProperty("isFriend"), namedParams, Integer.class) > 0 ;
+        if(namedJdbcTemplate.queryForObject(
+                env.getProperty("isFriend"), namedParams, Integer.class) > 0){
+            return 1;
+        }else if(namedJdbcTemplate.queryForObject(
+                env.getProperty("isSubscribe"), namedParams, Integer.class) > 0){
+            return 0;
+        } else return -1;
+
     }
     public void deleteFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         namedJdbcTemplate.update(env.getProperty("deleteFriend"), namedParams);
-    }
-    public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("user_id", findByLogin(login).getUserId());
-        namedParams.put("book_id", bookId);
-        namedParams.put("reading", reading);
-        namedParams.put("favourite", favourite);
-        if(!remove){
-            namedJdbcTemplate.update(env.getProperty("updateUserBookList"), namedParams);
-        }else {
-            namedJdbcTemplate.update(env.getProperty("removeBookFromBookList"), namedParams);
-        }
     }
 }
 

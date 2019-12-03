@@ -4,15 +4,17 @@ import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.relational.core.sql.In;
+import org.springframework.http.ResponseEntity;
+import org.springframework.data.convert.ReadingConverter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,17 +33,16 @@ public class BookController {
         return bookService.getAllViewBooks();
     }
 
-    @PostMapping("/books/addBook")
-    public String add (@RequestParam(name = "value") String value, @RequestBody Book book){
+    @PostMapping("/book")
+    public ResponseEntity addBook (@RequestBody Book book){
         log.info(book.toString());
-        log.info(value);
-        return bookService.addBook(book, value);
+        return bookService.addBook(book);
     }
 
-    @PostMapping("/books/addAnnouncement")
-    public String addAnnouncement (@RequestBody Book book){
-        return bookService.addAnnouncement(book);
-    }
+//    @PostMapping("/books/addAnnouncement")
+//    public String addAnnouncement (@RequestBody Book book){
+//        return bookService.addAnnouncement(book);
+//    }
 
     @GetMapping(value="/announcement")
     public List<Announcement> getAllAnnouncement() {
@@ -91,10 +92,21 @@ public class BookController {
         log.info(review.toString());
         return bookService.addReviewForUserBook(review);
     }
-    @PostMapping("/remove-book-profile")
+    @DeleteMapping("/remove-book-profile")
     public boolean removeBookFromProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
         log.info("Deleted book: "+userName+bookId);
         return bookService.removeBookFromProfile(userName, bookId);
+    }
+    @PutMapping("/like-book")
+    public boolean likeBook(@RequestParam("bookId") long bookId){
+        bookService.likeBook(bookId);
+        log.info("Book id : "+ bookId);
+        return true;
+    }
+    @PutMapping("/like-review")
+    public boolean likeReview(@RequestParam("reviewId") long reviewId){
+        bookService.likeReview(reviewId);
+        return true;
     }
     @GetMapping("/check-book-profile")
     public boolean checkBookInProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId) {
@@ -150,14 +162,15 @@ public class BookController {
         return bookService.getAllAuthors();
     }
     @GetMapping("/count-reviews")
-    public int countReviews(){
-        return  bookService.countReviews();
+    public int countReviews(@RequestParam("approved") boolean approved){
+        log.info("Количетсво ревьюшек: "+bookService.countReviews(approved));
+        return  bookService.countReviews(approved);
     }
 
     @GetMapping("/calendar-announcement")
-    public List<Event> calendarAnnouncement(@RequestParam("value") String value) {
-        log.info(value);
-        return bookService.calendarAnnouncement(value);
+    public List<Event> calendarAnnouncement(@RequestParam("value") String value, @RequestParam("userName") String userName) {
+        log.info(userName);
+        return bookService.calendarAnnouncement(value, userName);
     }
 
     @GetMapping("/suggestions")

@@ -10,9 +10,9 @@ import java.util.List;
 public interface BookRepository {
     List<Book> findAllBooks();
     List<Announcement> findAllAnnouncement();
-    String addBook(Book book);
-    String addAnnouncement(Book book);
-    void addNewAnnouncement(Book book);
+    String addBook(Book book, int userId);
+//    String addAnnouncement(Book book);
+//    void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
     List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
 
@@ -33,14 +33,22 @@ public interface BookRepository {
     List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
     List<ViewAnnouncement> findViewUnApproveBooks();
 
-    public String addRowIntoBookAuthor(Book book);
 
-    public String confirmAnnouncement(long announcementId);
-    public String cancelAnnouncement(long announcementId);
+
+    void confirmAnnouncement(long announcementId);
+    void cancelAnnouncement(long announcementId);
 
     List<Event> getCalendarAllAnnouncement();
-    List<Event> getCalendarPersonalizeAnnouncement();
+    List<Event> getCalendarPersonalizeAnnouncement(int userId);
 
     List<String> getFavouriteAuthor(int id);
     List<String> getFavouriteGenre(int id);
+
+    void likeBook(long bookId);
+    int countBooksForUser(long userId);
+    void addBookBatchTo(Long userId, String shelf, List<Long> booksId);
+    List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, boolean read,
+                                    boolean favourite, boolean reading, boolean notSet, String sortBy, String order);
+    void removeBookBatch(long userId, List<Long> booksId);
+    void removeBookBatchFrom(Long userId, String shelf, List<Long> booksId);
 }

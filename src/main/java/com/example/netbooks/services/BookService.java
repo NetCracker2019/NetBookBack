@@ -1,21 +1,32 @@
 package com.example.netbooks.services;
 
+
+import com.example.netbooks.controllers.BookController;
+import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Collections;
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +38,8 @@ public class BookService {
     final AuthorRepository authorRepository;
     final ReviewRepository reviewRepository;
     final UserRepository userRepository;
+    final AchievementRepository achievementRepository;
+    final AchievementService achievementService;
 
     @Autowired
     public BookService(JdbcBookRepository jdbcBookRepository,
@@ -39,6 +52,8 @@ public class BookService {
         this.authorRepository = authorRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.achievementRepository = achievementRepository;
+        this.achievementService = achievementService;
     }
 
     public List<Book> getAllBooks(){
@@ -53,8 +68,8 @@ public class BookService {
         return jdbcBookRepository.findViewUnApproveBooks();
     }
 
-    public int countReviews(){
-        return reviewRepository.countReviews();
+    public int countReviews(boolean approved) {
+        return reviewRepository.countReviews(approved);
     }
 
     public int countBooks(){
@@ -69,44 +84,61 @@ public class BookService {
         return jdbcBookRepository.getBookById(id);
     }
 
-    public String addBook(Book book, String value)
-    {
-        if (!jdbcBookRepository.checkIsExist(book)) {
-            jdbcBookRepository.addBook(book);
-            genreRepository.addRowIntoBookGenre(book);
-            jdbcBookRepository.addRowIntoBookAuthor(book);
-        }
-        if (value.equals("announcement")) {
-            jdbcBookRepository.addNewAnnouncement(book);
-        }
-        return "Ok";
+    public ResponseEntity<Map> addBook(Book book) {
+
+        int userId = userRepository.getUserIdByLogin(book.getUser());
+        // TODO add validation of same title
+        jdbcBookRepository.addBook(book, userId);
+        genreRepository.addRowIntoBookGenre(book.getTitle(),book.getGenre());
+        authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getAuthor());
+
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("status", "ok");
+        return ResponseEntity.ok(response);
     }
 
-    public String confirmAnnouncement(long announcementId) {
+    public ResponseEntity<Map> confirmAnnouncement(long announcementId) {
         jdbcBookRepository.confirmAnnouncement(announcementId);
-        return "ok";
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("status", "ok");
+        return ResponseEntity.ok(response);
     }
 
-    public String cancelAnnouncement(long announcementId) {
+    public ResponseEntity<Map> cancelAnnouncement(long announcementId) {
         jdbcBookRepository.cancelAnnouncement(announcementId);
-        return "ok";
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("status", "ok");
+        return ResponseEntity.ok(response);
     }
 
-    public List<Event> calendarAnnouncement(String value) {
+    public List<Event> calendarAnnouncement(String value, String userName) {
+        int userId = userRepository.getUserIdByLogin(userName);
         if (value.equals("all")) {
             return jdbcBookRepository.getCalendarAllAnnouncement();
-        }else {
-            return jdbcBookRepository.getCalendarPersonalizeAnnouncement();
+        } else {
+            return jdbcBookRepository.getCalendarPersonalizeAnnouncement(userId);
         }
     }
 
-    public String addAnnouncement(Book book) { return jdbcBookRepository.addAnnouncement(book);}
+//    public String addAnnouncement(Book book) {
+//        return jdbcBookRepository.addAnnouncement(book);
+//    }
 
-    public List<Announcement> findAllAnnouncement() { return jdbcBookRepository.findAllAnnouncement(); }
+    public List<Announcement> findAllAnnouncement() {
+        return jdbcBookRepository.findAllAnnouncement();
+    }
 
-    public int getAmountOfAnnouncement() { return jdbcBookRepository.getAmountOfAnnouncement(); }
+    public int getAmountOfAnnouncement() {
+        return jdbcBookRepository.getAmountOfAnnouncement();
+    }
 
-    public int getAmountOfBook() { return jdbcBookRepository.getAmountOfBook(); }
+
+    public int getAmountOfBook() {
+        return jdbcBookRepository.getAmountOfBook();
+    }
 
     public List<ViewBook> getPeaceBook(int page, int booksPerPage) {
         return jdbcBookRepository.getPeaceBook(page, booksPerPage);
@@ -172,15 +204,18 @@ public class BookService {
     }
 
     public List<ViewBook> getFavouriteBooksByUserId(Long id, String sought, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getFavouriteBooksByUserId");
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, false, true,
+                false, false,"", "");
     }
 
-    public List<ViewBook> getReadingBooksByUserId(long id, String sought, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getReadingBooksByUserId");
+    public List<ViewBook> getReadingBooksByUserId(Long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, false, false,
+                true, false, "", "");
     }
 
-    public List<ViewBook> getReadBooksByUserId(long id, String sought, int cntBooks, int offset) {
-        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, "getReadBooksByUserId");
+    public List<ViewBook> getReadBooksByUserId(Long id, String sought, int cntBooks, int offset) {
+        return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, true, false,
+                false, false,"", "");
     }
 
     public Date getMinDateRelease() {
@@ -193,26 +228,59 @@ public class BookService {
 
     public boolean addReviewForUserBook(Review review) {
         // review.setReviewText(review.getReviewText().trim());
-        review.setUserId(userRepository.getUserIdByName(review.getUserName()));
+        review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
         return reviewRepository.addReviewForUserBook(review);
     }
-    public boolean addBookToProfile(String userName, long bookId){
-        long userId = userRepository.getUserIdByName(userName);
-        return jdbcBookRepository.addBookToProfile(userId, bookId);
+
+
+    public boolean addBookToProfile(String userName, long bookId) {
+        long userId = userRepository.getUserIdByLogin(userName);
+        boolean executionResult = jdbcBookRepository.addBookToProfile(userId, bookId);
+        int booksForUser = jdbcBookRepository.countBooksForUser(userId);
+        long achvId = achievementService.getAchvIdByParameters(booksForUser, "book", 10);
+
+        if (achvId > 0){
+            achievementRepository.addAchievementForUser(achvId, userId);
+
+        }
+        return executionResult;
     }
-    public boolean approveReview(long reviewId) {
-        return reviewRepository.approveReview(reviewId);
+
+
+    public boolean approveReview(long reviewId, long userId) {
+        boolean executionResult = reviewRepository.approveReview(reviewId);
+        int reviewsForUser = reviewRepository.countReviewsForUser(userId);
+        long achvId = achievementService.getAchvIdByParameters(reviewsForUser, "review", 1);
+        System.out.println(achvId);
+        System.out.println(reviewsForUser);
+        if (achvId > 0){
+            achievementRepository.addAchievementForUser(achvId, userId);
+
+        }
+        return executionResult;
     }
+
     public boolean cancelReview(long reviewId) {
         return reviewRepository.cancelReview(reviewId);
     }
 
-    public boolean removeBookFromProfile(String userName, long bookId){
-        long userId = userRepository.getUserIdByName(userName);
+    public void likeReview(long reviewId){
+        reviewRepository.likeReview(reviewId);
+    }
+    public void likeBook(long bookId){
+        jdbcBookRepository.likeBook(bookId);
+    }
+    public List<Review> getReviewsForApprove(int page, int itemPerPage){
+        return reviewRepository.getReviewsForApprove(page, itemPerPage);
+    }
+
+    public boolean removeBookFromProfile(String userName, long bookId) {
+        long userId = userRepository.getUserIdByLogin(userName);
         return jdbcBookRepository.removeBookFromProfile(userId, bookId);
     }
-    public boolean checkBookInProfile(String userName, long bookId){
-        long userId = userRepository.getUserIdByName(userName);
+
+    public boolean checkBookInProfile(String userName, long bookId) {
+        long userId = userRepository.getUserIdByLogin(userName);
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 
@@ -227,5 +295,23 @@ public class BookService {
         } else {
             return Collections.emptyList();
         }
+    }
+  
+    public List<ViewBook> getBooksByUserId(long userId, String sought, int cntBooks, boolean read, boolean favourite,
+                                           boolean reading, boolean notSet, String sortBy, String order, int offset) {
+        return jdbcBookRepository.getBooksByUserId(userId, sought, cntBooks, offset, read, favourite, reading, notSet,
+                sortBy, order);
+    }
+
+    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
+        jdbcBookRepository.addBookBatchTo(userId, shelf, booksId);
+    }
+
+    public void removeBookBatchFrom(long userId, String shelf, List<Long> booksId) {
+        jdbcBookRepository.removeBookBatchFrom(userId, shelf, booksId);
+    }
+
+    public void removeBookBatch(long userId, List<Long> booksId) {
+        jdbcBookRepository.removeBookBatch(userId, booksId);
     }
 }
