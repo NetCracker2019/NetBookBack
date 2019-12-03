@@ -1,10 +1,10 @@
 package com.example.netbooks.dao.interfaces;
 
 import com.example.netbooks.models.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface BookRepository {
@@ -27,10 +27,10 @@ public interface BookRepository {
 
 
     List<ViewBook> findAllViewBooks();
-  
-    List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor, int size, int startIndex);
+
+    List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);
     ViewBook getBookById(int id);
-    List<ViewBook> findBooksByTitleAndGenre(String title, String genre, Date from, Date to, int size, int startIndex);
+    List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
     List<ViewAnnouncement> findViewUnApproveBooks();
 
 

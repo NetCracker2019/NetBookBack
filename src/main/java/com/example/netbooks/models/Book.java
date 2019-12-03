@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.util.List;
 
 @Data
-
 public class Book {
     private long bookId;
     private String title;
