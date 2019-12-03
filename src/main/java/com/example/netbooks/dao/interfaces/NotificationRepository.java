@@ -13,7 +13,7 @@ public interface NotificationRepository {
 
     void addNotification(Notification notification);
 
-    void markAsRead();
+    void markAsRead(long id);
     
     List<Notification> getAllUnreadViewNotificationsByUserId(long userId);
     

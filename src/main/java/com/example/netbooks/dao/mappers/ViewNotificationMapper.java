@@ -11,6 +11,7 @@ public class ViewNotificationMapper implements RowMapper {
     @Override
     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Notification(
+                resultSet.getDate("notif_date"),
                 resultSet.getInt("notif_type_id"),
                 resultSet.getString("overview_name"),
                 resultSet.getString("review_name"),

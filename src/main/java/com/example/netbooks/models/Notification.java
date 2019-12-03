@@ -13,7 +13,7 @@ public class Notification {
 
     private Integer notificationId;
     private Integer userId;
-    @JsonProperty("date")
+    @JsonProperty("notifDate")
     private Date date;
     @JsonProperty("isRead")
     private boolean isRead;
@@ -33,6 +33,7 @@ public class Notification {
     private String notifTitle;
     @JsonProperty("notifText")
     private String notifText;
+
 
     public Notification() {
         super();
@@ -55,7 +56,8 @@ public class Notification {
         this.achievName = null;
     }
 
-    public Notification(int notifTypeId, String overviewName,String reviewName,String fromUserName,String bookName,String achievName,String notifTitle,String notifText) {
+    public Notification(Date date,int notifTypeId, String overviewName,String reviewName,String fromUserName,String bookName,String achievName,String notifTitle,String notifText) {
+        this.date=date;
         this.notifTypeId = notifTypeId;
         this.overviewName = overviewName;
         this.reviewName = reviewName;
@@ -64,6 +66,7 @@ public class Notification {
         this.fromUserName=fromUserName;
         this.notifTitle=notifTitle;
         this.notifText=notifText;
+
     }
 
     

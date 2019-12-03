@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 import java.util.UUID;
 
+@Data
 @Service
 public class UserManager {
 
@@ -156,7 +158,7 @@ public class UserManager {
     }
 
 //если не работает поменя бул на инт
-    public boolean isFriend(String ownLogin, String friendLogin) {
+    public int isFriend(String ownLogin, String friendLogin) {
         return userRepository.isFriend(ownLogin, friendLogin);
     }
 
@@ -164,8 +166,8 @@ public class UserManager {
         userRepository.deleteFriend(ownLogin, friendLogin);
     }
 
-    public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-        userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
-    }
+   // public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
+   //     userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
+   // }
 
 }

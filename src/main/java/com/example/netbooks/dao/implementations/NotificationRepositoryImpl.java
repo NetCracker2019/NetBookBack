@@ -78,9 +78,10 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
-    public void markAsRead() {
+    public void markAsRead(long id) {
         Map<String, Object> namedParams = new HashMap<>();
-        namedParameterJdbcTemplate.update(environment.getProperty("markAsRead"), namedParams);
+        namedParams.put("user_id",id);
+        namedParameterJdbcTemplate.update(environment.getProperty("markAsRead"),namedParams );
     }
 
 }

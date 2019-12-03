@@ -3,12 +3,10 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.models.Notification;
 import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
-<<<<<<< HEAD
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-=======
->>>>>>> e6cf0bce39699b2f7c4d24ddeeec5bf33e7f39d2
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +27,17 @@ public class NotificationController {
     @Autowired
     private UserManager userManager;
 
-    @GetMapping("/")
-    public ResponseEntity<?> getNotificationsForUser() {
-        log.debug("Getting notification for user in {}: ", this.getClass().getName());
-        String username=((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+   // @GetMapping("/")
+  // public ResponseEntity<?> getNotificationsForUser() {
+  //     log.debug("Getting notification for user in {}: ", this.getClass().getName());
+  //     String username=((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
 // <<<<<<< HEAD
 //         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
 // =======
-        return ResponseEntity.ok(notificationService.getAllNotificationsByUserId(userManager.getUserByLogin(username);
-
-    }
+ //       return ResponseEntity.ok(notificationService.getAllNotificationsByUserId(userManager.getUserByLogin(username).getUserId()));
+//
+ //   }
 
 //    @GetMapping("/user/{type}")
 //    public ResponseEntity<?> getNotificationsForUserByType(@PathVariable long type) {
@@ -50,13 +48,21 @@ public class NotificationController {
 //        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
 //    }
 
-    @GetMapping("/user")
+    @GetMapping("")
     public ResponseEntity<?> getNotificationsForUser() {
         log.debug("Getting notification for user in {}: ", this.getClass().getName());
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
-        return ResponseEntity.ok(notificationService.getAllNotificationsByUserId(id));
+        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
+    }
+
+    @PutMapping("")
+    public void markAllAsRead(){
+        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        notificationService.markAsRead(id);
     }
 
 }
