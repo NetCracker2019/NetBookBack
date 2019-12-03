@@ -30,7 +30,7 @@ public interface BookRepository {
 
     List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor);
     ViewBook getBookById(int id);
-    List<ViewBook> findBooksByTitleAndGenre(String title, String genre, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
     List<ViewAnnouncement> findViewUnApproveBooks();
 
     public String addRowIntoBookAuthor(Book book);

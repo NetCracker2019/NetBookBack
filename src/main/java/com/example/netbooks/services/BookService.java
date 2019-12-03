@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -135,7 +136,7 @@ public class BookService {
         return jdbcBookRepository.getPeaceOfBook(count, offset);
     }
 
-    public Page<ViewBook> getBooksByParameters(String title, String author, String genre, Date from, Date to, Pageable pageable) {
+    public Page<ViewBook> getBooksByParameters(String title, String author, Integer genre, Date from, Date to, Pageable pageable) {
         List<ViewBook> books = Collections.emptyList();
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
@@ -213,5 +214,18 @@ public class BookService {
     public boolean checkBookInProfile(String userName, long bookId){
         long userId = userRepository.getUserIdByName(userName);
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
+    }
+
+    public List<ViewBook> getSuggestions(String userName) {
+        long userId = userRepository.getUserIdByName(userName);
+        Map<String, Object> mapGenre = jdbcBookRepository.getFavouriteGenres(userId);
+        Map<String, Object> mapAuthor = jdbcBookRepository.getFavouriteAuthors(userId);
+        if (!mapGenre.isEmpty() && !mapAuthor.isEmpty()) {
+            log.info("Map genre {}", mapGenre);
+            log.info("Map author {}", mapAuthor);
+            return jdbcBookRepository.getSuggestions(userId, (Integer) mapGenre.get("genre_id"), (Integer) mapAuthor.get("author_id"));
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

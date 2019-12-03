@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -121,7 +122,7 @@ public class BookController {
     @GetMapping("/find-books")
     public Page<ViewBook> findBooks(@RequestParam(value = "title") String title,
                                    @RequestParam(value = "author", required = false) String author,
-                                   @RequestParam(value = "genre", required = false) String genre,
+                                   @RequestParam(value = "genre", required = false) Integer genre,
                                    @RequestParam(value = "from", required = false) Date from,
                                    @RequestParam(value = "to", required = false) Date to,
                                    @RequestParam(value = "page") int page,
@@ -157,5 +158,10 @@ public class BookController {
     public List<Event> calendarAnnouncement(@RequestParam("value") String value) {
         log.info(value);
         return bookService.calendarAnnouncement(value);
+    }
+
+    @GetMapping("/suggestions")
+    public List<ViewBook> getSuggestions(@RequestParam("user") String userName) {
+        return bookService.getSuggestions(userName);
     }
 }

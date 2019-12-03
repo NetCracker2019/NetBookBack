@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +23,7 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +147,7 @@ public class JdbcBookRepository implements BookRepository {
         return jdbcTemplate.query("select * from book", new BookRowMapper());
     }
 
-    public List<ViewBook> findBooksByTitleAndGenre(String title, String genre, Date from, Date to) {
+    public List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("genre", genre);
@@ -196,7 +198,7 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.query(env.getProperty("findBooksByTitleAndDate"), namedParameters, viewBooksMapper);
     }
 
-    public List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, String genre, Date from, Date to) {
+    public List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("author", author);
@@ -295,5 +297,31 @@ public class JdbcBookRepository implements BookRepository {
                 namedParams, new ShortViewBookMapper());
     }
 
+    public Map<String, Object> getFavouriteGenres(long userId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("userId", userId);
+        try {
+            return namedJdbcTemplate.queryForMap(env.getProperty("getFavouriteGenres"), namedParams);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyMap();
+        }
+    }
 
+    public Map<String, Object> getFavouriteAuthors(long userId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("userId", userId);
+        try {
+            return namedJdbcTemplate.queryForMap(env.getProperty("getFavouriteAuthors"), namedParams);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyMap();
+        }
+    }
+
+    public List<ViewBook> getSuggestions(long userId, int genreId, int authorId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        namedParameters.addValue("genreId", genreId);
+        namedParameters.addValue("authorId", authorId);
+        return namedJdbcTemplate.query(env.getProperty("getSuggestions"), namedParameters, viewBooksMapper);
+    }
 }
