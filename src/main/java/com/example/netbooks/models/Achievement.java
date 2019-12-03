@@ -15,8 +15,9 @@ public class Achievement {
     private String title;
     @JsonProperty("description")
     private String description;
-    @JsonProperty("cntBook")
-    private int cntBook;
+    @JsonProperty("n")
+    private int n;
     @JsonProperty("image_path")
     private String imagePath;
+    private String achvType;
 }

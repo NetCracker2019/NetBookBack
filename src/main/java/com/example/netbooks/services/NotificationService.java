@@ -29,6 +29,7 @@ public class NotificationService {
         return notificationRepository.getAllNotificationsByUserId(userId);
     }
 
+
     public List<Notification> getAllViewNotificationsByUserId(long userId) {
         List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId);
         for (Notification notif : notifList) {
@@ -52,6 +53,18 @@ public class NotificationService {
         }
         return notifList;
     }
+
+    public void addNotification(int userId, NotificationEnum notifName ) throws IllegalArgumentException{
+        Notification notification;
+        switch (notifName){
+            case ADD_FRIEND_NOTIF:
+                java.util.Date now = new java.util.Date();
+                notification= new Notification(userId,"addFriend","Friend Request","check your frinds somebody want to add you", new Date(now.getTime()),false);
+                notificationRepository.addNotification(notification.getResult());
+                break;
+            default:
+                throw new IllegalArgumentException("notification type incorect");
+
 
     public void createAndSaveReviewNotif(long fromUserId, List<User> friends, long bookId, long reviewId) {
         for (User user : friends) {
