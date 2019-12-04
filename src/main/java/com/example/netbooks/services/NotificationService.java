@@ -29,6 +29,7 @@ public class NotificationService {
         return notificationRepository.getAllNotificationsByUserId(userId);
     }
 
+
     public List<Notification> getAllViewNotificationsByUserId(long userId) {
         List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId);
         for (Notification notif : notifList) {
@@ -80,10 +81,9 @@ public class NotificationService {
         notification.setDate(new Date(now.getTime()));
         notificationRepository.addNotification(notification);
 
-    }
-
     public void markAsRead(long id) {
         notificationRepository.markAsRead(id);
     }
+
 
 }

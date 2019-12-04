@@ -16,4 +16,6 @@ public interface ReviewRepository {
     boolean cancelReview(long reviewId);
     List<Review> getReviewsForApprove(int page, int offset);
     Review getReviewById(long reviewId);
+    int countReviewsForUser(long userId);
+    void likeReview(long reviewId);
 }

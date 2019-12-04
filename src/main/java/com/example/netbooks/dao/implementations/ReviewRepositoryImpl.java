@@ -47,6 +47,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         namedParameters.addValue("bookId", review.getBookId());
         namedParameters.addValue("userId", review.getUserId());
         namedParameters.addValue("reviewText", review.getReviewText());
+        namedParameters.addValue("approved", review.isApproved());
         return namedJdbcTemplate.update(env.getProperty("addReviewForUserBook"), namedParameters) > 0;
     }
 
@@ -71,6 +72,19 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         namedParameters.addValue("offset", page);
         System.out.println(getReviewPeaceForApprove);
         return namedJdbcTemplate.query(getReviewPeaceForApprove, namedParameters, reviewMapper);
+    }
+
+    @Override
+    public int countReviewsForUser(long userId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countUserReviews"), namedParameters, Integer.class);
+    }
+
+    @Override
+    public void likeReview(long reviewId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("reviewId", reviewId);
+        namedJdbcTemplate.update(env.getProperty("likeReview"), namedParameters);
     }
 
     @Override

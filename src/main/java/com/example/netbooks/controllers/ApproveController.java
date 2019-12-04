@@ -19,7 +19,7 @@ import java.util.Map;
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/approve-service")
 public class ApproveController {
-    private final Logger logger = LogManager.getLogger(ProfileController.class);
+    private final Logger logger = LogManager.getLogger(ApproveController.class);
     @Autowired
     private BookService bookService;
     @Autowired
@@ -34,21 +34,20 @@ public class ApproveController {
     }
 
     @PostMapping("/confirm-announcement")
-    public String confirmAnnouncement (@RequestBody ViewAnnouncement announcement){
+    public ResponseEntity confirmAnnouncement (@RequestBody ViewAnnouncement announcement){
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
-        bookService.confirmAnnouncement(id);
-        return "ok";
+        return bookService.confirmAnnouncement(id);
     }
 
     @PostMapping("/cancel-announcement")
-    public String cancelAnnouncement (@RequestBody ViewAnnouncement announcement){
+    public ResponseEntity cancelAnnouncement (@RequestBody ViewAnnouncement announcement){
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
-        bookService.cancelAnnouncement(id);
-        return "ok";
+        return bookService.cancelAnnouncement(id);
+
     }
 
     @GetMapping("/reviews-for-approve")
@@ -58,11 +57,11 @@ public class ApproveController {
         return bookService.getReviewsForApprove(page, offset);
     }
     @PostMapping("confirm-review")
-    public boolean confirmReview(@RequestParam("reviewId") long reviewId){
+    public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId){
         Review review = bookService.getReviewById(reviewId);
         List<User> friends = userManager.getFriendsByUsername(userManager.getUserById(review.getUserId()).getLogin());
         notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId() , reviewId);
-        return bookService.approveReview(reviewId);
+        return bookService.approveReview(reviewId, userId);
     }
     @PostMapping("cancel-review")
     public boolean cancelReview(@RequestParam("reviewId") long reviewId){

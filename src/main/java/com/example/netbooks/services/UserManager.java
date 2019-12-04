@@ -19,24 +19,24 @@ import java.util.UUID;
 @Data
 @Service
 public class UserManager {
+	UserRepository userRepository;
+	AchievementRepository achievementRepository;
+	AchievementService achievementService;
 
-    UserRepository userRepository;
-    AchievementRepository achievementRepository;
+	@Autowired
+	public UserManager(UserRepository userRepository,
+					   AchievementRepository achievementRepository,
+					   AchievementService achievementService) {
+		this.userRepository = userRepository;
+		this.achievementRepository = achievementRepository;
+		this.achievementService = achievementService;
+	}
 
-    @Autowired
-    public UserManager(UserRepository userRepository, AchievementRepository achievementRepository) {
-        this.userRepository = userRepository;
-        this.achievementRepository = achievementRepository;
-    }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    public int getUserIdByName(String name) {
-        return userRepository.getUserIdByName(name);
-    }
-
+	public User getUserByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
+    public int getUserIdByName(String name) { return userRepository.getUserIdByLogin(name); }
     public void removeUserById(long id) {
         userRepository.removeUserById(id);
     }
@@ -153,9 +153,16 @@ public class UserManager {
         return userRepository.getCountFriendsBySought(login, sought);
     }
 
-    public void addFriend(String ownLogin, String friendLogin) {
-        userRepository.addFriend(ownLogin, friendLogin);
-    }
+	public void addFriend(String ownLogin, String friendLogin) {
+		long userId = userRepository.getUserIdByLogin(ownLogin);
+		int friendsAmountForUser = userRepository.countFriendsForUser(userId);
+		long achvId = achievementService.getAchvIdByParameters(friendsAmountForUser, "friends", 1);
+		if (achvId > 0){
+			achievementRepository.addAchievementForUser(achvId, userId);
+
+		}
+		userRepository.addFriend(ownLogin, friendLogin);
+	}
 
 //если не работает поменя бул на инт
     public int isFriend(String ownLogin, String friendLogin) {
