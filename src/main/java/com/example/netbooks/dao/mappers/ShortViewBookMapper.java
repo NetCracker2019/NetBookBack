@@ -2,11 +2,13 @@ package com.example.netbooks.dao.mappers;
 
 import com.example.netbooks.models.ViewBook;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class ShortViewBookMapper implements RowMapper<ViewBook> {
     @Override
     public ViewBook mapRow(ResultSet resultSet, int rowNum) throws SQLException {

@@ -26,13 +26,13 @@ import java.util.Map;
 @Slf4j
 @Service
 public class BookService {
-    final JdbcBookRepository jdbcBookRepository;
-    final GenreRepository genreRepository;
-    final AuthorRepository authorRepository;
-    final ReviewRepository reviewRepository;
-    final UserRepository userRepository;
-    final AchievementRepository achievementRepository;
-    final AchievementService achievementService;
+    private final JdbcBookRepository jdbcBookRepository;
+    private final GenreRepository genreRepository;
+    private final AuthorRepository authorRepository;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final AchievementRepository achievementRepository;
+    private final AchievementService achievementService;
 
     @Autowired
     public BookService(JdbcBookRepository jdbcBookRepository,
@@ -139,7 +139,7 @@ public class BookService {
         return jdbcBookRepository.getPeaceBook(page, booksPerPage);
     }
 
-    public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
+    public List<ViewBook> getPeaceAnnouncement(int page, int booksPerPage) {
         return jdbcBookRepository.getPeaceAnnouncement(page, booksPerPage);
     }
 
