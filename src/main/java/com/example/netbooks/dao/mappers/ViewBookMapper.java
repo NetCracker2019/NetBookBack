@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 @Component
 public class ViewBookMapper implements RowMapper<ViewBook> {
-
     @Override
     public ViewBook mapRow(ResultSet resultSet, int i) throws SQLException {
         return new ViewBook(
@@ -22,7 +21,6 @@ public class ViewBookMapper implements RowMapper<ViewBook> {
                 resultSet.getString("lang"),
                 resultSet.getInt("pages"),
                 (String[])resultSet.getArray("genres").getArray(),
-                resultSet.getString("description")
-                );
+                resultSet.getString("description"));
     }
 }

@@ -63,8 +63,9 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<ViewBook> findAllViewBooks() {
-        return jdbcTemplate.query(env.getProperty("getAllBooks"), viewBooksMapper);
+        return namedJdbcTemplate.query(env.getRequiredProperty("getAllBooks"), viewBooksMapper);
     }
+
     public int countBooks(){
         return jdbcTemplate.queryForObject(env.getProperty("countBooks"), Integer.class);
     }

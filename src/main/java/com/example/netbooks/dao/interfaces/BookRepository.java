@@ -1,8 +1,6 @@
 package com.example.netbooks.dao.interfaces;
 
 import com.example.netbooks.models.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.sql.Date;
 import java.util.List;
