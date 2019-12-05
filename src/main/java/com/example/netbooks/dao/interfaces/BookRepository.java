@@ -14,7 +14,7 @@ public interface BookRepository {
 //    String addAnnouncement(Book book);
 //    void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
-    List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
+    List<ViewBook> getPeaceAnnouncement(int page, int booksPerPage);
 
     int getAmountOfBook();
     List<ViewBook> getPeaceBook(int page, int booksPerPage);

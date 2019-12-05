@@ -71,7 +71,7 @@ public class BookController {
 
 
     @GetMapping(value="/announcementListPeace")
-    public List<Announcement> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
+    public List<ViewBook> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
         log.info("page {} booksPerPage {}",page, booksPerPage);
         return bookService.getPeaceAnnouncement(page,booksPerPage);
     }
