@@ -6,9 +6,9 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ViewAnnouncementMapper implements RowMapper {
+public class ViewAnnouncementMapper implements RowMapper<ViewAnnouncement> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+    public ViewAnnouncement mapRow(ResultSet resultSet, int i) throws SQLException {
         return new ViewAnnouncement(
                 resultSet.getInt("announcmentId"),
                 resultSet.getString("releaseDate"),

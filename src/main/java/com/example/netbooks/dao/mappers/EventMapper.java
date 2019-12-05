@@ -6,9 +6,9 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class EventMapper implements RowMapper {
+public class EventMapper implements RowMapper<Event> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+    public Event mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Event(
                 resultSet.getString("title"),
                 resultSet.getString("date"),

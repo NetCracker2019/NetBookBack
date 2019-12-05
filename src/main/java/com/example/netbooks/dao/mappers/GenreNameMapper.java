@@ -6,12 +6,11 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GenreNameMapper implements RowMapper {
+public class GenreNameMapper implements RowMapper<Genre> {
 
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-        Genre genre = new Genre (
+    public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
+        return new Genre (
                 resultSet.getString("genres"));
-        return genre;
     }
 }

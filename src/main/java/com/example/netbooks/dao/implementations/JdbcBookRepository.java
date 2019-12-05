@@ -32,23 +32,38 @@ import java.util.Map;
 @PropertySource("classpath:queries/book.properties")
 @Repository
 public class JdbcBookRepository implements BookRepository {
-    @Autowired
-    Environment env;
-    //@Autowired
+    private Environment env;
     private JdbcTemplate jdbcTemplate;
-    @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    private final Logger logger = LogManager.getLogger(ProfileController.class);
-    private final RowMapper viewAnnouncementMapper = new ViewAnnouncementMapper();
-    private final RowMapper viewBooksMapper = new ViewBookMapper();
-    private final RowMapper eventMapper = new EventMapper();
-    private final RowMapper announcementMapper = new BookRowMapper();
-    private final RowMapper genreNameMapper = new GenreNameMapper();
-    private final RowMapper authorNameMapper = new AuthorNameMapper();
 
-    public JdbcBookRepository(DataSource dataSource) {
-        namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    private final Logger logger = LogManager.getLogger(ProfileController.class);
+
+    private final RowMapper<ViewAnnouncement> viewAnnouncementMapper;
+    private final RowMapper<ViewBook> viewBooksMapper;
+    private final RowMapper<Event> eventMapper;
+    private final RowMapper<Book> announcementMapper;
+    private final RowMapper<Genre> genreNameMapper;
+    private final RowMapper<Author> authorNameMapper;
+
+    @Autowired
+    public JdbcBookRepository(NamedParameterJdbcTemplate namedJdbcTemplate,
+                              JdbcTemplate jdbcTemplate,
+                              Environment env,
+                              RowMapper<ViewAnnouncement> viewAnnouncementMapper,
+                              RowMapper<ViewBook> viewBooksMapper,
+                              RowMapper<Event> eventMapper,
+                              RowMapper<Book> announcementMapper,
+                              RowMapper<Genre> genreNameMapper,
+                              RowMapper<Author> authorNameMapper) {
+        this.namedJdbcTemplate = namedJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
+        this.env = env;
+        this.viewAnnouncementMapper = viewAnnouncementMapper;
+        this.viewBooksMapper = viewBooksMapper;
+        this.eventMapper = eventMapper;
+        this.announcementMapper = announcementMapper;
+        this.genreNameMapper = genreNameMapper;
+        this.authorNameMapper = authorNameMapper;
     }
 
     @Override
