@@ -9,9 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class NotificationMapper implements RowMapper {
+public class NotificationMapper implements RowMapper<Notification> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+    public Notification mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Notification(resultSet.getInt("notification_id"),
                 resultSet.getInt("user_id"),
                 resultSet.getString("notif_name"),

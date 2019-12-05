@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class ReviewMapper implements RowMapper {
+public class ReviewMapper implements RowMapper<Review> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+    public Review mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Review(
                 resultSet.getLong("r_id"),
                 resultSet.getLong("u_id"),
