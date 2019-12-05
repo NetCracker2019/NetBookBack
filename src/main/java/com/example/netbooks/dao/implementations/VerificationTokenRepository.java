@@ -30,13 +30,11 @@ public class VerificationTokenRepository {
 	final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment env;
 
-    @Autowired
-    public VerificationTokenRepository(DataSource dataSource, Environment env) {
-		super();
-		this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-		this.env = env;
-	}
-    
+    public VerificationTokenRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment env) {
+        this.namedJdbcTemplate = namedJdbcTemplate;
+        this.env = env;
+    }
+
     private final class TokenMapper implements RowMapper<VerificationToken> {
         @Override
         public VerificationToken mapRow(ResultSet resultSet, int rowNum) throws SQLException {

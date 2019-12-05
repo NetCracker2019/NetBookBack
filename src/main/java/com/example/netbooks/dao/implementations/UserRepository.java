@@ -58,12 +58,11 @@ public class UserRepository {
         }
     }
 
-    @Autowired
-    public UserRepository(DataSource dataSource, Environment env) {
-        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    public UserRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment env) {
+        this.namedJdbcTemplate = namedJdbcTemplate;
         this.env = env;
     }
-   
+
     public void save(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());

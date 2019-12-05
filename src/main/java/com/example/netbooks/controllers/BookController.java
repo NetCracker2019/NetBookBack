@@ -108,16 +108,40 @@ public class BookController {
         return bookService.removeBookFromProfile(userName, bookId);
     }
     @PutMapping("/like-book")
-    public boolean likeBook(@RequestParam("bookId") long bookId){
-        bookService.likeBook(bookId);
-        logger.info("Book id : "+ bookId);
+    public boolean likeBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        bookService.likeBook(bookId, userLogin);
         return true;
+    }
+    @PutMapping("/dislike-book")
+    public boolean dislikeBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        bookService.dislikeBook(bookId, userLogin);
+        return true;
+    }
+    @GetMapping("/check-liked-book")
+    public int checkLikedBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        return bookService.checkLikedBook(bookId, userLogin);
     }
     @PutMapping("/like-review")
-    public boolean likeReview(@RequestParam("reviewId") long reviewId){
-        bookService.likeReview(reviewId);
-        return true;
+    public int likeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
+        int result = bookService.likeReview(reviewId, userLogin);
+        logger.info("Review Likes: "+result);
+        return result;
     }
+    @PutMapping("/dislike-review")
+    public int dislikeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
+        int result = bookService.dislikeReview(reviewId, userLogin);
+        logger.info("Review Likes: "+result);
+        return result;
+    }
+    @GetMapping("/check-liked-review")
+    public int checkLikedReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
+        return bookService.checkLikedReview(reviewId, userLogin);
+    }
+//    @PutMapping("/like-review")
+//    public boolean likeReview(@RequestParam("reviewId") long reviewId){
+//        bookService.likeReview(reviewId);
+//        return true;
+//    }
     @GetMapping("/check-book-profile")
     public boolean checkBookInProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId) {
         return bookService.checkBookInProfile(userName, bookId);

@@ -19,8 +19,8 @@ public class GenreRepositoryImpl implements GenreRepository {
     //@Autowired
     JdbcTemplate jdbcTemplate;
 
-    public GenreRepositoryImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public GenreRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
     @Override
     public List<String> getAllGenreNames() {

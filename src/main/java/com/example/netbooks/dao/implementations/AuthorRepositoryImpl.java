@@ -15,8 +15,8 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private JdbcTemplate jdbcTemplate;
     private AuthorMapper authorMapper = new AuthorMapper();
 
-    public AuthorRepositoryImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public AuthorRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

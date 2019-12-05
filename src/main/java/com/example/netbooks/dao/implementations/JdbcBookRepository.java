@@ -12,45 +12,42 @@ import com.example.netbooks.models.Announcement;
 import com.example.netbooks.models.Book;
 import com.example.netbooks.models.ViewBook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Array;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
 
 @PropertySource("classpath:queries/book.properties")
 @Repository
 public class JdbcBookRepository implements BookRepository {
-    @Autowired
-    Environment env;
-    //@Autowired
+    // @Autowired
+    private Environment env;
+    private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
-    @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    RowMapper viewAnnouncementMapper = new ViewAnnouncementMapper();
+    private RowMapper viewAnnouncementMapper = new ViewAnnouncementMapper();
     private final Logger logger = LogManager.getLogger(ProfileController.class);
     private final RowMapper viewBooksMapper = new ViewBookMapper();
     private final RowMapper eventMapper = new EventMapper();
 
-    public JdbcBookRepository(DataSource dataSource) {
-        namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public JdbcBookRepository(Environment env, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedJdbcTemplate, DataSource dataSource) {
+        this.env = env;
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedJdbcTemplate = namedJdbcTemplate;
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -204,12 +201,12 @@ public class JdbcBookRepository implements BookRepository {
         return null;
     }
 
-    @Override
-    public void likeBook(long bookId) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("bookId", bookId);
-        namedJdbcTemplate.update(env.getProperty("likeBook"), namedParameters);
-    }
+//    @Override
+//    public void likeBook(long bookId) {
+//        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+//        namedParameters.addValue("bookId", bookId);
+//        namedJdbcTemplate.update(env.getProperty("likeBook"), namedParameters);
+//    }
 
     @Override
     public int countBooksForUser(long userId) {
@@ -401,6 +398,51 @@ public class JdbcBookRepository implements BookRepository {
             namedJdbcTemplate.update(env.getProperty("removeBookBatchFromFavourite"), namedParams);
         }
     }
+
+    @Override
+    public void likeBook(long bookId, long userId) {
+        SimpleJdbcCall jdbcCall = new
+                SimpleJdbcCall(dataSource).withFunctionName("like_book");
+
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("bookId", bookId)
+                .addValue("userId", userId);
+        jdbcCall.executeFunction(Boolean.class, in);
+
+    }
+
+    @Override
+    public void dislikeBook(long bookId, long userId) {
+        SimpleJdbcCall jdbcCall = new
+                SimpleJdbcCall(dataSource).withFunctionName("dislike_book");
+
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("bookId", bookId)
+                .addValue("userId", userId);
+        jdbcCall.executeFunction(Boolean.class, in);
+    }
+
+    @Override
+    public int checkLickedBook(long bookId, long userId) {
+//        SimpleJdbcCall jdbcCall = new
+//                SimpleJdbcCall(dataSource).withFunctionName("check_book_liked");
+//
+//        SqlParameterSource in = new MapSqlParameterSource()
+//                .addValue("bookId", bookId)
+//                .addValue("userId", userId);
+//        return jdbcCall.executeFunction(Integer.class, in);
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("bookId", bookId);
+        namedParams.put("userId", userId);
+        Integer countLiked = namedJdbcTemplate.queryForObject(env.getProperty("countLikedBookForUser"), namedParams, Integer.class);
+        if (countLiked == 0) {
+            return 0;
+        }
+        Boolean liked = namedJdbcTemplate.queryForObject(env.getProperty("checkLikedBook"), namedParams, Boolean.class);
+        if (liked) return 1;
+        else return -1;
+    }
+
     @Override
     public void removeBookBatch(long userId, List<Long> booksId) {
         Map<String, Object> namedParams = new HashMap<>();
