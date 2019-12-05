@@ -8,12 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class AuthorMapper implements RowMapper<Author> {
+public class AuthorNameMapper implements RowMapper<Author> {
     @Override
     public Author mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Author(
-                resultSet.getInt("author_id"),
-                resultSet.getString("fullname")
+                resultSet.getString("authors")
         );
     }
 }

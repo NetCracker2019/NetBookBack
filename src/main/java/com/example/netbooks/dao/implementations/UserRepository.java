@@ -38,7 +38,7 @@ public class UserRepository {
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             User user = new User();
-            
+
             user.setUserId(resultSet.getLong("person_id"));
             user.setLogin(resultSet.getString("login"));
             user.setPassword(resultSet.getString("passw"));
@@ -82,7 +82,7 @@ public class UserRepository {
 
         namedJdbcTemplate.update(env.getProperty("saveUser"), namedParams);
     }
-    
+
     public void updateUser(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -102,7 +102,7 @@ public class UserRepository {
 
         namedJdbcTemplate.update(env.getProperty("updateUser"), namedParams);
     }
-    
+
     public void updateUserById(User user, Long id) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -123,10 +123,11 @@ public class UserRepository {
 
         namedJdbcTemplate.update(env.getProperty("updateUserById"), namedParams);
     }
-    
+
     public Iterable<User> getAllUsers() {
         return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
     }
+
     public int getUserIdByLogin(String login){
         SqlParameterSource namedParameters = new MapSqlParameterSource("login", login);
         return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByLogin"), namedParameters, Integer.class);
@@ -134,6 +135,7 @@ public class UserRepository {
     public int countFriendsForUser(long userId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("userId", userId);
         return namedJdbcTemplate.queryForObject(env.getProperty("countFriendsForUser"), namedParameters, Integer.class);
+
     }
     public User findByEmail(String email) {
         try {
@@ -145,7 +147,7 @@ public class UserRepository {
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
     }
-    
+
     public User findByLogin(String login) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -190,19 +192,19 @@ public class UserRepository {
             return false;
         }
     }
-    
+
     public void removeUserById(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("removeUserById"), namedParams);
     }
-    
+
     public void activateUser(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(env.getProperty("activateUser"), namedParams);
     }
-    
+
     public void deActivateUser(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
@@ -239,7 +241,7 @@ public class UserRepository {
         }
     }
 
-    
+
     public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
