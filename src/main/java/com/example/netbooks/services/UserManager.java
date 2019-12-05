@@ -129,6 +129,10 @@ public class UserManager {
 		return userRepository.getFriendsByUsername(login);
 	}
 
+    public List<User> getSubscribersByLogin(String login) {
+        return userRepository.getSubscribersByLogin(login);
+    }
+
     public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
         return userRepository.getPersonsBySought(sought, cntPersons, offset);
     }

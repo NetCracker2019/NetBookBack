@@ -240,6 +240,16 @@ public class UserRepository {
         }
     }
 
+    public List<User> getSubscribersByLogin(String login) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("id", findByLogin(login).getUserId());
+            return namedJdbcTemplate.query(env.getProperty("getSubscribersByLogin"), namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
         try {

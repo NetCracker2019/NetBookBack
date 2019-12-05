@@ -58,7 +58,7 @@ public class NotificationService {
         for (User user : friends) {
             Notification notification = new Notification();
             notification.setNotifTypeId(4);
-            notification.setUserId((int) userManager.getUserIdByName(user.getName()));
+            notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
             notification.setFromUserId((int) fromUserId);
             notification.setBookId((int) bookId);
             notification.setReviewId((int) reviewId);
@@ -80,6 +80,7 @@ public class NotificationService {
         java.util.Date now = new java.util.Date();
         notification.setDate(new Date(now.getTime()));
         notificationRepository.addNotification(notification);
+    }
 
     public void markAsRead(long id) {
         notificationRepository.markAsRead(id);

@@ -33,7 +33,9 @@ public class BookController {
     private JdbcBookRepository jdbcBookRepository;
     final
     BookService bookService;
+    @Autowired
     UserManager userManager;
+    @Autowired
     NotificationService notificationService;
 
     public BookController(BookService bookService) {
@@ -76,7 +78,7 @@ public class BookController {
 
     @GetMapping(value="/bookListPeace")
     public List<ViewBook> getPeaceBook(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
-        logger.info("page {} booksPerPage {}",page, booksPerPage);
+        log.info("page {} booksPerPage {}",page, booksPerPage);
         return bookService.getPeaceBook(page,booksPerPage);
     }
 
@@ -84,7 +86,7 @@ public class BookController {
 
     @GetMapping(value="/announcementListPeace")
     public List<Announcement> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
-        logger.info("page {} booksPerPage {}",page, booksPerPage);
+        log.info("page {} booksPerPage {}",page, booksPerPage);
         return bookService.getPeaceAnnouncement(page,booksPerPage);
     }
     @GetMapping("/view-books")
@@ -96,12 +98,18 @@ public class BookController {
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
         log.info(userName+boolId);
-        List<User>friends=userManager.getFriendsByUsername(userName);
+        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        User tmpUser = userManager.getUserById(id);
+        List<User>friends=userManager.getFriendsByUsername(tmpUser.getLogin());
+        List<User>subscribers=userManager.getSubscribersByLogin(tmpUser.getLogin());
+        friends.addAll(subscribers);
         for (User user:friends){
             Notification notification = new Notification();
             notification.setNotifTypeId(2);
-            notification.setUserId((int)user.getUserId());
-            notification.setFromUserId((int)(userManager.getUserByLogin(userName).getUserId()));
+            notification.setUserId((int)userManager.getUserIdByName(user.getLogin()));
+            notification.setFromUserId((int)(tmpUser.getUserId()));
             notification.setBookId(boolId);
             notificationService.addNotification(notification);
 
