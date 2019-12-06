@@ -2,13 +2,15 @@ package com.example.netbooks.dao.mappers;
 
 import com.example.netbooks.models.ViewAnnouncement;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ViewAnnouncementMapper implements RowMapper {
+@Component
+public class ViewAnnouncementMapper implements RowMapper<ViewAnnouncement> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+    public ViewAnnouncement mapRow(ResultSet resultSet, int i) throws SQLException {
         return new ViewAnnouncement(
                 resultSet.getInt("announcmentId"),
                 resultSet.getString("releaseDate"),

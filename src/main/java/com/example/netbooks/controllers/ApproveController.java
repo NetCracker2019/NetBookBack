@@ -1,7 +1,8 @@
 package com.example.netbooks.controllers;
 
 
-import com.example.netbooks.models.*;
+import com.example.netbooks.models.Review;
+import com.example.netbooks.models.ViewAnnouncement;
 import com.example.netbooks.services.BookService;
 import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
@@ -11,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})

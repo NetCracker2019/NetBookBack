@@ -17,5 +17,7 @@ public interface ReviewRepository {
     List<Review> getReviewsForApprove(int page, int offset);
     Review getReviewById(long reviewId);
     int countReviewsForUser(long userId);
-    void likeReview(long reviewId);
+    int likeReview(long reviewId, long userId);
+    int dislikeReview(long reviewId, long userId);
+    int checkLikedReview(long reviewId, long userId);
 }

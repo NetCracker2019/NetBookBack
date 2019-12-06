@@ -8,11 +8,13 @@ import com.example.netbooks.services.UserManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -85,7 +87,7 @@ public class BookController {
 
 
     @GetMapping(value="/announcementListPeace")
-    public List<Announcement> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
+    public List<ViewBook> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
         log.info("page {} booksPerPage {}",page, booksPerPage);
         return bookService.getPeaceAnnouncement(page,booksPerPage);
     }
@@ -93,8 +95,14 @@ public class BookController {
     public List<ViewBook> getPeaceViewBooks(@RequestParam("count") int count, @RequestParam("offset") int offset) {
         return bookService.getPeaceOfBooks(count, offset);
     }
+//    @GetMapping("/find-books")
+//
+//    public List<ViewBook> getFoundBook(@RequestParam("title") String title,
+//                                       @RequestParam("size") int size,
+//                                       @RequestParam("page") int page){
+//        return bookService.findBooks(title, size, page);
+//    }
 
-    //todo общий стиль
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
         log.info(userName+boolId);
@@ -128,21 +136,52 @@ public class BookController {
         return bookService.removeBookFromProfile(userName, bookId);
     }
     @PutMapping("/like-book")
-    public boolean likeBook(@RequestParam("bookId") long bookId){
-        bookService.likeBook(bookId);
-        log.info("Book id : "+ bookId);
+    public boolean likeBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        bookService.likeBook(bookId, userLogin);
         return true;
+    }
+    @GetMapping("/check-liked-book")
+    public int checkLikedBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        return bookService.checkLikedBook(bookId, userLogin);
     }
     @PutMapping("/like-review")
-    public boolean likeReview(@RequestParam("reviewId") long reviewId){
-        bookService.likeReview(reviewId);
-        return true;
+    public int likeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
+        int result = bookService.likeReview(reviewId, userLogin);
+        logger.info("Review Likes: "+result);
+        return result;
     }
+    @PutMapping("/dislike-review")
+    public int dislikeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
+        int result = bookService.dislikeReview(reviewId, userLogin);
+        logger.info("Review Likes: "+result);
+        return result;
+    }
+    @GetMapping("/check-liked-review")
+    public int checkLikedReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
+        return bookService.checkLikedReview(reviewId, userLogin);
+    }
+    //    @PutMapping("/like-review")
+//    public boolean likeReview(@RequestParam("reviewId") long reviewId){
+//        bookService.likeReview(reviewId);
+//        return true;
+//    }
     @GetMapping("/check-book-profile")
     public boolean checkBookInProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId) {
         return bookService.checkBookInProfile(userName, bookId);
     }
 
+//    @GetMapping("/home/filter-books")
+//    public List<Book> getFilteredBooks
+//            (@RequestParam(value = "title", required = false, defaultValue = "") String title,
+//             @RequestParam(value = "author", required = false, defaultValue = "") String author,
+//             @RequestParam(value = "genre", required = false, defaultValue = "All") String genre,
+//             @RequestParam(value = "date1", required = false, defaultValue = "0001-01-01") String dateFrom,
+//             @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String dateTo,
+//             @RequestParam(value = "page1", required = false, defaultValue = "0") int pageFrom,
+//             @RequestParam(value = "page2", required = false, defaultValue = "1000000") int pageTo
+//            ){
+//        return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
+//    }
     @GetMapping("/search/{id}")
     public List<Review> getReviewForSearchBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
         return bookService.getPeaceOfReviewByBook(bookId, count, offset);
@@ -153,7 +192,7 @@ public class BookController {
     }
     @GetMapping("/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
-        log.info(bookService.getViewBookById(bookId).toString());
+        logger.info(bookService.getViewBookById(bookId));
         return bookService.getViewBookById(bookId);
     }
     @GetMapping("/books/amount")
@@ -163,12 +202,12 @@ public class BookController {
 
     @GetMapping("/find-books")
     public Page<ViewBook> findBooks(@RequestParam(value = "title") String title,
-                                   @RequestParam(value = "author", required = false) String author,
-                                   @RequestParam(value = "genre", required = false) Integer genre,
-                                   @RequestParam(value = "from", required = false) Date from,
-                                   @RequestParam(value = "to", required = false) Date to,
-                                   @RequestParam(value = "page") int page,
-                                   @RequestParam(value = "size") int size) {
+                                    @RequestParam(value = "author", required = false) String author,
+                                    @RequestParam(value = "genre", required = false) Integer genre,
+                                    @RequestParam(value = "from", required = false) Date from,
+                                    @RequestParam(value = "to", required = false) Date to,
+                                    @RequestParam(value = "page") int page,
+                                    @RequestParam(value = "size") int size) {
         return bookService.getBooksByParameters(title, author, genre, from, to, PageRequest.of(page, size));
     }
 

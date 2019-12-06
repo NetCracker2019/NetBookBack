@@ -26,13 +26,13 @@ import java.util.Map;
 @Slf4j
 @Service
 public class BookService {
-    final JdbcBookRepository jdbcBookRepository;
-    final GenreRepository genreRepository;
-    final AuthorRepository authorRepository;
-    final ReviewRepository reviewRepository;
-    final UserRepository userRepository;
-    final AchievementRepository achievementRepository;
-    final AchievementService achievementService;
+    private final JdbcBookRepository jdbcBookRepository;
+    private final GenreRepository genreRepository;
+    private final AuthorRepository authorRepository;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final AchievementRepository achievementRepository;
+    private final AchievementService achievementService;
 
     @Autowired
     public BookService(JdbcBookRepository jdbcBookRepository,
@@ -139,7 +139,7 @@ public class BookService {
         return jdbcBookRepository.getPeaceBook(page, booksPerPage);
     }
 
-    public List<Announcement> getPeaceAnnouncement(int page, int booksPerPage) {
+    public List<ViewBook> getPeaceAnnouncement(int page, int booksPerPage) {
         return jdbcBookRepository.getPeaceAnnouncement(page, booksPerPage);
     }
 
@@ -263,12 +263,12 @@ public class BookService {
         return reviewRepository.cancelReview(reviewId);
     }
 
-    public void likeReview(long reviewId){
-        reviewRepository.likeReview(reviewId);
-    }
-    public void likeBook(long bookId){
-        jdbcBookRepository.likeBook(bookId);
-    }
+//    public void likeReview(long reviewId){
+//        reviewRepository.likeReview(reviewId);
+//    }
+//    public void likeBook(long bookId){
+//        jdbcBookRepository.likeBook(bookId);
+//    }
     public List<Review> getReviewsForApprove(int page, int itemPerPage){
         return reviewRepository.getReviewsForApprove(page, itemPerPage);
     }
@@ -312,5 +312,29 @@ public class BookService {
 
     public void removeBookBatch(long userId, List<Long> booksId) {
         jdbcBookRepository.removeBookBatch(userId, booksId);
+    }
+    public void likeBook(long bookId, String userLogin){
+        long userId = userRepository.getUserIdByLogin(userLogin);
+        jdbcBookRepository.likeBook(bookId, userId);
+    }
+    public void dislikeBook(long bookId, String userLogin){
+        long userId = userRepository.getUserIdByLogin(userLogin);
+        jdbcBookRepository.dislikeBook(bookId, userId);
+    }
+    public int checkLikedBook(long bookId, String userLogin){
+        long userId = userRepository.getUserIdByLogin(userLogin);
+        return jdbcBookRepository.checkLickedBook(bookId, userId);
+    }
+    public int likeReview(long reviewId, String userLogin){
+        long userId = userRepository.getUserIdByLogin(userLogin);
+        return reviewRepository.likeReview(reviewId, userId);
+    }
+    public int dislikeReview(long reviewId, String userLogin){
+        long userId = userRepository.getUserIdByLogin(userLogin);
+        return reviewRepository.dislikeReview(reviewId, userId);
+    }
+    public int checkLikedReview(long reviewId, String userLogin){
+        long userId = userRepository.getUserIdByLogin(userLogin);
+        return reviewRepository.checkLikedReview(reviewId, userId);
     }
 }

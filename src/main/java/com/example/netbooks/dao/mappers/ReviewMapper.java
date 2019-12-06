@@ -2,14 +2,15 @@ package com.example.netbooks.dao.mappers;
 
 import com.example.netbooks.models.Review;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
-public class ReviewMapper implements RowMapper {
+@Component
+public class ReviewMapper implements RowMapper<Review> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+    public Review mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Review(
                 resultSet.getLong("r_id"),
                 resultSet.getLong("u_id"),

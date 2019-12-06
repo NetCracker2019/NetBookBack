@@ -12,15 +12,19 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @PropertySource("classpath:queries/review.properties")
 @Repository
 public class ReviewRepositoryImpl implements ReviewRepository {
+    private DataSource dataSource;
     private final Environment env;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final JdbcTemplate jdbcTemplate;
@@ -28,11 +32,11 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     @Value("${getReviewPeaceForApprove}")
     String getReviewPeaceForApprove;
 
-    @Autowired
-    public ReviewRepositoryImpl(DataSource dataSource, Environment env) {
-        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public ReviewRepositoryImpl(Environment env, NamedParameterJdbcTemplate namedJdbcTemplate, JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.env = env;
+        this.namedJdbcTemplate = namedJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -82,9 +86,45 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     @Override
-    public void likeReview(long reviewId) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("reviewId", reviewId);
-        namedJdbcTemplate.update(env.getProperty("likeReview"), namedParameters);
+    public int likeReview(long reviewId, long userId) {
+        SimpleJdbcCall jdbcCall = new
+                SimpleJdbcCall(dataSource).withFunctionName("like_review");
+
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("reviewId", reviewId)
+                .addValue("userId", userId);
+        return jdbcCall.executeFunction(Integer.class, in);
+    }
+
+    @Override
+    public int dislikeReview(long reviewId, long userId) {
+        SimpleJdbcCall jdbcCall = new
+                SimpleJdbcCall(dataSource).withFunctionName("dislike_review");
+
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("reviewId", reviewId)
+                .addValue("userId", userId);
+        int resukt = jdbcCall.executeFunction(Integer.class, in);
+        System.out.println();
+        return jdbcCall.executeFunction(Integer.class, in);
+    }
+
+    @Override
+    public int checkLikedReview(long reviewId, long userId) {
+//        SimpleJdbcCall jdbcCall = new
+//                SimpleJdbcCall(dataSource).withFunctionName("check_review_liked");
+//
+//        SqlParameterSource in = new MapSqlParameterSource()
+//                .addValue("reviewId", reviewId)
+//                .addValue("userId", userId);
+//        return jdbcCall.executeFunction(Integer.class, in);
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("reviewId", reviewId);
+        namedParams.put("userId", userId);
+        Boolean liked = namedJdbcTemplate.queryForObject(env.getProperty("checkLikedReview"), namedParams, Boolean.class);
+        if (liked == null) return 0;
+        else if (liked) return 1;
+        else return -1;
     }
 
     @Override
