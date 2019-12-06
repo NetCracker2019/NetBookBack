@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @Data
 public class Notification {
 
+    @JsonProperty("notificationId")
     private Integer notificationId;
     @JsonProperty("userId")
     private Integer userId;
@@ -23,6 +24,7 @@ public class Notification {
     private Integer notifTypeId;
     private Integer overviewId;
     private Integer reviewId;
+    @JsonProperty("bookId")
     private Integer bookId;
     private Integer achievId;
     private String overviewName;
@@ -55,8 +57,10 @@ public class Notification {
         this.achievName = null;
     }
 
-    public Notification(Date date,int notifTypeId, String overviewName,String reviewName,String fromUserName,String bookName,String achievName,String notifTitle,String notifText) {
-        this.date=date;
+    public Notification(int notificationId, int bookId, boolean isRead,Date date,int notifTypeId, String overviewName,String reviewName,String fromUserName,String bookName,String achievName,String notifTitle,String notifText) {
+        this.notificationId=notificationId;
+        this.bookId=bookId;
+        this.isRead=isRead;
         this.notifTypeId = notifTypeId;
         this.overviewName = overviewName;
         this.reviewName = reviewName;

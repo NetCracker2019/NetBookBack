@@ -2,6 +2,7 @@ package com.example.netbooks.controllers;
 
 
 import com.example.netbooks.models.Review;
+import com.example.netbooks.models.User;
 import com.example.netbooks.models.ViewAnnouncement;
 import com.example.netbooks.services.BookService;
 import com.example.netbooks.services.NotificationService;
