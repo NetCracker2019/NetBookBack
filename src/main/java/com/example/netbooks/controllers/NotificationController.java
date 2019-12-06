@@ -48,7 +48,7 @@ public class NotificationController {
 //        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
 //    }
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<?> getNotificationsForUser() {
         log.debug("Getting notification for user in {}: ", this.getClass().getName());
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
@@ -57,12 +57,20 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
     }
 
-    @PutMapping("")
+    @PutMapping("/mark")
     public void markAllAsRead(){
-        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+        log.debug("Mark notification as read for user  {}: ", this.getClass().getName());
+
+        long userId = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
-        notificationService.markAsRead(id);
+        notificationService.markAllAsRead(userId);
+    }
+
+    @PutMapping("mark-one")
+    public void markNotifAsReadByNotifId(@RequestParam int notifId){
+        log.debug("Mark notification as read by notifId ");
+        notificationService.markNotifAsReadByNotifId(notifId);
     }
 
 }

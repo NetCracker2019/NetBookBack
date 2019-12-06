@@ -82,8 +82,11 @@ public class NotificationService {
         notificationRepository.addNotification(notification);
     }
 
-    public void markAsRead(long id) {
-        notificationRepository.markAsRead(id);
+    public void markAllAsRead(long id) {
+        notificationRepository.markAllAsRead(id);
+    }
+    public void markNotifAsReadByNotifId(long id) {
+        notificationRepository.markAllAsRead(id);
     }
 
 

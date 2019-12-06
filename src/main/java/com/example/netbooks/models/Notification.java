@@ -12,6 +12,7 @@ import java.time.LocalTime;
 public class Notification {
 
     private Integer notificationId;
+    @JsonProperty("userId")
     private Integer userId;
     @JsonProperty("notifDate")
     private Date date;
@@ -35,9 +36,7 @@ public class Notification {
     private String notifText;
 
 
-    public Notification() {
-        super();
-    }
+    public Notification() {}
 
     public Notification(Integer userId, Date date, boolean isRead, Integer fromUserId, Integer notifTypeId,
                         Integer overviewId, Integer reviewId, Integer bookId, Integer achievId) {
