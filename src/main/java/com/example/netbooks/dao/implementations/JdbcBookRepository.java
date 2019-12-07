@@ -328,7 +328,7 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public String addBook(Book book, int userId) {
         jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved, user_id) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?, ?)",
-                    new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false, userId});
+                new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false, userId});
         return "Complete adding!";
     }
     private Announcement mapRowToAnnouncement(ResultSet resultSet, int i) throws SQLException {

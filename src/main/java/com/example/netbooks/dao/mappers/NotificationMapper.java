@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class NotificationMapper implements RowMapper<Notification> {
+public class NotificationMapper implements RowMapper {
     @Override
     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Notification(resultSet.getInt("user_id"),
@@ -21,11 +21,12 @@ public class NotificationMapper implements RowMapper<Notification> {
                 resultSet.getInt("review_id"),
                 resultSet.getInt("book_id"),
                 resultSet.getInt("achiev_id")
-                );
+        );
 
 
     }
 }
+
 //int userId, Date date, boolean isRead, int fromUserId, int notiTypeId,
 //                        int overviewId, int reviewId, int bookId, int achievId)
 /* resultSet.getString("notif_text"),

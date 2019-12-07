@@ -68,9 +68,9 @@ public class NotificationController {
     }
 
     @PutMapping("mark-one")
-    public void markNotifAsReadByNotifId(@RequestParam int notifId){
+    public void markNotifAsReadByNotifId(@RequestBody Notification notification){
         log.debug("Mark notification as read by notifId ");
-        notificationService.markNotifAsReadByNotifId(notifId);
+        notificationService.markNotifAsReadByNotifId(notification);
     }
 
 }

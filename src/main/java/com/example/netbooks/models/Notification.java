@@ -61,6 +61,7 @@ public class Notification {
         this.notificationId=notificationId;
         this.bookId=bookId;
         this.isRead=isRead;
+        this.date = date;
         this.notifTypeId = notifTypeId;
         this.overviewName = overviewName;
         this.reviewName = reviewName;

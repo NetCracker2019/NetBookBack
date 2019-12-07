@@ -192,7 +192,7 @@ public class BookController {
     }
     @GetMapping("/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
-        //log.info(bookService.getViewBookById(bookId));
+        log.info(bookService.getViewBookById(bookId).toString());
         return bookService.getViewBookById(bookId);
     }
     @GetMapping("/books/amount")

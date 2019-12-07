@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 @Slf4j
 @PropertySource("classpath:queries/notification.properties")
 @Repository
@@ -80,15 +79,15 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Override
     public void markAllAsRead(long id) {
         Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("user_id",id);
-        namedParameterJdbcTemplate.update(environment.getProperty("markAllAsRead"),namedParams );
+        namedParams.put("user_id", id);
+        namedParameterJdbcTemplate.update(environment.getProperty("markAllAsRead"), namedParams);
     }
 
     @Override
-    public void markNotifAsReadByNotifId(long notifId) {
+    public void markNotifAsReadByNotifId(Integer notifId) {
         Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("notification_id",notifId);
-        namedParameterJdbcTemplate.update(environment.getProperty("markNotifAsReadByNotifId"),namedParams );
+        namedParams.put("notification_id", notifId);
+        namedParameterJdbcTemplate.update(environment.getProperty("markNotifAsReadByNotifId"), namedParams);
     }
 
 
