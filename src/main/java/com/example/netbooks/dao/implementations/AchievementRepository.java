@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @PropertySource("classpath:queries/achievement.properties")
@@ -40,11 +41,11 @@ public class AchievementRepository {
             return achievement;
         }
     }
-    public Achievement findByAchievementId(Long id) {
+    public List<Achievement> findByAchievementId(Long id) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("user_id", id);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findByAchievementId"),
+            return namedJdbcTemplate.query(env.getProperty("findByAchievementId"),
                     namedParams, new AchievementMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("Achievment not found - " + id);

@@ -1,6 +1,7 @@
 package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.ChatRepositoryImpl;
+import com.example.netbooks.models.Chat;
 import com.example.netbooks.models.Message;
 import com.example.netbooks.models.User;
 import lombok.extern.slf4j.Slf4j;
@@ -19,35 +20,29 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
-    public List<String> getChatsByUserId(Long userId){
+    public List<Chat> getChatsByUserId(Long userId){
         return chatRepository.getChatsByUserId(userId);
     }
 
-    public List<Message> getMessagesByChatName(String chatName) {
-        return chatRepository.getMessagesByChatName(chatName);
+    public List<Message> getMessagesByChatId(Long chatId) {
+        return chatRepository.getMessagesByChatId(chatId);
     }
 
     public void saveMessage(Message message) {
         chatRepository.saveMessage(message);
     }
 
-    public boolean isExistChatName(String chatName) {
-        return chatRepository.isExistChatName(chatName);
-    }
-
     public void createNewChat(String chatName, List<String> members) {
         chatRepository.createNewChat(chatName, members);
     }
 
-    public List<User> getChatMembers(String chatName) {
-        return chatRepository.getChatMembers(chatName);
+    public List<User> getChatMembers(Long chatId) {
+        return chatRepository.getChatMembers(chatId);
     }
 
-    public void renameChat(String oldChatName, String newChatName) {
-        chatRepository.renameChat(oldChatName, newChatName);
-    }
-
-    public void addMembersToChat(String chatName, List<String> members) {
-        chatRepository.addMembersToChat(chatName, members);
+    public void updateChat(Long chatId, String editedChatName, List<String> addedMembers, List<String> removedMembers) {
+        addedMembers.add("");
+        removedMembers.add("");
+        chatRepository.updateChat(chatId, editedChatName, addedMembers, removedMembers);
     }
 }

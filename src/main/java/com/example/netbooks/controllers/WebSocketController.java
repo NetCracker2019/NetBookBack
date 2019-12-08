@@ -38,7 +38,7 @@ public class WebSocketController {
         message.setDateSend(new Date());
         chatService.saveMessage(message);
         this.simpMessagingTemplate.convertAndSend("/socket-publisher/" +
-                message.getToName(), message);
+                message.getToId(), message);
         this.simpMessagingTemplate.convertAndSend("/socket-publisher/" +
                 message.getFromName(), message);
         return message;

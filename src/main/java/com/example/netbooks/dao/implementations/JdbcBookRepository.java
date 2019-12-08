@@ -49,7 +49,6 @@ public class JdbcBookRepository implements BookRepository {
     private final RowMapper<Event> eventMapper;
     private final RowMapper<Genre> genreNameMapper;
     private final RowMapper<Author> authorNameMapper;
-
     @Autowired
     public JdbcBookRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedJdbcTemplate, DataSource dataSource,
                               Environment env,
@@ -67,6 +66,39 @@ public class JdbcBookRepository implements BookRepository {
         this.genreNameMapper = genreNameMapper;
         this.authorNameMapper = authorNameMapper;
     }
+
+    @Value("${getBookList}")
+    private String getBookList;
+
+    @Value("${getBookListByLikes}")
+    private String getBookListByLikes;
+
+    @Value("${getBookListDesc}")
+    private String getBookListDesc;
+
+    @Value("${getBookListByLikesDesc}")
+    private String getBookListByLikesDesc;
+
+    @Value("${addBookBatchToReading}")
+    private String addBookBatchToReading;
+
+    @Value("${addBookBatchToRead}")
+    private String addBookBatchToRead;
+
+    @Value("${addBookBatchToFavourite}")
+    private String addBookBatchToFavourite;
+
+    @Value("${removeBookBatchFromReading}")
+    private String removeBookBatchFromReading;
+
+    @Value("${removeBookBatchFromRead}")
+    private String removeBookBatchFromRead;
+
+    @Value("${removeBookBatchFromFavourite}")
+    private String removeBookBatchFromFavourite;
+
+    @Value("${addBookBatchToReading}")
+    private String removeBookBatch;
 
     @Override
     public List<ViewBook> findAllViewBooks() {
@@ -352,11 +384,24 @@ public class JdbcBookRepository implements BookRepository {
         namedParams.put("favourite", favourite);
         namedParams.put("reading", reading);
         namedParams.put("not_set", notSet);
-        //namedParams.put("user_id", id);
-        //namedParams.put("user_id", id);
         namedParams.put("sought", "%" + sought + "%");
-        return namedJdbcTemplate.query(env.getProperty("getBookList"),
-                namedParams, new ShortViewBookMapper());
+        if("asc".equals(order)){
+            if("title".equals(sortBy)){
+                return namedJdbcTemplate.query(getBookList,
+                        namedParams, new ShortViewBookMapper());
+            }else{
+                return namedJdbcTemplate.query(getBookListByLikes,
+                        namedParams, new ShortViewBookMapper());
+            }
+        }else{
+            if("title".equals(sortBy)){
+                return namedJdbcTemplate.query(getBookListDesc,
+                        namedParams, new ShortViewBookMapper());
+            }else{
+                return namedJdbcTemplate.query(getBookListByLikesDesc,
+                        namedParams, new ShortViewBookMapper());
+            }
+        }
     }
     @Override
     public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
@@ -364,11 +409,11 @@ public class JdbcBookRepository implements BookRepository {
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
         if(shelf.equals("reading")){
-            namedJdbcTemplate.update(env.getProperty("addBookBatchToReading"), namedParams);
+            namedJdbcTemplate.update(addBookBatchToReading, namedParams);
         }else if(shelf.equals("read")){
-            namedJdbcTemplate.update(env.getProperty("addBookBatchToRead"), namedParams);
+            namedJdbcTemplate.update(addBookBatchToRead, namedParams);
         }else {
-            namedJdbcTemplate.update(env.getProperty("addBookBatchToFavourite"), namedParams);
+            namedJdbcTemplate.update(addBookBatchToFavourite, namedParams);
         }
     }
     public Map<String, Object> getFavouriteGenres(long userId) {
@@ -405,11 +450,11 @@ public class JdbcBookRepository implements BookRepository {
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
         if(shelf.equals("reading")){
-            namedJdbcTemplate.update(env.getProperty("removeBookBatchFromReading"), namedParams);
+            namedJdbcTemplate.update(removeBookBatchFromReading, namedParams);
         }else if(shelf.equals("read")){
-            namedJdbcTemplate.update(env.getProperty("removeBookBatchFromRead"), namedParams);
+            namedJdbcTemplate.update(removeBookBatchFromRead, namedParams);
         }else {
-            namedJdbcTemplate.update(env.getProperty("removeBookBatchFromFavourite"), namedParams);
+            namedJdbcTemplate.update(removeBookBatchFromFavourite, namedParams);
         }
     }
     @Override
@@ -417,7 +462,7 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
-        namedJdbcTemplate.update(env.getProperty("removeBookBatch"), namedParams);
+        namedJdbcTemplate.update(removeBookBatch, namedParams);
     }
     @Override
     public void likeBook(long bookId, long userId) {
