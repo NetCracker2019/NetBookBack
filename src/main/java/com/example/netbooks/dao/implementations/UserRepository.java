@@ -269,7 +269,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     public Boolean isExistByMail(String mail) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("login", mail);
+            namedParams.put("mail", mail);
             namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
             return true;
         } catch (EmptyResultDataAccessException e) {
