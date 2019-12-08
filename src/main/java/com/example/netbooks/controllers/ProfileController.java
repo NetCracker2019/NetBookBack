@@ -103,8 +103,12 @@ public class ProfileController {
                          @PathVariable("friendLogin") String friendLogin) {
         if(!checkAuth(ownLogin)) return;
         userManager.addFriend(ownLogin, friendLogin);
-        notificationService.addNotification((int)(userManager.getUserByLogin(friendLogin).getUserId()),ADD_FRIEND_NOTIF);
-
+        Notification notification = new Notification();
+        notification.setNotifTypeId(1);
+        notification.setUserId((int)(userManager.getUserByLogin(friendLogin).getUserId()));
+        notification.setFromUserId((int)(userManager.getUserByLogin(ownLogin).getUserId()));
+        notificationService.addNotification(notification);
+//todo thread
 
     }
     /* 1 - is friend
