@@ -171,7 +171,9 @@ public class BookController {
     }
 
     @GetMapping("/suggestions")
-    public List<ViewBook> getSuggestions(@RequestParam("user") String userName) {
-        return bookService.getSuggestions(userName);
+    public Page<ViewBook> getSuggestions(@RequestParam("user") String userName,
+                                         @RequestParam("page") int page,
+                                         @RequestParam("size") int size) {
+        return bookService.getSuggestions(userName, PageRequest.of(page, size));
     }
 }

@@ -17,16 +17,14 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @PropertySource("classpath:queries/book.properties")
 @Repository
@@ -145,10 +143,10 @@ public class JdbcBookRepository implements BookRepository {
 
 
     @Override
-    public List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor) {
+    public List<ViewBook> findViewBooksByTitle(String title) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("titleOrAuthor", "%" + titleOrAuthor + "%");
-        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleOrAuthor"), namedParameters, viewBooksMapper);
+        namedParameters.addValue("title", "%" + title + "%");
+        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitle"), namedParameters, viewBooksMapper);
     }
 
     @Override
@@ -375,31 +373,9 @@ public class JdbcBookRepository implements BookRepository {
         }
     }
 
-    public Map<String, Object> getFavouriteGenres(long userId) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("userId", userId);
-        try {
-            return namedJdbcTemplate.queryForMap(env.getRequiredProperty("getFavouriteGenres"), namedParams);
-        } catch (EmptyResultDataAccessException e) {
-            return Collections.emptyMap();
-        }
-    }
-
-    public Map<String, Object> getFavouriteAuthors(long userId) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("userId", userId);
-        try {
-            return namedJdbcTemplate.queryForMap(env.getRequiredProperty("getFavouriteAuthors"), namedParams);
-        } catch (EmptyResultDataAccessException e) {
-            return Collections.emptyMap();
-        }
-    }
-
-    public List<ViewBook> getSuggestions(long userId, int genreId, int authorId) {
+    public List<ViewBook> getSuggestions(long userId) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("userId", userId);
-        namedParameters.addValue("genreId", genreId);
-        namedParameters.addValue("authorId", authorId);
         return namedJdbcTemplate.query(env.getRequiredProperty("getSuggestions"), namedParameters, viewBooksMapper);
     }
   
