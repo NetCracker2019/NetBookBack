@@ -7,6 +7,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -18,14 +20,17 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private final Environment env;
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Author> authorMapper;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     @Autowired
     public AuthorRepositoryImpl(DataSource dataSource,
                                 RowMapper<Author> authorMapper,
-                                Environment env) {
+                                Environment env,
+                                NamedParameterJdbcTemplate namedJdbcTemplate) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.authorMapper = authorMapper;
         this.env = env;
+        this.namedJdbcTemplate = namedJdbcTemplate;
     }
 
     @Override
@@ -34,14 +39,26 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public String addRowIntoBookAuthor(String title, List<String> id) {
+    public String addRowIntoBookAuthor(String title, String description, List<String> id) {
+
+
+
         for (String item : id) {
-            boolean isThisAuthorExist = jdbcTemplate.queryForObject("select exists(select 1 from author where fullname='" + item + "')", Boolean.class);
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            namedParameters.addValue("title", title);
+            namedParameters.addValue("description", description);
+            namedParameters.addValue("fullname", item);
+
+            //boolean isThisAuthorExist = jdbcTemplate.queryForObject("select exists(select 1 from author where fullname='" + item + "')", Boolean.class);
+            boolean isThisAuthorExist = namedJdbcTemplate.queryForObject(env.getProperty("isThisAuthorExist"), namedParameters, Boolean.class);
             if (isThisAuthorExist == false) {
-                jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {item});
+                //jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {item});
+                namedJdbcTemplate.update(env.getProperty("addAuthor"), namedParameters);
             }
-            jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + title + "'), \n" +
-                    "\t\t   (select author_id from author where fullname ='" +  item + "'))");
+
+            namedJdbcTemplate.update(env.getProperty("addRowIntoBookAuthor"), namedParameters);
+            //jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + title + "'), \n" +
+            //        "\t\t   (select author_id from author where fullname ='" +  item + "'))");
         }
         return "Add Author";
     }

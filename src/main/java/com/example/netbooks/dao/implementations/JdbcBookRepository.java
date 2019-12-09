@@ -39,17 +39,20 @@ import java.util.*;
 @PropertySource("classpath:queries/book.properties")
 @Repository
 public class JdbcBookRepository implements BookRepository {
+
     private DataSource dataSource;
     private final Environment env;
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     private final Logger logger = LogManager.getLogger(ProfileController.class);
+
     private final RowMapper<ViewAnnouncement> viewAnnouncementMapper;
     private final RowMapper<ViewBook> viewBooksMapper;
     private final RowMapper<Event> eventMapper;
     private final RowMapper<Genre> genreNameMapper;
     private final RowMapper<Author> authorNameMapper;
+    private final RowMapper<Book> bookIdMapper;
 
     @Value("${getBookList}")
     private String getBookList;
@@ -91,7 +94,8 @@ public class JdbcBookRepository implements BookRepository {
                               ViewBookMapper viewBooksMapper,
                               RowMapper<Event> eventMapper,
                               RowMapper<Genre> genreNameMapper,
-                              RowMapper<Author> authorNameMapper) {
+                              RowMapper<Author> authorNameMapper,
+                              RowMapper<Book> bookIdMapper) {
         this.namedJdbcTemplate = namedJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
         this.env = env;
@@ -101,6 +105,7 @@ public class JdbcBookRepository implements BookRepository {
         this.genreNameMapper = genreNameMapper;
         this.dataSource = dataSource;
         this.authorNameMapper = authorNameMapper;
+        this.bookIdMapper = bookIdMapper;
     }
 
     @Override
@@ -112,8 +117,11 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public List<ViewAnnouncement> findViewUnApproveBooks() {
-        return jdbcTemplate.query(env.getProperty("getUnApprove"), viewAnnouncementMapper);
+    public List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("count", offset);
+        namedParameters.addValue("offset", page);
+        return namedJdbcTemplate.query(env.getProperty("getUnApprove"), namedParameters, viewAnnouncementMapper);
     }
 
     @Override
@@ -221,39 +229,51 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public List<Event> getCalendarPersonalizeAnnouncement(int userId) {
         logger.info(userId);
-        List<Event> result;
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("value", userId);
 
-        List<Genre> favouriteGenre = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenre"),namedParameters,genreNameMapper);
-        List<Author> favouriteAuthor = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthor"),namedParameters,authorNameMapper);
-        logger.info(favouriteGenre);
-        logger.info(favouriteAuthor);
-        String authors = "{";
-        String genres = "{";
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("value", userId);
+/////
+        List<Book> favouriteGenreAndAuthorBooksId = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenreAndAuthor"),namedParameters, bookIdMapper);
+        logger.info("New feature request = " + favouriteGenreAndAuthorBooksId);
+/////
+//        List<Genre> favouriteGenre = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenre"),namedParameters,genreNameMapper);
+//        List<Author> favouriteAuthor = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthor"),namedParameters,authorNameMapper);
+//        logger.info(favouriteGenre);
+//        logger.info(favouriteAuthor);
+//        String authors = "{";
+//        String genres = "{";
+//
+//        for (Author item : favouriteAuthor) {
+//            logger.info(item.getFullName());
+//
+//            authors += item.getFullName() + ", ";
+//        }
+//        authors = authors.replaceAll(", $", "");
+//        authors += "}";
+//
+//        logger.info(authors);
+//        for (Genre item : favouriteGenre) {
+//            logger.info(item.getGenreName());
+//            genres += item.getGenreName() + ", ";
+//        }
+//        genres = genres.replaceAll(", $", "");
+//        genres += "}";
+//
+//
+//        namedParameters.put("authors", authors);
+//        namedParameters.put("genres", genres);
+//        //logger.info(namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncement"),namedParameters,eventMapper));
 
-        for (Author item : favouriteAuthor) {
-            logger.info(item.getFullName());
-
-            authors += item.getFullName() + ", ";
+        List<Event> result = new ArrayList<>();
+        for (Book item : favouriteGenreAndAuthorBooksId) {
+            namedParameters.put("id", item.getBookId());
+            //logger.info(namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncementNew"), namedParameters, eventMapper));
+            result.addAll(namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncementNew"), namedParameters, eventMapper));
         }
-        authors = authors.replaceAll(", $", "");
-        authors += "}";
 
-        logger.info(authors);
-        for (Genre item : favouriteGenre) {
-            logger.info(item.getGenreName());
-            genres += item.getGenreName() + ", ";
-        }
-        genres = genres.replaceAll(", $", "");
-        genres += "}";
+        logger.info("Test of person book = " + result);
 
-
-        namedParameters.addValue("authors", authors);
-        namedParameters.addValue("genres", genres);
-        logger.info(namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncement"),namedParameters,eventMapper));
-
-        return namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncement"),namedParameters,eventMapper);
+        return result;
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
@@ -361,10 +381,33 @@ public class JdbcBookRepository implements BookRepository {
         return jdbcTemplate.queryForObject("select exists(select 1 from book where title='" + book.getTitle() + "')", Boolean.class);
     }
 
+
+
+    @Override
+    public int checkIsDuplicate(String title, String description) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", title);
+        namedParameters.addValue("description", description);
+        return namedJdbcTemplate.queryForObject(env.getProperty("checkDuplicates"),namedParameters,Integer.class);
+    }
+
+
     @Override
     public String addBook(Book book, int userId) {
-        jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved, user_id) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?, ?)",
-                new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false, userId});
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", book.getTitle());
+        namedParameters.addValue("likes", 0);
+        namedParameters.addValue("image_path", book.getImagePath());
+        namedParameters.addValue("release_date", book.getRelease_date());
+        namedParameters.addValue("lang", book.getLanguage());
+        namedParameters.addValue("pages", book.getPages());
+        namedParameters.addValue("description", book.getDescription());
+        namedParameters.addValue("approved", false);
+        namedParameters.addValue("user_id", userId);
+        namedJdbcTemplate.update(env.getProperty("addBook"),namedParameters);
+        //jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved, user_id) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?, ?)",
+        //            new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false, userId});
+
         return "Complete adding!";
     }
     private Announcement mapRowToAnnouncement(ResultSet resultSet, int i) throws SQLException {
@@ -522,4 +565,11 @@ public class JdbcBookRepository implements BookRepository {
         if (liked) return 1;
         else return -1;
     }
+
+    @Override
+    public int countAnnouncement(boolean approved){
+        SqlParameterSource namedParameters = new MapSqlParameterSource("approved", approved);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countUnApproveAnnouncement"), namedParameters, Integer.class);
+    }
+
 }
