@@ -108,20 +108,27 @@ public class BookController {
         bookService.likeBook(bookId, userLogin);
         return true;
     }
+    @PutMapping("/dislike-book")
+    public boolean dislikeBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        bookService.dislikeBook(bookId, userLogin);
+        return true;
+    }
     @GetMapping("/check-liked-book")
     public int checkLikedBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
-        return bookService.checkLikedBook(bookId, userLogin);
+        int result = bookService.checkLikedBook(bookId, userLogin);
+        log.info("Check liked book: "+result);
+        return result;
     }
     @PutMapping("/like-review")
     public int likeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
         int result = bookService.likeReview(reviewId, userLogin);
-        logger.info("Review Likes: "+result);
+        log.info("Review Likes: "+result);
         return result;
     }
     @PutMapping("/dislike-review")
     public int dislikeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
         int result = bookService.dislikeReview(reviewId, userLogin);
-        logger.info("Review Likes: "+result);
+        log.info("Review Likes: "+result);
         return result;
     }
     @GetMapping("/check-liked-review")
@@ -160,7 +167,6 @@ public class BookController {
     }
     @GetMapping("/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
-        logger.info(bookService.getViewBookById(bookId));
         return bookService.getViewBookById(bookId);
     }
     @GetMapping("/books/amount")

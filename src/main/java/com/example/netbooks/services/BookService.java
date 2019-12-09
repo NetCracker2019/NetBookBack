@@ -86,7 +86,13 @@ public class BookService {
         jdbcBookRepository.addBook(book, userId);
         genreRepository.addRowIntoBookGenre(book.getTitle(),book.getGenre());
         authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getAuthor());
+        int addedUserBook = jdbcBookRepository.countAddedBooksForUser(userId);
+        long achvId = achievementService.getAchvIdByParameters(addedUserBook, "book-achievement", 1);
 
+        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+        if (userAchievement != null) {
+            // TODO Notification sending must be here.
+        }
 
         Map<Object, Object> response = new HashMap<>();
         response.put("status", "ok");
@@ -234,9 +240,9 @@ public class BookService {
         int booksForUser = jdbcBookRepository.countBooksForUser(userId);
         long achvId = achievementService.getAchvIdByParameters(booksForUser, "book", 10);
 
-        if (achvId > 0){
-            achievementRepository.addAchievementForUser(achvId, userId);
-
+        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+        if (userAchievement != null) {
+            // TODO Notification sending must be here.
         }
         return executionResult;
     }
@@ -246,11 +252,9 @@ public class BookService {
         boolean executionResult = reviewRepository.approveReview(reviewId);
         int reviewsForUser = reviewRepository.countReviewsForUser(userId);
         long achvId = achievementService.getAchvIdByParameters(reviewsForUser, "review", 1);
-        System.out.println(achvId);
-        System.out.println(reviewsForUser);
-        if (achvId > 0){
-            achievementRepository.addAchievementForUser(achvId, userId);
-
+        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+        if (userAchievement != null) {
+            // TODO Notification sending must be here.
         }
         return executionResult;
     }
@@ -299,7 +303,39 @@ public class BookService {
     }
 
     public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
-        jdbcBookRepository.addBookBatchTo(userId, shelf, booksId);
+        if(shelf.equals("reading")){
+            jdbcBookRepository.addBookBatchToReading(userId, booksId);
+        }else if(shelf.equals("read")){
+            jdbcBookRepository.addBookBatchToRead(userId, booksId);
+            for (long bookId: booksId){
+                boolean addedAuthorAchv = achievementRepository.check_achievement_author(userId, bookId, "read");
+                if (addedAuthorAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+                boolean addedGenreAchv = achievementRepository.check_achievement_genre(userId, bookId, "read");
+                if (addedGenreAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+
+            }
+        }else {
+            jdbcBookRepository.addBookBatchToFavourite(userId, booksId);
+            for (long bookId: booksId){
+                boolean addedAuthorAchv = achievementRepository.check_achievement_author(userId, bookId, "fav");
+                if (addedAuthorAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+                boolean addedGenreAchv = achievementRepository.check_achievement_genre(userId, bookId, "fav");
+                if (addedGenreAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+
+            }
+        }
     }
 
     public void removeBookBatchFrom(long userId, String shelf, List<Long> booksId) {

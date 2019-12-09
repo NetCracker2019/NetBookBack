@@ -66,6 +66,7 @@ public class JdbcBookRepository implements BookRepository {
         this.eventMapper = eventMapper;
         this.genreNameMapper = genreNameMapper;
         this.authorNameMapper = authorNameMapper;
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -326,9 +327,9 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public String addBook(Book book) {
-            jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?)",
-                    new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false});
+    public String addBook(Book book, int userId) {
+        jdbcTemplate.update("insert into book (title, likes, image_path, release_date, lang, pages, description, approved, user_id) " + "values(?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?, ?, ?)",
+                new Object[]{book.getTitle(), 0, book.getImagePath(), book.getRelease_date(), book.getLanguage(), book.getPages(), book.getDescription(), false, userId});
         return "Complete adding!";
     }
     private Announcement mapRowToAnnouncement(ResultSet resultSet, int i) throws SQLException {
@@ -359,17 +360,35 @@ public class JdbcBookRepository implements BookRepository {
                 namedParams, new ShortViewBookMapper());
     }
     @Override
-    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
+    public void addBookBatchToFavourite(Long userId, List<Long> booksId) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
-        if(shelf.equals("reading")){
-            namedJdbcTemplate.update(env.getProperty("addBookBatchToReading"), namedParams);
-        }else if(shelf.equals("read")){
-            namedJdbcTemplate.update(env.getProperty("addBookBatchToRead"), namedParams);
-        }else {
-            namedJdbcTemplate.update(env.getProperty("addBookBatchToFavourite"), namedParams);
-        }
+        namedJdbcTemplate.update(env.getProperty("addBookBatchToFavourite"), namedParams);
+    }
+    @Override
+    public void addBookBatchToRead(Long userId, List<Long> booksId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("booksId", booksId);
+        namedParams.put("user_id", userId);
+        namedJdbcTemplate.update(env.getProperty("addBookBatchToRead"), namedParams);
+    }
+
+    @Override
+    public int countAddedBooksForUser(long userId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countAddedBooksForUser"), namedParameters, Integer.class);
+    }
+
+    @Override
+    public void addBookBatchToReading(Long userId, List<Long> booksId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("booksId", booksId);
+        namedParams.put("user_id", userId);
+
+        namedJdbcTemplate.update(env.getProperty("addBookBatchToReading"), namedParams);
+
     }
     public Map<String, Object> getFavouriteGenres(long userId) {
         Map<String, Object> namedParams = new HashMap<>();
@@ -454,8 +473,8 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("bookId", bookId);
         namedParams.put("userId", userId);
-        Integer countLiked = namedJdbcTemplate.queryForObject(env.getProperty("countLikedBookForUser"), namedParams, Integer.class);
-        if (countLiked == 0) {
+        Boolean likedExist = namedJdbcTemplate.queryForObject(env.getProperty("checkExistsLikedBookForUser"), namedParams, Boolean.class);
+        if (!likedExist) {
             return 0;
         }
         Boolean liked = namedJdbcTemplate.queryForObject(env.getProperty("checkLikedBook"), namedParams, Boolean.class);
