@@ -89,6 +89,20 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParams.put("notification_id", notifId);
         namedParameterJdbcTemplate.update(environment.getProperty("markNotifAsReadByNotifId"), namedParams);
     }
+
+    @Override
+    public int getNotifCount(long userId) {
+        try {
+            SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
+            return namedParameterJdbcTemplate.queryForObject(environment.getProperty("getCountNotifications"), namedParameters, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
+}
+
+
 /*
     @Override
     public void deleteAllNotificationsByUserId(long id) {
@@ -104,4 +118,4 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParameterJdbcTemplate.update(environment.getProperty("deleteNotificationByNotifId"), namedParams);
     }
 */
-}
+

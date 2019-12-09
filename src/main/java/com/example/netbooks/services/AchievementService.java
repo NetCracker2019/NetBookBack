@@ -2,7 +2,9 @@ package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
+import com.example.netbooks.models.User;
 import com.example.netbooks.models.UserAchievement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,10 @@ import java.util.List;
 public class AchievementService {
 
     private final AchievementRepository achievementRepository;
+    @Autowired
+    private UserManager userManager;
+    @Autowired
+    private NotificationService notificationService;
 
     public AchievementService(AchievementRepository achievementRepository) {
         this.achievementRepository = achievementRepository;
@@ -37,6 +43,16 @@ public class AchievementService {
         if (achvId > 0){
             boolean in = achievementRepository.checkAchvInUserAchv(userId, achvId);
             if (!in){
+                Thread notifThread = new Thread(() -> {
+                    User tmpUser = userManager.getUserById(userId);
+                    List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
+                    List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
+                    friends.addAll(subscribers);
+                    friends.add(tmpUser);
+                    notificationService.createAndSaveAchievNotif(userId, friends, achvId);
+                });
+
+                notifThread.start();
                 achievementRepository.addAchievementForUser(achvId, userId);
                 return achievementRepository.getLastUserAchievement(userId);
             }

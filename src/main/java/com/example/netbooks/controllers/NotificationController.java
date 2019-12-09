@@ -57,13 +57,13 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
     }//
 
-    @GetMapping("/get-for-count")
-    public ResponseEntity<?> getAllUnreadViewNotificationsByUserId() {
+    @GetMapping("/count")
+    public ResponseEntity<?> getNotifCount() {
 
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
-        return ResponseEntity.ok(notificationService.getAllUnreadViewNotificationsByUserId(id));
+        return ResponseEntity.ok(notificationService.getNotifCount(id));
     }
 
     @PutMapping("/mark")
@@ -81,6 +81,9 @@ public class NotificationController {
         log.debug("Mark notification as read by notifId ");
         notificationService.markNotifAsReadByNotifId(notification);
     }
+
+
+
 /*
     @DeleteMapping("/delete-all")
     public void deleteAllNotificationsByUserId(){
@@ -94,6 +97,6 @@ public class NotificationController {
         log.debug("Mark notification as read by notifId ");
         notificationService.deleteNotificationByNotifId(notification);
     }
-    
+
  */
 }
