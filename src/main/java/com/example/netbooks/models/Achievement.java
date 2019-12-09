@@ -7,17 +7,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 public class Achievement {
     private Long  achievementId;
     @JsonProperty("title")
     private String title;
     @JsonProperty("description")
     private String description;
-    @JsonProperty("n")
-    private int n;
+    @JsonProperty("amount")
+    private int amount;
     @JsonProperty("image_path")
     private String imagePath;
     private String achvType;
+    private Long achvRuleId;
+    private String authorName;
+    private String genreName;
+    private boolean favourite;
+    private boolean readBook;
 }

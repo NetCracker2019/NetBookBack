@@ -2,9 +2,7 @@ package com.example.netbooks.dao.interfaces;
 
 import com.example.netbooks.models.*;
 
-
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface BookRepository {
@@ -14,7 +12,7 @@ public interface BookRepository {
 //    String addAnnouncement(Book book);
 //    void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
-    List<Announcement> getPeaceAnnouncement(int page, int booksPerPage);
+    List<ViewBook> getPeaceAnnouncement(int page, int booksPerPage);
 
     int getAmountOfBook();
     List<ViewBook> getPeaceBook(int page, int booksPerPage);
@@ -27,11 +25,18 @@ public interface BookRepository {
 
 
     List<ViewBook> findAllViewBooks();
-  
-    List<ViewBook> findViewBooksByTitleOrAuthor(String titleOrAuthor, int size, int startIndex);
+
+    List<ViewBook> findViewBooksByTitle(String title);
     ViewBook getBookById(int id);
-    List<ViewBook> findBooksByTitleAndGenre(String title, String genre, Date from, Date to, int size, int startIndex);
+
     List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset);
+
+    List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndAuthor(String title, String author, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to);
+
+
 
 
 
@@ -44,14 +49,27 @@ public interface BookRepository {
     List<String> getFavouriteAuthor(int id);
     List<String> getFavouriteGenre(int id);
 
+    //void likeBook(long bookId);
     int countBooksForUser(long userId);
-    void addBookBatchTo(Long userId, String shelf, List<Long> booksId);
+    //void addBookBatchTo(Long userId, String shelf, List<Long> booksId);
     List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, boolean read,
                                     boolean favourite, boolean reading, boolean notSet, String sortBy, String order);
     void removeBookBatch(long userId, List<Long> booksId);
     void removeBookBatchFrom(Long userId, String shelf, List<Long> booksId);
 
+
     int countAnnouncement(boolean approved);
 
     int checkIsDuplicate(String title, String description);
+
+    List<ViewBook> getSuggestions(long userId);
+  
+    void likeBook(long bookId, long userId);
+    void dislikeBook(long bookId, long userId);
+    int checkLickedBook(long bookId, long userId);
+
+    void addBookBatchToReading(Long userId,  List<Long> booksId);
+    void addBookBatchToFavourite(Long userId,  List<Long> booksId);
+    void addBookBatchToRead(Long userId,  List<Long> booksId);
+    int countAddedBooksForUser(long userId);
 }

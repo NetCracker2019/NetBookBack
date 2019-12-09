@@ -1,20 +1,18 @@
 package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.AuthenticationController;
-import com.example.netbooks.models.User;
 import com.example.netbooks.models.VerificationToken;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -24,20 +22,30 @@ import javax.sql.DataSource;
 
 @Repository
 @PropertySource("classpath:queries/token.properties")
-public class VerificationTokenRepository {
+public class VerificationTokenRepository implements com.example.netbooks.dao.interfaces.VerificationTokenRepository {
 
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
-	final NamedParameterJdbcTemplate namedJdbcTemplate;
-    private final Environment env;
+	private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     @Autowired
-    public VerificationTokenRepository(DataSource dataSource, Environment env) {
+    public VerificationTokenRepository(DataSource dataSource) {
 		super();
 		this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-		this.env = env;
 	}
-    
-    private final class TokenMapper implements RowMapper<VerificationToken> {
+
+    @Value("${saveToken}")
+    private String saveToken;
+
+    @Value("${deleteToken}")
+    private String deleteToken;
+
+    @Value("${findByVerificationToken}")
+    private String findByVerificationToken;
+
+    @Value("${findByVerificationTokenByUserId}")
+    private String findByVerificationTokenByUserId;
+
+    private static final class TokenMapper implements RowMapper<VerificationToken> {
         @Override
         public VerificationToken mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         	VerificationToken token = new VerificationToken();        
@@ -48,7 +56,7 @@ public class VerificationTokenRepository {
         	return token;     
         }
     }
-    
+    @Override
     public void save(VerificationToken token) {
     	Map<String, Object> namedParams = new HashMap<>();
     	namedParams.put("created_date", token.getCreatedDate());
@@ -56,31 +64,32 @@ public class VerificationTokenRepository {
     	namedParams.put("user_id", token.getUserId());
     	namedParams.put("token_name", token.getVerificationToken());
         
-        namedJdbcTemplate.update(env.getProperty("saveToken"), namedParams);
+        namedJdbcTemplate.update(saveToken, namedParams);
     }
-    
+    @Override
     public void removeVerificationToken(String token) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("token_name", token);
-        namedJdbcTemplate.update(env.getProperty("deleteToken"), namedParams);
+        namedJdbcTemplate.update(deleteToken, namedParams);
     }
 
-    
+    @Override
     public VerificationToken findByVerificationToken(String token) {
     	try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("token_name", token);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findByVerificationToken"), namedParams, new TokenMapper());
+            return namedJdbcTemplate.queryForObject(findByVerificationToken, namedParams, new TokenMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("Token not found - " + token);
             return null;
         }
     }
+    @Override
     public VerificationToken findByVerificationTokenByUserId(Long id) {
     	try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("user_id", id);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findByVerificationTokenByUserId"),
+            return namedJdbcTemplate.queryForObject(findByVerificationTokenByUserId,
             		namedParams, new TokenMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("Token not found - " + id);

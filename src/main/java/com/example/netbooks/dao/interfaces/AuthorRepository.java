@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface AuthorRepository {
     List<Author> getAllAuthors();
-
     String addRowIntoBookAuthor(String title, String description, List<String> id);
 
 }

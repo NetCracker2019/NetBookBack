@@ -1,17 +1,19 @@
 package com.example.netbooks.controllers;
 
 
-import com.example.netbooks.models.*;
+import com.example.netbooks.models.Review;
+import com.example.netbooks.models.User;
+import com.example.netbooks.models.ViewAnnouncement;
 import com.example.netbooks.services.BookService;
+import com.example.netbooks.services.NotificationService;
+import com.example.netbooks.services.UserManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
@@ -20,6 +22,10 @@ public class ApproveController {
     private final Logger logger = LogManager.getLogger(ApproveController.class);
     @Autowired
     private BookService bookService;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private UserManager userManager;
 
     @GetMapping("/books")
     public List<ViewAnnouncement> getUnApproveAnnouncementList(@RequestParam("page") int page,
@@ -53,6 +59,12 @@ public class ApproveController {
     }
     @PostMapping("confirm-review")
     public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId){
+//        Review review = bookService.getReviewById(reviewId);
+//        User tmpUser = userManager.getUserById(review.getUserId());
+//        List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
+//        List<User>subscribers=userManager.getSubscribersByLogin(tmpUser.getLogin());
+//        friends.addAll(subscribers);
+//        notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId() , reviewId);
         return bookService.approveReview(reviewId, userId);
     }
     @PostMapping("cancel-review")

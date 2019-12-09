@@ -1,16 +1,15 @@
 package com.example.netbooks.controllers;
 
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.websocket.server.PathParam;
-
+import com.example.netbooks.exceptions.CustomException;
+import com.example.netbooks.models.Role;
+import com.example.netbooks.models.User;
+import com.example.netbooks.models.VerificationToken;
+import com.example.netbooks.security.JwtProvider;
+import com.example.netbooks.services.EmailSender;
+import com.example.netbooks.services.UserManager;
+import com.example.netbooks.services.VerificationTokenManager;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,16 +20,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.netbooks.services.EmailSender;
-import com.example.netbooks.services.UserManager;
-import com.example.netbooks.services.VerificationTokenManager;
-import com.example.netbooks.dao.implementations.UserRepository;
-import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.Role;
-import com.example.netbooks.models.User;
-import com.example.netbooks.models.VerificationToken;
-import com.example.netbooks.security.JwtProvider;
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
@@ -180,14 +172,7 @@ public class AuthenticationController {
 
     @PostMapping("/send-admin-reg-mail")//TODO change mapping
     public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail) {
-        User user = new User();
-        String tempLogPass = UUID.randomUUID().toString();
-        user.setLogin(tempLogPass);
-        user.setPassword(tempLogPass);
-        user.setEmail(tempLogPass);
-        user.setName(tempLogPass);
-        user.setRole(Role.ROLE_ADMIN);
-        userManager.saveUser(user);
+        User user = userManager.createAndSaveTempAdmin();
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
         verificationTokenManager.saveToken(verificationToken);
@@ -205,14 +190,7 @@ public class AuthenticationController {
 
     @PostMapping("/send-moder-reg-mail")//TODO change mapping
     public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) {
-        User user = new User();
-        String tempLogPass = UUID.randomUUID().toString();
-        user.setLogin(tempLogPass);
-        user.setPassword(tempLogPass);
-        user.setEmail(tempLogPass);
-        user.setName(tempLogPass);
-        user.setRole(Role.ROLE_MODER);
-        userManager.saveUser(user);
+        User user = userManager.createAndSaveTempModer();
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
         verificationTokenManager.saveToken(verificationToken);
