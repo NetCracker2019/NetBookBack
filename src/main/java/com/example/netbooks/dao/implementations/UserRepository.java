@@ -144,6 +144,9 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     @Value("${getFriendsByUsername}")
     private String getFriendsByUsername;
 
+    @Value("${checkUserIsUser}")
+    private String checkUserIsUser;
+
     @Override
     public void save(User user) {
         Map<String, Object> namedParams = new HashMap<>();
@@ -432,6 +435,11 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         namedJdbcTemplate.update(deleteFriend, namedParams);
+    }
+    public boolean checkUserIsUser(long userId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("userId", userId);
+        return namedJdbcTemplate.queryForObject(checkUserIsUser, namedParams, Boolean.class);
     }
 }
 
