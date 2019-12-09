@@ -7,10 +7,7 @@ import com.example.netbooks.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -269,7 +266,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     public Boolean isExistByMail(String mail) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("login", mail);
+            namedParams.put("mail", mail);
             namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
             return true;
         } catch (EmptyResultDataAccessException e) {

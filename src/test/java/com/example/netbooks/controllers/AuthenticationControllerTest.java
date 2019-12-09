@@ -105,14 +105,14 @@ class AuthenticationControllerTest {
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
-    /*
+/*
     @Test
     void test2() throws Exception{
         User user = userManager.getUserByLogin("test47");
         this.mockMvc.perform(delete("/user-service/rmuser/" + user.getUserId()))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
-    }*/
-
+    }
+*/
 
 }
