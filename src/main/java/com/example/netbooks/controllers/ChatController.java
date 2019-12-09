@@ -1,6 +1,7 @@
 package com.example.netbooks.controllers;
 
 
+import com.example.netbooks.models.Chat;
 import com.example.netbooks.models.Message;
 import com.example.netbooks.models.User;
 import com.example.netbooks.services.ChatService;
@@ -27,48 +28,34 @@ public class ChatController {
 
     //get chat list by login
     @GetMapping("/{login}/chats")
-    public List<String> getChatsByLogin(@PathVariable("login")String login){
+    public List<Chat> getChatsByLogin(@PathVariable("login")String login){
         return chatService.getChatsByUserId(
                 userManager.getUserByLogin(login).getUserId());
     }
 
     //get chat messages history
-    @GetMapping("/{chatName}")
-    public List<Message> getMessagesByChatName(@PathVariable("chatName")String chatName){
-        return chatService.getMessagesByChatName(chatName);
+    @GetMapping("/{chatId}")
+    public List<Message> getMessagesByChatName(@PathVariable("chatId") Long chatId){
+        return chatService.getMessagesByChatId(chatId);
     }
-    @GetMapping("/is-exist/{chatName}")
-    public boolean isExistChatName(@PathVariable("chatName")String chatName){
-        return chatService.isExistChatName(chatName);
-    }
-    @GetMapping("/{chatName}/members")
-    public List<User> getChatMembers(@PathVariable("chatName")String chatName){
-        return chatService.getChatMembers(chatName);
+    @GetMapping("/{chatId}/members")
+    public List<User> getChatMembers(@PathVariable("chatId") Long chatId){
+        return chatService.getChatMembers(chatId);
     }
 
     @PostMapping("/create/{chatName}")
     public void createNewChat(@PathVariable("chatName")String chatName,
                               @RequestBody List<String> members){
-        log.info("chatName {}", chatName);
-        log.info("chatmemb {}", members);
         chatService.createNewChat(chatName, members);
     }
 
-    @PutMapping("/rename/{chatName}")
-    public void renameChat(@PathVariable("chatName")String oldChatName,
-                           @RequestBody String newChatName){
-        log.info("chatName {}", oldChatName);
-        log.info("chatName new {}", newChatName);
-        chatService.renameChat(oldChatName, newChatName);
-    }
 
-    @PutMapping("/{chatName}/add-members")
-    public void addMembersToChat(@PathVariable("chatName")String chatName,
-                                 @RequestBody List<String> members){
-        log.info("chatName {}", chatName);
-        log.info("chatmemb {}", members);
-        chatService.addMembersToChat(chatName, members);
+    @PutMapping("/{chatId}/update/{editedChatName}")
+    public void updateChat(@PathVariable("chatId") Long chatId,
+                           @RequestBody List<String> removedMembers,
+                           @RequestParam("addedMembers") List<String> addedMembers,
+                           @PathVariable("editedChatName") String editedChatName){
+        chatService.updateChat(chatId, editedChatName, addedMembers, removedMembers);
     }
-
 
 }

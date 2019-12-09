@@ -172,14 +172,7 @@ public class AuthenticationController {
 
     @PostMapping("/send-admin-reg-mail")//TODO change mapping
     public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail) {
-        User user = new User();
-        String tempLogPass = UUID.randomUUID().toString();
-        user.setLogin(tempLogPass);
-        user.setPassword(tempLogPass);
-        user.setEmail(tempLogPass);
-        user.setName(tempLogPass);
-        user.setRole(Role.ROLE_ADMIN);
-        userManager.saveUser(user);
+        User user = userManager.createAndSaveTempAdmin();
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
         verificationTokenManager.saveToken(verificationToken);
@@ -197,14 +190,7 @@ public class AuthenticationController {
 
     @PostMapping("/send-moder-reg-mail")//TODO change mapping
     public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) {
-        User user = new User();
-        String tempLogPass = UUID.randomUUID().toString();
-        user.setLogin(tempLogPass);
-        user.setPassword(tempLogPass);
-        user.setEmail(tempLogPass);
-        user.setName(tempLogPass);
-        user.setRole(Role.ROLE_MODER);
-        userManager.saveUser(user);
+        User user = userManager.createAndSaveTempModer();
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
         verificationTokenManager.saveToken(verificationToken);

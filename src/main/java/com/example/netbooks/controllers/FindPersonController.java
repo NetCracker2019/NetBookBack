@@ -31,13 +31,13 @@ public class FindPersonController {
             sought = new String("");
         }
         if (userManager.getUserByLogin(login).getRole() == Role.ROLE_CLIENT) {
-            if (where.equals("all")) {
+            if ("all".equals(where)) {
                 return userManager.getClientPersonsBySought(sought, cntPersons, offset);
             } else {
                 return userManager.getFriendsBySought(login, sought, cntPersons, offset);
             }
         } else {
-            if (where.equals("all")) {
+            if ("all".equals(where)) {
                 return userManager.getPersonsBySought(sought, cntPersons, offset);
             } else {
                 return userManager.getFriendsBySought(login, sought, cntPersons, offset);
@@ -52,7 +52,7 @@ public class FindPersonController {
         if (sought == null) {
             sought = new String("");
         }
-        if (where.equals("all")) {
+        if ("all".equals(where)) {
             return userManager.getCountPersonsBySought(sought);
         } else {
             return userManager.getCountFriendsBySought(login, sought);

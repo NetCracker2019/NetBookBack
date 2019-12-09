@@ -15,6 +15,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,12 +30,11 @@ import javax.sql.DataSource;
 
 @PropertySource("classpath:queries/user.properties")
 @Repository
-public class UserRepository {
+public class UserRepository implements com.example.netbooks.dao.interfaces.UserRepository {
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	private final NamedParameterJdbcTemplate namedJdbcTemplate;
-    private final Environment env;
 
-    private final class UserMapper implements RowMapper<User> {
+    private static final class UserMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             User user = new User();
@@ -59,11 +59,92 @@ public class UserRepository {
     }
 
     @Autowired
-    public UserRepository(DataSource dataSource, Environment env) {
+    public UserRepository(DataSource dataSource) {
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.env = env;
     }
 
+    @Value("${saveUser}")
+    private String saveUser;
+
+    @Value("${updateUser}")
+    private String updateUser;
+
+    @Value("${updateUserById}")
+    private String updateUserById;
+
+    @Value("${getAllUsers}")
+    private String getAllUsers;
+
+    @Value("${getUserIdByLogin}")
+    private String getUserIdByLogin;
+
+    @Value("${countFriendsForUser}")
+    private String countFriendsForUser;
+
+    @Value("${findUserByEmail}")
+    private String findUserByEmail;
+
+    @Value("${findByLogin}")
+    private String findByLogin;
+
+    @Value("${findByUserId}")
+    private String findByUserId;
+
+    @Value("${removeUserById}")
+    private String removeUserById;
+
+    @Value("${activateUser}")
+    private String activateUser;
+
+    @Value("${deActivateUser}")
+    private String deActivateUser;
+
+    @Value("${setMinRefreshDate}")
+    private String setMinRefreshDate;
+
+    @Value("${getPersonsBySought}")
+    private String getPersonsBySought;
+
+    @Value("${getFriendsByLogin}")
+    private String getFriendsByLogin;
+
+    @Value("${getClientPersonsBySought}")
+    private String getClientPersonsBySought;
+
+    @Value("${getFriendsBySought}")
+    private String getFriendsBySought;
+
+    @Value("${getUserRole}")
+    private String getUserRole;
+
+    @Value("${getCountFriendsBySought}")
+    private String getCountFriendsBySought;
+
+    @Value("${getCountPersonsBySought}")
+    private String getCountPersonsBySought;
+
+    @Value("${isSubscribe}")
+    private String isSubscribe;
+
+    @Value("${acceptFriendRequest}")
+    private String acceptFriendRequest;
+
+    @Value("${addFriend}")
+    private String addFriend;
+
+    @Value("${isFriend}")
+    private String isFriend;
+
+    @Value("${deleteFriend}")
+    private String deleteFriend;
+
+    @Value("${getSubscribersByLogin}")
+    private String getSubscribersByLogin;
+
+    @Value("${getFriendsByUsername}")
+    private String getFriendsByUsername;
+
+    @Override
     public void save(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -81,9 +162,9 @@ public class UserRepository {
         namedParams.put("role_id", user.getRole().ordinal() + 1);
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
 
-        namedJdbcTemplate.update(env.getProperty("saveUser"), namedParams);
+        namedJdbcTemplate.update(saveUser, namedParams);
     }
-
+    @Override
     public void updateUser(User user) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -101,9 +182,9 @@ public class UserRepository {
         namedParams.put("role_id", user.getRole().ordinal() + 1);
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
 
-        namedJdbcTemplate.update(env.getProperty("updateUser"), namedParams);
+        namedJdbcTemplate.update(updateUser, namedParams);
     }
-
+    @Override
     public void updateUserById(User user, Long id) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
@@ -122,140 +203,164 @@ public class UserRepository {
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
         namedParams.put("person_id", id);
 
-        namedJdbcTemplate.update(env.getProperty("updateUserById"), namedParams);
+        namedJdbcTemplate.update(updateUserById, namedParams);
     }
-
+    @Override
     public Iterable<User> getAllUsers() {
-        return namedJdbcTemplate.query(env.getProperty("getAllUsers"), new UserMapper());
+        return namedJdbcTemplate.query(getAllUsers, new UserMapper());
     }
-
-    public int getUserIdByLogin(String login){
+    @Override
+    public Integer getUserIdByLogin(String login){
         SqlParameterSource namedParameters = new MapSqlParameterSource("login", login);
-        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByLogin"), namedParameters, Integer.class);
+        return namedJdbcTemplate.queryForObject(getUserIdByLogin, namedParameters, Integer.class);
     }
-    public int countFriendsForUser(long userId) {
+    @Override
+    public Integer countFriendsForUser(long userId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("userId", userId);
-        return namedJdbcTemplate.queryForObject(env.getProperty("countFriendsForUser"), namedParameters, Integer.class);
+        return namedJdbcTemplate.queryForObject(countFriendsForUser, namedParameters, Integer.class);
 
     }
+    @Override
     public User findByEmail(String email) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("mail", email);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findUserByEmail"), namedParams, new UserMapper());
+            return namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("User not found - " + email);
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
     }
-
+    @Override
     public User findByLogin(String login) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("login", login);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findByLogin"), namedParams, new UserMapper());
+            return namedJdbcTemplate.queryForObject(findByLogin, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("User not found - " + login);
             throw new CustomException("User not found ", HttpStatus.NOT_FOUND);
         }
     }
-
+    @Override
     public User findByUserId(Long id) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("person_id", id);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findByUserId"), namedParams, new UserMapper());
+            return namedJdbcTemplate.queryForObject(findByUserId, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("User not found - " + id);
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
     }
+    @Override
     public Boolean isExistByLogin(String login) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("login", login);
-            namedJdbcTemplate.queryForObject(env.getProperty("findByLogin"), namedParams, new UserMapper());
+            namedJdbcTemplate.queryForObject(findByLogin, namedParams, new UserMapper());
             return true;
         } catch (EmptyResultDataAccessException e) {
             logger.info("User not found by login - " + login);
             return false;
         }
     }
-
+    @Override
     public Boolean isExistByMail(String mail) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("login", mail);
-            namedJdbcTemplate.queryForObject(env.getProperty("findByLogin"), namedParams, new UserMapper());
+            namedParams.put("mail", mail);
+            namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
             return true;
         } catch (EmptyResultDataAccessException e) {
             logger.info("User not found by mail - " + mail);
             return false;
         }
     }
-
+    @Override
     public void removeUserById(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
-        namedJdbcTemplate.update(env.getProperty("removeUserById"), namedParams);
+        namedJdbcTemplate.update(removeUserById, namedParams);
     }
-
+    @Override
     public void activateUser(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
-        namedJdbcTemplate.update(env.getProperty("activateUser"), namedParams);
+        namedJdbcTemplate.update(activateUser, namedParams);
     }
-
+    @Override
     public void deActivateUser(Long id) {
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
-        namedJdbcTemplate.update(env.getProperty("deActivateUser"), namedParams);
+        namedJdbcTemplate.update(deActivateUser, namedParams);
     }
-
+    @Override
 	public void setMinRefreshDate(String login, Date date) {
 		Map<String, Object> namedParams = new HashMap<>();
 		namedParams.put("min_refresh_date", date);
 		namedParams.put("login", login);
-        namedJdbcTemplate.update(env.getProperty("setMinRefreshDate"), namedParams);
+        namedJdbcTemplate.update(setMinRefreshDate, namedParams);
 	}
-
+    @Override
     public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("id", findByLogin(login).getUserId());
             namedParams.put("offset", offset);
             namedParams.put("cnt", cntFriends);
-            return namedJdbcTemplate.query(env.getProperty("getFriendsByLogin"), namedParams, new FriendMapper());
+            return namedJdbcTemplate.query(getFriendsByLogin, namedParams, new FriendMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
         }
     }
+    public List<User> getFriendsByUsername(String login) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("id", findByLogin(login).getUserId());
+            return namedJdbcTemplate.query(getFriendsByUsername, namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public List<User> getSubscribersByLogin(String login) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("id", findByLogin(login).getUserId());
+            return namedJdbcTemplate.query(getSubscribersByLogin, namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("sought", "%" + sought + "%");
             namedParams.put("offset", offset);
             namedParams.put("cnt", cntPersons);
-            return namedJdbcTemplate.query(env.getProperty("getPersonsBySought"), namedParams, new FriendMapper());
+            return namedJdbcTemplate.query(getPersonsBySought, namedParams, new FriendMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
 
-
+    @Override
     public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("sought", "%" + sought + "%");
             namedParams.put("offset", offset);
             namedParams.put("cnt", cntPersons);
-            return namedJdbcTemplate.query(env.getProperty("getClientPersonsBySought"), namedParams, new FriendMapper());
+            return namedJdbcTemplate.query(getClientPersonsBySought, namedParams, new FriendMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
 
-
+    @Override
     public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
@@ -263,70 +368,70 @@ public class UserRepository {
             namedParams.put("sought", "%" + sought + "%");
             namedParams.put("offset", offset);
             namedParams.put("cnt", cntPersons);
-            return namedJdbcTemplate.query(env.getProperty("getFriendsBySought"), namedParams, new FriendMapper());
+            return namedJdbcTemplate.query(getFriendsBySought, namedParams, new FriendMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
-
+    @Override
     public String getUserRole(String login) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", login);
-        return namedJdbcTemplate.queryForObject(env.getProperty("getUserRole"), namedParams, String.class);
+        return namedJdbcTemplate.queryForObject(getUserRole, namedParams, String.class);
     }
-
-    public int getCountFriendsBySought(String login, String sought) {
+    @Override
+    public Integer getCountFriendsBySought(String login, String sought) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("id", findByLogin(login).getUserId());
             namedParams.put("sought", "%" + sought + "%");
-            return namedJdbcTemplate.queryForObject(
-                    env.getProperty("getCountFriendsBySought"), namedParams, Integer.class);
+            return namedJdbcTemplate.queryForObject(getCountFriendsBySought, namedParams, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
-
-    public int getCountPersonsBySought(String sought) {
+    @Override
+    public Integer getCountPersonsBySought(String sought) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("sought", "%" + sought + "%");
             return namedJdbcTemplate.queryForObject(
-                    env.getProperty("getCountPersonsBySought"), namedParams, Integer.class);
+                    getCountPersonsBySought, namedParams, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
         }
     }
-
+    @Override
     public void addFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         if(namedJdbcTemplate.queryForObject(
-                env.getProperty("isSubscribe"), namedParams, Integer.class) > 0) {
-            namedJdbcTemplate.update(env.getProperty("acceptFriendRequest"), namedParams);
-        }
-        namedJdbcTemplate.update(env.getProperty("addFriend"), namedParams);
+                isSubscribe, namedParams, Integer.class) > 0) {
+            namedJdbcTemplate.update(acceptFriendRequest, namedParams);
+        }else
+        namedJdbcTemplate.update(addFriend, namedParams);
     }
-
+    @Override
     public int isFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         if(namedJdbcTemplate.queryForObject(
-                env.getProperty("isFriend"), namedParams, Integer.class) > 0){
+                isFriend, namedParams, Integer.class) > 0){
             return 1;
         }else if(namedJdbcTemplate.queryForObject(
-                env.getProperty("isSubscribe"), namedParams, Integer.class) > 0){
+                isSubscribe, namedParams, Integer.class) > 0){
             return 0;
         } else return -1;
 
     }
+    @Override
     public void deleteFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        namedJdbcTemplate.update(env.getProperty("deleteFriend"), namedParams);
+        namedJdbcTemplate.update(deleteFriend, namedParams);
     }
 }
 
