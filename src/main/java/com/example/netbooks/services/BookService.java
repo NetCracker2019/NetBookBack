@@ -2,13 +2,10 @@ package com.example.netbooks.services;
 
 
 import com.example.netbooks.controllers.BookController;
-import com.example.netbooks.dao.implementations.ReviewRepositoryImpl;
+import com.example.netbooks.dao.implementations.*;
 
-import com.example.netbooks.dao.implementations.AchievementRepository;
-import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
-import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
 
@@ -41,6 +38,8 @@ public class BookService {
     final AchievementRepository achievementRepository;
     final AchievementService achievementService;
 
+    private final Logger logger = LogManager.getLogger(BookService.class);
+
 
     public BookService(JdbcBookRepository jdbcBookRepository, GenreRepository genreRepository, AuthorRepository authorRepository, ReviewRepository reviewRepository, UserRepository userRepository, AchievementRepository achievementRepository, AchievementService achievementService) {
 
@@ -68,12 +67,16 @@ public class BookService {
         return jdbcBookRepository.findAllViewBooks();
     }
 
-    public List<ViewAnnouncement> getViewUnApproveBooks() {
-        return jdbcBookRepository.findViewUnApproveBooks();
+    public List<ViewAnnouncement> getViewUnApproveBooks(int page, int offset) {
+        return jdbcBookRepository.findViewUnApproveBooks(page, offset);
     }
 
     public int countReviews(boolean approved) {
         return reviewRepository.countReviews(approved);
+    }
+
+    public int countAnnouncement(boolean approved) {
+        return jdbcBookRepository.countAnnouncement(approved);
     }
 
     public int countBooks() {
@@ -106,16 +109,27 @@ public class BookService {
 
     public ResponseEntity<Map> addBook(Book book) {
 
-        int userId = userRepository.getUserIdByLogin(book.getUser());
-        // TODO add validation of same title
-        jdbcBookRepository.addBook(book, userId);
-        genreRepository.addRowIntoBookGenre(book.getTitle(),book.getGenre());
-        authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getAuthor());
-
-
         Map<Object, Object> response = new HashMap<>();
-        response.put("status", "ok");
-        return ResponseEntity.ok(response);
+        int userId = userRepository.getUserIdByLogin(book.getUser());
+
+//        String title = book.getTitle();
+//        String description = book.getDescription();
+
+
+        if (jdbcBookRepository.checkIsDuplicate(book.getTitle(),book.getDescription()) == 0) {
+
+            jdbcBookRepository.addBook(book, userId);
+            genreRepository.addRowIntoBookGenre(book.getTitle(), book.getDescription(), book.getGenre());
+            authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getDescription(), book.getAuthor());
+
+
+
+            response.put("status", "ok");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("status", "This book exist");
+            return ResponseEntity.ok(response);
+        }
     }
 
     public ResponseEntity<Map> confirmAnnouncement(long announcementId) {

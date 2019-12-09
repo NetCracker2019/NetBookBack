@@ -101,4 +101,8 @@ public class Book {
         this.release_date = release_date;
         this.description = description;
     }
+
+    public Book(long bookId) {
+        this.bookId = bookId;
+    }
 }
