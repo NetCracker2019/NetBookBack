@@ -182,7 +182,7 @@ public class BookService {
 
         if (author == null && genre == null && from == null && to == null) {
             log.info("search only with title param: {}", title);
-            books = jdbcBookRepository.findViewBooksByTitleOrAuthor(title);
+            books = jdbcBookRepository.findViewBooksByTitle(title);
         } else if (author == null && genre == null && from != null && to != null) {
             log.info("search with title and date params: {}, {}, {}", title, from, to);
             books = jdbcBookRepository.findBooksByTitleAndDate(title, from, to);
@@ -287,17 +287,23 @@ public class BookService {
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 
-    public List<ViewBook> getSuggestions(String userName) {
+    public Page<ViewBook> getSuggestions(String userName, Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startIndex = currentPage * pageSize;
         long userId = userRepository.getUserIdByLogin(userName);
-        Map<String, Object> mapGenre = jdbcBookRepository.getFavouriteGenres(userId);
-        Map<String, Object> mapAuthor = jdbcBookRepository.getFavouriteAuthors(userId);
-        if (!mapGenre.isEmpty() && !mapAuthor.isEmpty()) {
-            log.info("Map genre {}", mapGenre);
-            log.info("Map author {}", mapAuthor);
-            return jdbcBookRepository.getSuggestions(userId, (Integer) mapGenre.get("genre_id"), (Integer) mapAuthor.get("author_id"));
+
+        List<ViewBook> books = jdbcBookRepository.getSuggestions(userId);
+
+        List<ViewBook> result;
+        if (books.size() < startIndex) {
+            result = Collections.emptyList();
         } else {
-            return Collections.emptyList();
+            int toIndex = Math.min(startIndex + pageSize, books.size());
+            result = books.subList(startIndex, toIndex);
         }
+
+        return new PageImpl<>(result, PageRequest.of(currentPage, pageSize), books.size());
     }
   
     public List<ViewBook> getBooksByUserId(long userId, String sought, int cntBooks, boolean read, boolean favourite,
