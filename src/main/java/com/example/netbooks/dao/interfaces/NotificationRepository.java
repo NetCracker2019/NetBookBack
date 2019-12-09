@@ -16,7 +16,11 @@ public interface NotificationRepository {
     void markAllAsRead(long id);
 
     void markNotifAsReadByNotifId(Integer notifId);
-    
+
+   /* void deleteAllNotificationsByUserId(long id);
+
+    void deleteNotificationByNotifId(Integer notifId);
+    */
     List<Notification> getAllUnreadViewNotificationsByUserId(long userId);
     
     List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId);

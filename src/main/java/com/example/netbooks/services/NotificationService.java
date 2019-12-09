@@ -90,6 +90,12 @@ public class NotificationService {
         Integer id = notification.getNotificationId();
         notificationRepository.markNotifAsReadByNotifId(id);
     }
-
-
+   /* public  void deleteAllNotificationsByUserId(long id){
+        notificationRepository.deleteAllNotificationsByUserId(id);
+    }
+    public void deleteNotificationByNotifId(Notification notification) {
+        Integer id = notification.getNotificationId();
+        notificationRepository.deleteNotificationByNotifId(id);
+    }
+*/
 }

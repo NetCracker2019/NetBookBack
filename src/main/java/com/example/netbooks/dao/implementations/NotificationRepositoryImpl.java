@@ -89,6 +89,19 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParams.put("notification_id", notifId);
         namedParameterJdbcTemplate.update(environment.getProperty("markNotifAsReadByNotifId"), namedParams);
     }
+/*
+    @Override
+    public void deleteAllNotificationsByUserId(long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", id);
+        namedParameterJdbcTemplate.update(environment.getProperty("deleteAllNotificationsByUserId"), namedParams);
+    }
 
-
+    @Override
+    public void deleteNotificationByNotifId(Integer notifId) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("notification_id", notifId);
+        namedParameterJdbcTemplate.update(environment.getProperty("deleteNotificationByNotifId"), namedParams);
+    }
+*/
 }
