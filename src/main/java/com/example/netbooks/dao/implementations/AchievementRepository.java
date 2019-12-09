@@ -53,11 +53,11 @@ public class AchievementRepository {
             return achievement;
         }
     }
-    public Achievement findByAchievementId(Long id) {
+    public List<Achievement> findByAchievementId(Long id) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("user_id", id);
-            return namedJdbcTemplate.queryForObject(env.getProperty("findByAchievementId"),
+            return namedJdbcTemplate.query(env.getProperty("findByAchievementId"),
                     namedParams, new AchievementMapper());
         } catch (EmptyResultDataAccessException e) {
             log.info("Achievment not found - " + id);

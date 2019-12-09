@@ -132,6 +132,13 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         SqlParameterSource namedParameters = new MapSqlParameterSource("bookId", bookId);
         return namedJdbcTemplate.query(env.getProperty("getReviewsByBookId"), namedParameters, reviewMapper);
     }
+    
+    @Override
+    public Review getReviewById(long reviewId){
+        SqlParameterSource namedParameters = new MapSqlParameterSource("review_id", reviewId);
+        return (Review) namedJdbcTemplate.queryForObject(env.getProperty("getReviewById"), namedParameters, reviewMapper);
+    }
+    
     @Override
     public List<Review> getPeaceOfReviewByBook(int bookId, int page, int offset) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
