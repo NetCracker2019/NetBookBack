@@ -138,6 +138,7 @@ public class AuthenticationController {
 
                 (Role) (currentUserDetails.getAuthorities().iterator().next())));
         response.put("username", currentUserDetails.getUsername());
+        response.put("role", ((Role)currentUserDetails.getAuthorities().iterator().next()).ordinal() + 1);
         return ResponseEntity.ok(response);
     }
 
@@ -225,7 +226,7 @@ public class AuthenticationController {
             throw new CustomException("User with this email not found " + email, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
-//todo copypast
+
     @PutMapping("/change/password")
     public ResponseEntity<Map> recoveryPass(@RequestParam("token") String verificationToken,
             @RequestParam("pass") String newPass) {

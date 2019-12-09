@@ -8,8 +8,11 @@ import com.example.netbooks.services.ChatService;
 import com.example.netbooks.services.UserManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -29,6 +32,7 @@ public class ChatController {
     //get chat list by login
     @GetMapping("/{login}/chats")
     public List<Chat> getChatsByLogin(@PathVariable("login")String login){
+        if(!getCurrentUserLogin().equals(login)) return null;
         return chatService.getChatsByUserId(
                 userManager.getUserByLogin(login).getUserId());
     }
@@ -36,16 +40,18 @@ public class ChatController {
     //get chat messages history
     @GetMapping("/{chatId}")
     public List<Message> getMessagesByChatName(@PathVariable("chatId") Long chatId){
+        if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return null;
         return chatService.getMessagesByChatId(chatId);
     }
     @GetMapping("/{chatId}/members")
     public List<User> getChatMembers(@PathVariable("chatId") Long chatId){
+        if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return null;
         return chatService.getChatMembers(chatId);
     }
 
     @PostMapping("/create/{chatName}")
     public void createNewChat(@PathVariable("chatName")String chatName,
-                              @RequestBody List<String> members){
+                              @RequestBody List<String> members) throws SQLException {
         chatService.createNewChat(chatName, members);
     }
 
@@ -54,8 +60,14 @@ public class ChatController {
     public void updateChat(@PathVariable("chatId") Long chatId,
                            @RequestBody List<String> removedMembers,
                            @RequestParam("addedMembers") List<String> addedMembers,
-                           @PathVariable("editedChatName") String editedChatName){
+                           @PathVariable("editedChatName") String editedChatName) throws SQLException {
+        if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return;
         chatService.updateChat(chatId, editedChatName, addedMembers, removedMembers);
+    }
+
+    private String getCurrentUserLogin(){
+        return ((UserDetails) SecurityContextHolder.getContext().
+                getAuthentication().getPrincipal()).getUsername();
     }
 
 }

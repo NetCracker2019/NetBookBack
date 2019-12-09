@@ -7,10 +7,7 @@ import com.example.netbooks.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
