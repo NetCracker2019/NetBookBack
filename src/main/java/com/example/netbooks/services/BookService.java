@@ -231,10 +231,15 @@ public class BookService {
         return jdbcBookRepository.getMaxDateRelease();
     }
 
+
     public boolean addReviewForUserBook(Review review) {
         // review.setReviewText(review.getReviewText().trim());
         review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
-        return reviewRepository.addReviewForUserBook(review);
+        boolean result = reviewRepository.addReviewForUserBook(review);
+        if (!userRepository.checkUserIsUser(review.getUserId())) {
+            approveReview(review.getReviewId(), review.getUserId());
+        }
+        return result;
     }
 
 
@@ -255,7 +260,9 @@ public class BookService {
     public boolean approveReview(long reviewId, long userId) {
         boolean executionResult = reviewRepository.approveReview(reviewId);
         int reviewsForUser = reviewRepository.countReviewsForUser(userId);
+        System.out.println("User id for review approve"+reviewsForUser);
         long achvId = achievementService.getAchvIdByParameters(reviewsForUser, "review", 1);
+        System.out.println("Achiv id for review approve"+achvId);
         UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
         if (userAchievement != null) {
             // TODO Notification sending must be here.

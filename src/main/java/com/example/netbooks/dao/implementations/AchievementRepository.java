@@ -67,7 +67,7 @@ public class AchievementRepository {
     public Long getAchvIdByDescription(String achvType, int n){
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("achvType", achvType);
-        namedParameters.addValue("amount", n);
+        namedParameters.addValue("n", n);
         return namedJdbcTemplate.queryForObject(env.getProperty("getAchvIdByDesc"), namedParameters, Long.class);
     }
 
