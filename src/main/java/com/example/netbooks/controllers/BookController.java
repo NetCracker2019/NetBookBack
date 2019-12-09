@@ -144,13 +144,13 @@ public class BookController {
     @PutMapping("/like-review")
     public int likeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
         int result = bookService.likeReview(reviewId, userLogin);
-        logger.info("Review Likes: "+result);
+        log.info("Review Likes: "+result);
         return result;
     }
     @PutMapping("/dislike-review")
     public int dislikeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
         int result = bookService.dislikeReview(reviewId, userLogin);
-        logger.info("Review Likes: "+result);
+        log.info("Review Likes: "+result);
         return result;
     }
     @GetMapping("/check-liked-review")
@@ -189,7 +189,6 @@ public class BookController {
     }
     @GetMapping("/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
-        logger.info(bookService.getViewBookById(bookId));
         return bookService.getViewBookById(bookId);
     }
     @GetMapping("/books/amount")
