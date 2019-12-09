@@ -1,6 +1,5 @@
 package com.example.netbooks.controllers;
 
-
 import com.example.netbooks.models.Review;
 import com.example.netbooks.models.User;
 import com.example.netbooks.models.ViewAnnouncement;
@@ -19,6 +18,7 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/approve-service")
 public class ApproveController {
+
     private final Logger logger = LogManager.getLogger(ApproveController.class);
     @Autowired
     private BookService bookService;
@@ -34,7 +34,7 @@ public class ApproveController {
     }
 
     @PostMapping("/confirm-announcement")
-    public ResponseEntity confirmAnnouncement (@RequestBody ViewAnnouncement announcement){
+    public ResponseEntity confirmAnnouncement(@RequestBody ViewAnnouncement announcement) {
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
@@ -42,7 +42,7 @@ public class ApproveController {
     }
 
     @PostMapping("/cancel-announcement")
-    public ResponseEntity cancelAnnouncement (@RequestBody ViewAnnouncement announcement){
+    public ResponseEntity cancelAnnouncement(@RequestBody ViewAnnouncement announcement) {
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
@@ -52,25 +52,27 @@ public class ApproveController {
 
     @GetMapping("/reviews-for-approve")
     public List<Review> getReviewsForApprove(@RequestParam("page") int page,
-                                             @RequestParam("itemPerPage") int offset){
+            @RequestParam("itemPerPage") int offset) {
         logger.info(bookService.getReviewsForApprove(page, offset));
         return bookService.getReviewsForApprove(page, offset);
     }
+
     @PostMapping("confirm-review")
-    public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId){
+    public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId) {
+
         Review review = bookService.getReviewById(reviewId);
         User tmpUser = userManager.getUserById(review.getUserId());
         List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
-        List<User>subscribers=userManager.getSubscribersByLogin(tmpUser.getLogin());
+        List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
         friends.addAll(subscribers);
-        notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId() , reviewId);
+        notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId(), reviewId);
+
         return bookService.approveReview(reviewId, userId);
     }
+
     @PostMapping("cancel-review")
-    public boolean cancelReview(@RequestParam("reviewId") long reviewId){
+    public boolean cancelReview(@RequestParam("reviewId") long reviewId) {
         return bookService.cancelReview(reviewId);
     }
-
-
 
 }
