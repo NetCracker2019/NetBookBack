@@ -17,7 +17,7 @@ public class Message {
     private Date dateSend;
     @JsonProperty("fromName")
     private String fromName;
-    @JsonProperty("toName")
-    private String toName;
+    @JsonProperty("toId")
+    private Long toId;
 
 }

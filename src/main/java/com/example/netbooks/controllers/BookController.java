@@ -3,11 +3,9 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
+import lombok.extern.slf4j.Slf4j;
 import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Map;
-
 import java.sql.Date;
 import java.util.List;
 
@@ -30,7 +27,6 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping("/book-service")
 public class BookController {
-
     @Autowired
     private JdbcBookRepository jdbcBookRepository;
     final
@@ -40,6 +36,7 @@ public class BookController {
     @Autowired
     NotificationService notificationService;
 
+    @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
@@ -196,7 +193,6 @@ public class BookController {
     }
     @GetMapping("/find-book-id")
     public ViewBook getBookById(@RequestParam("id") int bookId){
-        log.info(bookService.getViewBookById(bookId).toString());
         return bookService.getViewBookById(bookId);
     }
     @GetMapping("/books/amount")
@@ -247,7 +243,9 @@ public class BookController {
     }
 
     @GetMapping("/suggestions")
-    public List<ViewBook> getSuggestions(@RequestParam("user") String userName) {
-        return bookService.getSuggestions(userName);
+    public Page<ViewBook> getSuggestions(@RequestParam("user") String userName,
+                                         @RequestParam("page") int page,
+                                         @RequestParam("size") int size) {
+        return bookService.getSuggestions(userName, PageRequest.of(page, size));
     }
 }

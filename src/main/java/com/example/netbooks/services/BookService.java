@@ -86,7 +86,13 @@ public class BookService {
         jdbcBookRepository.addBook(book, userId);
         genreRepository.addRowIntoBookGenre(book.getTitle(),book.getGenre());
         authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getAuthor());
+        int addedUserBook = jdbcBookRepository.countAddedBooksForUser(userId);
+        long achvId = achievementService.getAchvIdByParameters(addedUserBook, "book-achievement", 1);
 
+        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+        if (userAchievement != null) {
+            // TODO Notification sending must be here.
+        }
 
         Map<Object, Object> response = new HashMap<>();
         response.put("status", "ok");
@@ -176,7 +182,7 @@ public class BookService {
 
         if (author == null && genre == null && from == null && to == null) {
             log.info("search only with title param: {}", title);
-            books = jdbcBookRepository.findViewBooksByTitleOrAuthor(title);
+            books = jdbcBookRepository.findViewBooksByTitle(title);
         } else if (author == null && genre == null && from != null && to != null) {
             log.info("search with title and date params: {}, {}, {}", title, from, to);
             books = jdbcBookRepository.findBooksByTitleAndDate(title, from, to);
@@ -225,10 +231,15 @@ public class BookService {
         return jdbcBookRepository.getMaxDateRelease();
     }
 
+
     public boolean addReviewForUserBook(Review review) {
         // review.setReviewText(review.getReviewText().trim());
         review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
-        return reviewRepository.addReviewForUserBook(review);
+        boolean result = reviewRepository.addReviewForUserBook(review);
+        if (!userRepository.checkUserIsUser(review.getUserId())) {
+            approveReview(review.getReviewId(), review.getUserId());
+        }
+        return result;
     }
 
 
@@ -238,9 +249,9 @@ public class BookService {
         int booksForUser = jdbcBookRepository.countBooksForUser(userId);
         long achvId = achievementService.getAchvIdByParameters(booksForUser, "book", 10);
 
-        if (achvId > 0){
-            achievementRepository.addAchievementForUser(achvId, userId);
-
+        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+        if (userAchievement != null) {
+            // TODO Notification sending must be here.
         }
         return executionResult;
     }
@@ -249,12 +260,12 @@ public class BookService {
     public boolean approveReview(long reviewId, long userId) {
         boolean executionResult = reviewRepository.approveReview(reviewId);
         int reviewsForUser = reviewRepository.countReviewsForUser(userId);
+        System.out.println("User id for review approve"+reviewsForUser);
         long achvId = achievementService.getAchvIdByParameters(reviewsForUser, "review", 1);
-        System.out.println(achvId);
-        System.out.println(reviewsForUser);
-        if (achvId > 0){
-            achievementRepository.addAchievementForUser(achvId, userId);
-
+        System.out.println("Achiv id for review approve"+achvId);
+        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+        if (userAchievement != null) {
+            // TODO Notification sending must be here.
         }
         return executionResult;
     }
@@ -283,17 +294,23 @@ public class BookService {
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 
-    public List<ViewBook> getSuggestions(String userName) {
+    public Page<ViewBook> getSuggestions(String userName, Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startIndex = currentPage * pageSize;
         long userId = userRepository.getUserIdByLogin(userName);
-        Map<String, Object> mapGenre = jdbcBookRepository.getFavouriteGenres(userId);
-        Map<String, Object> mapAuthor = jdbcBookRepository.getFavouriteAuthors(userId);
-        if (!mapGenre.isEmpty() && !mapAuthor.isEmpty()) {
-            log.info("Map genre {}", mapGenre);
-            log.info("Map author {}", mapAuthor);
-            return jdbcBookRepository.getSuggestions(userId, (Integer) mapGenre.get("genre_id"), (Integer) mapAuthor.get("author_id"));
+
+        List<ViewBook> books = jdbcBookRepository.getSuggestions(userId);
+
+        List<ViewBook> result;
+        if (books.size() < startIndex) {
+            result = Collections.emptyList();
         } else {
-            return Collections.emptyList();
+            int toIndex = Math.min(startIndex + pageSize, books.size());
+            result = books.subList(startIndex, toIndex);
         }
+
+        return new PageImpl<>(result, PageRequest.of(currentPage, pageSize), books.size());
     }
   
     public List<ViewBook> getBooksByUserId(long userId, String sought, int cntBooks, boolean read, boolean favourite,
@@ -303,7 +320,39 @@ public class BookService {
     }
 
     public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
-        jdbcBookRepository.addBookBatchTo(userId, shelf, booksId);
+        if(shelf.equals("reading")){
+            jdbcBookRepository.addBookBatchToReading(userId, booksId);
+        }else if(shelf.equals("read")){
+            jdbcBookRepository.addBookBatchToRead(userId, booksId);
+            for (long bookId: booksId){
+                boolean addedAuthorAchv = achievementRepository.check_achievement_author(userId, bookId, "read");
+                if (addedAuthorAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+                boolean addedGenreAchv = achievementRepository.check_achievement_genre(userId, bookId, "read");
+                if (addedGenreAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+
+            }
+        }else {
+            jdbcBookRepository.addBookBatchToFavourite(userId, booksId);
+            for (long bookId: booksId){
+                boolean addedAuthorAchv = achievementRepository.check_achievement_author(userId, bookId, "fav");
+                if (addedAuthorAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+                boolean addedGenreAchv = achievementRepository.check_achievement_genre(userId, bookId, "fav");
+                if (addedGenreAchv){
+                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+                    // TODO Notification sending must be here.
+                }
+
+            }
+        }
     }
 
     public void removeBookBatchFrom(long userId, String shelf, List<Long> booksId) {

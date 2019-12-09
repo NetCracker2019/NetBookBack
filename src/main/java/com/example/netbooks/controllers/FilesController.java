@@ -1,5 +1,6 @@
 package com.example.netbooks.controllers;
 
+import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.services.FileStorageService;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +31,11 @@ public class FilesController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String name){
+    public void uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String name){
         try{
             fileStorageService.saveFile(file, name);
-            return ResponseEntity.status(HttpStatus.OK).body("Successfully uploaded");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("FAIL to upload");
+            throw new CustomException("FAIL to upload", HttpStatus.EXPECTATION_FAILED);
         }
     }
 

@@ -117,9 +117,9 @@ public class UserManager {
         userRepository.setMinRefreshDate(login, date);
     }
 
-    public Achievement getAchievementByLogin(String login) {
-        return achievementRepository.findByAchievementId(
-                userRepository.findByLogin(login).getUserId());
+    public List<Achievement> getAchievementByLogin(String login) {
+		return achievementRepository.findByAchievementId(
+				userRepository.findByLogin(login).getUserId());
     }
 
 	public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
@@ -168,17 +168,11 @@ public class UserManager {
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
 
-//если не работает поменя бул на инт
-    public int isFriend(String ownLogin, String friendLogin) {
-        return userRepository.isFriend(ownLogin, friendLogin);
-    }
+	public int isFriend(String ownLogin, String friendLogin) {
+		return userRepository.isFriend(ownLogin, friendLogin);
+	}
 
-    public void deleteFriend(String ownLogin, String friendLogin) {
-        userRepository.deleteFriend(ownLogin, friendLogin);
-    }
-
-   // public void updateUserBookList(String login, Long bookId, boolean reading, boolean favourite, boolean remove) {
-   //     userRepository.updateUserBookList(login, bookId, reading, favourite, remove);
-   // }
-
+	public void deleteFriend(String ownLogin, String friendLogin) {
+		userRepository.deleteFriend(ownLogin, friendLogin);
+	}
 }

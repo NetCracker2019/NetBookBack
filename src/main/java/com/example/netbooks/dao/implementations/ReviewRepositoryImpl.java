@@ -52,6 +52,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         namedParameters.addValue("userId", review.getUserId());
         namedParameters.addValue("reviewText", review.getReviewText());
         namedParameters.addValue("approved", review.isApproved());
+        System.out.println(review);
         return namedJdbcTemplate.update(env.getProperty("addReviewForUserBook"), namedParameters) > 0;
     }
 

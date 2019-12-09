@@ -27,17 +27,17 @@ public class ProfileController {
     private UserManager userManager;
     private BookService bookService;
     private FileStorageService fileStorageService;
-    @Autowired
     private NotificationService notificationService;
     @Autowired
     public ProfileController(PasswordEncoder passwordEncoder,
-                             UserManager userManager,
-                             BookService bookService,
-                             FileStorageService fileStorageService) {
+                             UserManager userManager, BookService bookService,
+                             FileStorageService fileStorageService,
+                             NotificationService notificationService) {
         this.passwordEncoder = passwordEncoder;
         this.userManager = userManager;
         this.bookService = bookService;
         this.fileStorageService = fileStorageService;
+        this.notificationService = notificationService;
     }
     @GetMapping("/{login}")
     public User getUser(@PathVariable("login")String login){
@@ -49,14 +49,16 @@ public class ProfileController {
     }
 
     @GetMapping("/{login}/get-achievement")
-    public Achievement getAchievements(@PathVariable("login")String login){
+    public List<Achievement> getAchievements(@PathVariable("login")String login){
+        log.info("fd {}", userManager.getAchievementByLogin(login));
         return userManager.getAchievementByLogin(login);
     }
 
-    @PutMapping("/{login}/edit")
-    public void editUser(@PathVariable("login")String login, @RequestBody User user){
-        if(!checkAuth(login)) return;
-        User originalUser = userManager.getUserByLogin(login);
+    @PutMapping("/edit")
+    public void editUser(@RequestBody User user){
+        User originalUser = userManager.getUserByLogin(getCurrentUserLogin());
+        log.info("ff {}", user.getAvatarFilePath());
+        log.info("ff {}", originalUser.getAvatarFilePath());
         if(!Strings.isNullOrEmpty(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
@@ -97,11 +99,9 @@ public class ProfileController {
         return bookService.getReadBooksByUserId(
                 userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
-    @PostMapping("/add-friend/{ownLogin}/{friendLogin}")
-
-    public void addFriend(@PathVariable("ownLogin")String ownLogin,
-                         @PathVariable("friendLogin") String friendLogin) {
-        if(!checkAuth(ownLogin)) return;
+    @PostMapping("/add-friend/{friendLogin}")
+    public void addFriend(@PathVariable("friendLogin") String friendLogin) {
+        String ownLogin = getCurrentUserLogin();
         userManager.addFriend(ownLogin, friendLogin);
         Thread notifThread = new Thread(() -> {
             Notification notification = new Notification();
@@ -114,19 +114,17 @@ public class ProfileController {
 
     }
     /* 1 - is friend
-    * 0 - is subscribe
-    * -1 - not friend */
+     * 0 - is subscribe
+     * -1 - not friend */
     @GetMapping("/is-friend/{ownLogin}/{friendLogin}")
     public int isFriend(@PathVariable("ownLogin")String ownLogin,
-                            @PathVariable("friendLogin") String friendLogin){
+                        @PathVariable("friendLogin") String friendLogin){
 
         return userManager.isFriend(ownLogin, friendLogin);
     }
-    @DeleteMapping("/delete-friend/{ownLogin}/{friendLogin}")
-    public void deleteFriend(@PathVariable("ownLogin")String ownLogin,
-                             @PathVariable("friendLogin") String friendLogin){
-        if(!checkAuth(ownLogin)) return;
-        userManager.deleteFriend(ownLogin, friendLogin);
+    @DeleteMapping("/delete-friend/{friendLogin}")
+    public void deleteFriend(@PathVariable("friendLogin") String friendLogin){
+        userManager.deleteFriend(getCurrentUserLogin(), friendLogin);
     }
     @GetMapping("/{login}/book-list")
     public List<ViewBook> getBookList(@PathVariable("login")String login,
@@ -143,29 +141,24 @@ public class ProfileController {
                 userManager.getUserByLogin(login).getUserId(),
                 sought, size, read, favourite, reading, notSet, sortBy, order, page);
     }
-    @PutMapping("/{login}/{shelf}/add-books")
-    public void addBookBatchTo(@PathVariable("login")String login,
-                               @PathVariable("shelf")String shelf,
+    @PutMapping("/{shelf}/add-books")
+    public void addBookBatchTo(@PathVariable("shelf")String shelf,
                                @RequestBody List<Long> booksId){
-        if(!checkAuth(login)) return;
-        bookService.addBookBatchTo(userManager.getUserByLogin(login).getUserId(), shelf, booksId);
+        bookService.addBookBatchTo(userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), shelf, booksId);
     }
-    @PutMapping("/{login}/{shelf}/remove-books")
-    public void removeBookBatchFrom(@PathVariable("login")String login,
-                                    @PathVariable("shelf")String shelf,
+    @PutMapping("/{shelf}/remove-books")
+    public void removeBookBatchFrom(@PathVariable("shelf")String shelf,
                                     @RequestBody List<Long> booksId){
-        if(!checkAuth(login)) return;
-        bookService.removeBookBatchFrom(userManager.getUserByLogin(login).getUserId(), shelf, booksId);
+        bookService.removeBookBatchFrom(userManager.getUserByLogin(getCurrentUserLogin()).
+                getUserId(), shelf, booksId);
     }
-    @DeleteMapping("/{login}/remove-books")
-    public void removeBookBatch(@PathVariable("login")String login,
-                                @RequestParam("booksid") List<Long> booksId){
-        if(!checkAuth(login)) return;
-        bookService.removeBookBatch(userManager.getUserByLogin(login).getUserId(), booksId);
+    @DeleteMapping("/remove-books")
+    public void removeBookBatch(@RequestParam("booksid") List<Long> booksId){
+        bookService.removeBookBatch(userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), booksId);
     }
-    private boolean checkAuth(String login){
-        //return false if login != current user authentication
+
+    private String getCurrentUserLogin(){
         return ((UserDetails) SecurityContextHolder.getContext().
-                getAuthentication().getPrincipal()).getUsername().equals(login);
+                getAuthentication().getPrincipal()).getUsername();
     }
 }
