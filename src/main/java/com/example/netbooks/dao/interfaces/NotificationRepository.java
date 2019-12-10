@@ -16,10 +16,18 @@ public interface NotificationRepository {
     void markAllAsRead(long id);
 
     void markNotifAsReadByNotifId(Integer notifId);
-    
+
+   /* void deleteAllNotificationsByUserId(long id);
+
+    void deleteNotificationByNotifId(Integer notifId);
+
+    */
+
+    int getNotifCount(long userId);
+
     List<Notification> getAllUnreadViewNotificationsByUserId(long userId);
-    
+
     List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId);
 
-   // Notification getNotification(int notificationId);
+    // Notification getNotification(int notificationId);
 }

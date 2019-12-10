@@ -55,6 +55,15 @@ public class NotificationController {
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
+    }//
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getNotifCount() {
+
+        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        return ResponseEntity.ok(notificationService.getNotifCount(id));
     }
 
     @PutMapping("/mark")
@@ -73,4 +82,21 @@ public class NotificationController {
         notificationService.markNotifAsReadByNotifId(notification);
     }
 
+
+
+/*
+    @DeleteMapping("/delete-all")
+    public void deleteAllNotificationsByUserId(){
+        long userId = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        notificationService.deleteAllNotificationsByUserId(userId);
+    }
+    @DeleteMapping("delete-one")
+    public void deleteNotificationByNotifId(@RequestBody Notification notification){
+        log.debug("Mark notification as read by notifId ");
+        notificationService.deleteNotificationByNotifId(notification);
+    }
+
+ */
 }

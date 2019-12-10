@@ -102,23 +102,27 @@ public class BookController {
 
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
-        log.info(userName+boolId);
-        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
-                .getContext().getAuthentication()
-                .getPrincipal()).getUsername());
-        User tmpUser = userManager.getUserById(id);
-        List<User>friends=userManager.getFriendsByUsername(tmpUser.getLogin());
-        List<User>subscribers=userManager.getSubscribersByLogin(tmpUser.getLogin());
-        friends.addAll(subscribers);
-        for (User user:friends){
-            Notification notification = new Notification();
-            notification.setNotifTypeId(2);
-            notification.setUserId((int)userManager.getUserIdByName(user.getLogin()));
-            notification.setFromUserId((int)(tmpUser.getUserId()));
-            notification.setBookId(boolId);
-            notificationService.addNotification(notification);
 
-        }
+        log.info(userName+boolId);
+        Thread notifThread = new Thread(() -> {
+            long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                    .getContext().getAuthentication()
+                    .getPrincipal()).getUsername());
+            User tmpUser = userManager.getUserById(id);
+            List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
+            List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
+            friends.addAll(subscribers);
+            for (User user : friends) {
+                Notification notification = new Notification();
+                notification.setNotifTypeId(2);
+                notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
+                notification.setFromUserId((int) (tmpUser.getUserId()));
+                notification.setBookId(boolId);
+                notificationService.addNotification(notification);
+
+            }
+        });
+        notifThread.start();
         return bookService.addBookToProfile(userName, boolId);
     }
     @ResponseStatus(value = HttpStatus.OK)
