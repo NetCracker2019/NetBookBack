@@ -50,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
             log.debug("next layer {}", ex.getMessage());
             SecurityContextHolder.clearContext();
             HttpServletResponse response = (HttpServletResponse) httpServletResponse;
-            //response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+           // response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
             response.setHeader("Access-Control-Allow-Origin", "https://netbooksfront.herokuapp.com");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
