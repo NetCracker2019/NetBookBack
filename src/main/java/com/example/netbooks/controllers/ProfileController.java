@@ -3,7 +3,6 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.*;
 import com.example.netbooks.services.BookService;
-import com.example.netbooks.services.FileStorageService;
 import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
 import com.google.common.base.Strings;
@@ -28,17 +27,14 @@ public class ProfileController {
     private BookService bookService;
     private NotificationService notificationService;
     private PasswordEncoder passwordEncoder;
-    private FileStorageService fileStorageService;
     @Autowired
     public ProfileController(UserManager userManager, BookService bookService,
                              NotificationService notificationService,
-                             PasswordEncoder passwordEncoder,
-                             FileStorageService fileStorageService) {
+                             PasswordEncoder passwordEncoder) {
         this.userManager = userManager;
         this.bookService = bookService;
         this.notificationService = notificationService;
         this.passwordEncoder = passwordEncoder;
-        this.fileStorageService = fileStorageService;
     }
     @GetMapping("/{login}")
     public User getUser(@PathVariable("login")String login){
@@ -166,7 +162,7 @@ public class ProfileController {
         }
         if(!Strings.isNullOrEmpty(originalUser.getAvatarFilePath()) && !
                 originalUser.getAvatarFilePath().equals(user.getAvatarFilePath())){
-            fileStorageService.deleteFile(originalUser.getAvatarFilePath());
+            userManager.deleteFile(originalUser.getAvatarFilePath());
         }
         originalUser.compareAndReplace(user);
         return originalUser;

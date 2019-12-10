@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,9 +62,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/user")
-    public ResponseEntity<Map> register(@RequestBody User user) {
+    public ResponseEntity<Map> register(@RequestBody User user) throws IOException {
         if (!userManager.isExistByLogin(user.getLogin())
-                && !userManager.isExistByMail(user.getEmail())) {
+                && !userManager.isExistByMail(user.getEmail()) && user.getLogin().length() > 1) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole(Role.ROLE_CLIENT);
             userManager.saveUser(user);
@@ -172,7 +173,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/send-admin-reg-mail")//TODO change mapping
-    public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail) {
+    public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail) throws IOException {
         User user = userManager.createAndSaveTempAdmin();
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
@@ -190,7 +191,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/send-moder-reg-mail")//TODO change mapping
-    public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) {
+    public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) throws IOException {
         User user = userManager.createAndSaveTempModer();
         VerificationToken verificationToken = new VerificationToken(
                 userManager.getUserByLogin(user.getLogin()).getUserId());
