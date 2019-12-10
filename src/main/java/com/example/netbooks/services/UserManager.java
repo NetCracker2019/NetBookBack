@@ -1,5 +1,6 @@
 package com.example.netbooks.services;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -24,14 +25,17 @@ public class UserManager {
     private UserRepository userRepository;
 	private AchievementRepository achievementRepository;
 	private AchievementService achievementService;
+    private FileStorageService fileStorageService;
 
 	@Autowired
     public UserManager(UserRepository userRepository,
                        AchievementRepository achievementRepository,
-                       AchievementService achievementService) {
+                       AchievementService achievementService,
+                       FileStorageService fileStorageService) {
         this.userRepository = userRepository;
         this.achievementRepository = achievementRepository;
         this.achievementService = achievementService;
+        this.fileStorageService = fileStorageService;
     }
 
 
@@ -52,11 +56,14 @@ public class UserManager {
         userRepository.updateUserById(user, id);
     }
 
-    public void saveUser(User user) {
+    public void saveUser(User user) throws IOException {
+	    String defaultAvatar = UUID.randomUUID().toString();
+        fileStorageService.copyFile("default_avatar", defaultAvatar);
+        user.setAvatarFilePath(defaultAvatar);
         userRepository.save(user);
     }
 
-    public User createAndSaveTempAdmin() {
+    public User createAndSaveTempAdmin() throws IOException {
         User user = new User();
         String tempLogPass = UUID.randomUUID().toString();
         user.setLogin(tempLogPass);
@@ -68,7 +75,7 @@ public class UserManager {
         return user;
     }
 
-    public User createAndSaveTempModer() {
+    public User createAndSaveTempModer() throws IOException {
         User user = new User();
         String tempLogPass = UUID.randomUUID().toString();
         user.setLogin(tempLogPass);
@@ -178,4 +185,8 @@ public class UserManager {
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
+
+    public void deleteFile(String avatarFilePath) {
+        fileStorageService.deleteFile(avatarFilePath);
+    }
 }

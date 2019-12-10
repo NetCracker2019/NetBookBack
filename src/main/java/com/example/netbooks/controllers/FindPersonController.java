@@ -28,7 +28,7 @@ public class FindPersonController {
             @RequestParam("sought") String sought, @RequestParam("where") String where,
             @RequestParam("cnt") int cntPersons, @RequestParam("offset") int offset) {
         if (sought == null) {
-            sought = new String("");
+            sought = "";
         }
         if (userManager.getUserByLogin(login).getRole() == Role.ROLE_CLIENT) {
             if ("all".equals(where)) {

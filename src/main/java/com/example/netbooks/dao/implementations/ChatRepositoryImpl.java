@@ -101,7 +101,7 @@ public class ChatRepositoryImpl implements ChatRepository {
         public Object mapRow(ResultSet resultSet, int i) throws SQLException {
             Message message = new Message();
             message.setDateSend(resultSet.getDate("datetime_send"));
-            message.setFromName(userManager.getUserById(resultSet.getLong("user_id")).getLogin());
+            message.setFromName(resultSet.getString("login"));
             message.setMessage(resultSet.getString("messege"));
             return message;
         }
@@ -117,7 +117,7 @@ public class ChatRepositoryImpl implements ChatRepository {
     public void saveMessage(Message message){
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("chat_id", message.getToId());
-        namedParams.put("user_id", userManager.getUserByLogin(message.getFromName()).getUserId());
+        namedParams.put("user_login", message.getFromName());
         namedParams.put("messege", message.getMessage());
         namedParams.put("datetime_send", message.getDateSend());
         namedJdbcTemplate.queryForObject(saveMessage, namedParams, String.class);

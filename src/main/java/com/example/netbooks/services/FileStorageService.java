@@ -20,12 +20,13 @@ public class FileStorageService {
     private final Path rootLocation = Paths.get("files");
 
     public void saveFile(MultipartFile file, String name) throws IOException {
-        try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(name));
-        } catch (Exception e) {
-            throw e;
-        }
+        Files.copy(file.getInputStream(), this.rootLocation.resolve(name));
+    }
 
+    public void copyFile(String name, String newName) throws IOException {
+        Path file = rootLocation.resolve(name);
+        Path newFile = rootLocation.resolve(newName);
+        Files.copy(file, newFile);
     }
 
     public void deleteFile(String filename) {
