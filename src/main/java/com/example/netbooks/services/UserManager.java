@@ -112,11 +112,7 @@ public class UserManager {
     }
 
     public User getUserByLogin(String login) {
-        try {
-            return userRepository.findByLogin(login);
-        } catch (CustomException ex) {
-            throw ex;
-        }
+        return userRepository.findByLogin(login);
     }
 
     public Iterable<User> getAllUsers() {
