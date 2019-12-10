@@ -1,9 +1,15 @@
 package com.example.netbooks.services;
 
 
+
+import com.example.netbooks.controllers.BookController;
+import com.example.netbooks.dao.implementations.*;
+
+
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.implementations.UserRepository;
+
 import com.example.netbooks.dao.interfaces.AuthorRepository;
 import com.example.netbooks.dao.interfaces.GenreRepository;
 import com.example.netbooks.dao.interfaces.ReviewRepository;
@@ -26,6 +32,7 @@ import java.util.Map;
 @Slf4j
 @Service
 public class BookService {
+
     private final JdbcBookRepository jdbcBookRepository;
     private final GenreRepository genreRepository;
     private final AuthorRepository authorRepository;
@@ -42,6 +49,7 @@ public class BookService {
                        UserRepository userRepository,
                        AchievementRepository achievementRepository,
                        AchievementService achievementService) {
+
         this.jdbcBookRepository = jdbcBookRepository;
         this.genreRepository = genreRepository;
         this.authorRepository = authorRepository;
@@ -59,15 +67,20 @@ public class BookService {
         return jdbcBookRepository.findAllViewBooks();
     }
 
-    public List<ViewAnnouncement> getViewUnApproveBooks(){
-        return jdbcBookRepository.findViewUnApproveBooks();
+
+    public List<ViewAnnouncement> getViewUnApproveBooks(int page, int offset) {
+        return jdbcBookRepository.findViewUnApproveBooks(page, offset);
     }
 
     public int countReviews(boolean approved) {
         return reviewRepository.countReviews(approved);
     }
 
-    public int countBooks(){
+    public int countAnnouncement(boolean approved) {
+        return jdbcBookRepository.countAnnouncement(approved);
+    }
+
+    public int countBooks() {
         return jdbcBookRepository.countBooks();
     }
 
@@ -81,22 +94,30 @@ public class BookService {
 
     public ResponseEntity<Map> addBook(Book book) {
 
-        int userId = userRepository.getUserIdByLogin(book.getUser());
-        // TODO add validation of same title
-        jdbcBookRepository.addBook(book, userId);
-        genreRepository.addRowIntoBookGenre(book.getTitle(),book.getGenre());
-        authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getAuthor());
-        int addedUserBook = jdbcBookRepository.countAddedBooksForUser(userId);
-        long achvId = achievementService.getAchvIdByParameters(addedUserBook, "book-achievement", 1);
-
-        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
-        if (userAchievement != null) {
-            // TODO Notification sending must be here.
-        }
-
         Map<Object, Object> response = new HashMap<>();
-        response.put("status", "ok");
-        return ResponseEntity.ok(response);
+        int userId = userRepository.getUserIdByLogin(book.getUser());
+
+        if (jdbcBookRepository.checkIsDuplicate(book.getTitle(),book.getDescription()) == 0) {
+
+            jdbcBookRepository.addBook(book, userId);
+            genreRepository.addRowIntoBookGenre(book.getTitle(), book.getDescription(), book.getGenre());
+            authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getDescription(), book.getAuthor());
+
+
+            int addedUserBook = jdbcBookRepository.countAddedBooksForUser(userId);
+            long achvId = achievementService.getAchvIdByParameters(addedUserBook, "book-achievement", 1);
+
+            UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
+            if (userAchievement != null) {
+                // TODO Notification sending must be here.
+            }
+
+            response.put("status", "ok");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("status", "This book exist");
+            return ResponseEntity.ok(response);
+        }
     }
 
     public ResponseEntity<Map> confirmAnnouncement(long announcementId) {
@@ -123,10 +144,6 @@ public class BookService {
             return jdbcBookRepository.getCalendarPersonalizeAnnouncement(userId);
         }
     }
-
-//    public String addAnnouncement(Book book) {
-//        return jdbcBookRepository.addAnnouncement(book);
-//    }
 
     public List<Announcement> findAllAnnouncement() {
         return jdbcBookRepository.findAllAnnouncement();
@@ -181,19 +198,19 @@ public class BookService {
         title = title.toLowerCase().trim().replaceAll(" +", " ");
 
         if (author == null && genre == null && from == null && to == null) {
-            log.info("search only with title param: {}", title);
+            //log.info("search only with title param: {}", title);
             books = jdbcBookRepository.findViewBooksByTitle(title);
         } else if (author == null && genre == null && from != null && to != null) {
-            log.info("search with title and date params: {}, {}, {}", title, from, to);
+            //log.info("search with title and date params: {}, {}, {}", title, from, to);
             books = jdbcBookRepository.findBooksByTitleAndDate(title, from, to);
         } else if (author == null && genre != null && from != null && to != null) {
-            log.info("search with title, genre, date params params: {}, {}, {}, {}", title, genre, from ,to);
+            //log.info("search with title, genre, date params params: {}, {}, {}, {}", title, genre, from ,to);
             books =  jdbcBookRepository.findBooksByTitleAndGenre(title, genre, from, to);
         } else if (author != null && genre == null && from != null && to != null) {
-            log.info("search with title, author, date params: {}, {}, {}, {}", title, author, from, to);
+            //log.info("search with title, author, date params: {}, {}, {}, {}", title, author, from, to);
             books = jdbcBookRepository.findBooksByTitleAndAuthor(title, author, from, to);
         } else if (author != null && genre != null && from != null && to != null) {
-            log.info("search with title, author, genre, from, to params: {}, {}, {}, {}, {}", title, author, genre, from, to);
+            //log.info("search with title, author, genre, from, to params: {}, {}, {}, {}, {}", title, author, genre, from, to);
             books = jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
         }
 

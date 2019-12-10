@@ -9,6 +9,7 @@ import com.example.netbooks.services.UserManager;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,29 +24,31 @@ import static com.example.netbooks.services.NotificationEnum.ADD_FRIEND_NOTIF;
 @RequestMapping(value = "/profile")
 @Slf4j
 public class ProfileController {
-    private PasswordEncoder passwordEncoder;
     private UserManager userManager;
     private BookService bookService;
-    private FileStorageService fileStorageService;
     private NotificationService notificationService;
+    private PasswordEncoder passwordEncoder;
+    private FileStorageService fileStorageService;
     @Autowired
-    public ProfileController(PasswordEncoder passwordEncoder,
-                             UserManager userManager, BookService bookService,
-                             FileStorageService fileStorageService,
-                             NotificationService notificationService) {
-        this.passwordEncoder = passwordEncoder;
+    public ProfileController(UserManager userManager, BookService bookService,
+                             NotificationService notificationService,
+                             PasswordEncoder passwordEncoder,
+                             FileStorageService fileStorageService) {
         this.userManager = userManager;
         this.bookService = bookService;
-        this.fileStorageService = fileStorageService;
         this.notificationService = notificationService;
+        this.passwordEncoder = passwordEncoder;
+        this.fileStorageService = fileStorageService;
     }
     @GetMapping("/{login}")
     public User getUser(@PathVariable("login")String login){
-        try{
-            return userManager.getUserByLogin(login);
-        }catch (CustomException ex){
-            throw ex;
+        User user = userManager.getUserByLogin(login);
+        //block if its admin but not you
+        if(!user.getRole().equals(Role.ROLE_CLIENT) &&
+                getCurrentUserRole().equals(Role.ROLE_CLIENT)){
+            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
+        return user;
     }
 
     @GetMapping("/{login}/get-achievement")
@@ -54,20 +57,13 @@ public class ProfileController {
         return userManager.getAchievementByLogin(login);
     }
 
-    @PutMapping("/edit")
-    public void editUser(@RequestBody User user){
-        User originalUser = userManager.getUserByLogin(getCurrentUserLogin());
-        log.info("ff {}", user.getAvatarFilePath());
-        log.info("ff {}", originalUser.getAvatarFilePath());
-        if(!Strings.isNullOrEmpty(user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        if(!Strings.isNullOrEmpty(originalUser.getAvatarFilePath()) && !
-                originalUser.getAvatarFilePath().equals(user.getAvatarFilePath())){
-            fileStorageService.deleteFile(originalUser.getAvatarFilePath());
-        }
-        originalUser.compareAndReplace(user);
-        userManager.updateUser(originalUser);
+    @PutMapping("/{login}/edit")
+    public void editUser(@PathVariable("login")String login,
+                         @RequestBody User user){
+        log.info("gfg {}", user.getSex());
+        if(!login.equals(getCurrentUserLogin()) && Integer.parseInt(userManager.getUserRole(login)) - 1
+                <= getCurrentUserRole().ordinal()) return;
+        userManager.updateUser(compareAndReplace(user));
     }
 
     @GetMapping("/{login}/friends")
@@ -99,10 +95,19 @@ public class ProfileController {
         return bookService.getReadBooksByUserId(
                 userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
+
+    @GetMapping("/{login}/is-editable")
+    public boolean isEditable(@PathVariable("login")String login){
+        if(getCurrentUserLogin().equals(login)) return true;
+        return Integer.parseInt(userManager.getUserRole(login)) - 1 >
+                getCurrentUserRole().ordinal();
+    }
     @PostMapping("/add-friend/{friendLogin}")
     public void addFriend(@PathVariable("friendLogin") String friendLogin) {
         String ownLogin = getCurrentUserLogin();
+        if(!userManager.getUserRole(friendLogin).equals("4")) return;
         userManager.addFriend(ownLogin, friendLogin);
+
         Thread notifThread = new Thread(() -> {
             Notification notification = new Notification();
             notification.setNotifTypeId(1);
@@ -111,6 +116,7 @@ public class ProfileController {
             notificationService.addNotification(notification);
         });
         notifThread.start();
+
 
     }
     /* 1 - is friend
@@ -156,9 +162,25 @@ public class ProfileController {
     public void removeBookBatch(@RequestParam("booksid") List<Long> booksId){
         bookService.removeBookBatch(userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), booksId);
     }
-
+    private User compareAndReplace(User user){
+        User originalUser = userManager.getUserByLogin(user.getLogin());
+        if(!Strings.isNullOrEmpty(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        if(!Strings.isNullOrEmpty(originalUser.getAvatarFilePath()) && !
+                originalUser.getAvatarFilePath().equals(user.getAvatarFilePath())){
+            fileStorageService.deleteFile(originalUser.getAvatarFilePath());
+        }
+        originalUser.compareAndReplace(user);
+        return originalUser;
+    }
     private String getCurrentUserLogin(){
         return ((UserDetails) SecurityContextHolder.getContext().
                 getAuthentication().getPrincipal()).getUsername();
+    }
+    private Role getCurrentUserRole(){
+        UserDetails currentUserDetails
+                = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return (Role) (currentUserDetails.getAuthorities().iterator().next());
     }
 }

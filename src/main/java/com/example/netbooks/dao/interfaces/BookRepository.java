@@ -28,11 +28,15 @@ public interface BookRepository {
 
     List<ViewBook> findViewBooksByTitle(String title);
     ViewBook getBookById(int id);
+
+    List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset);
+
     List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
     List<ViewBook> findBooksByTitleAndAuthor(String title, String author, Date from, Date to);
     List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
     List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to);
-    List<ViewAnnouncement> findViewUnApproveBooks();
+
+
 
 
 
@@ -52,6 +56,11 @@ public interface BookRepository {
                                     boolean favourite, boolean reading, boolean notSet, String sortBy, String order);
     void removeBookBatch(long userId, List<Long> booksId);
     void removeBookBatchFrom(Long userId, String shelf, List<Long> booksId);
+
+
+    int countAnnouncement(boolean approved);
+
+    int checkIsDuplicate(String title, String description);
 
     List<ViewBook> getSuggestions(long userId);
   

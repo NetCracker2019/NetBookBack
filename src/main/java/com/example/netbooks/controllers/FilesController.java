@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequestMapping(value = "/files")
 @Slf4j
 public class FilesController {
-    FileStorageService fileStorageService;
+    private FileStorageService fileStorageService;
 
     @Autowired
     public FilesController(FileStorageService fileStorageService) {
@@ -40,11 +40,16 @@ public class FilesController {
     }
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> getFile(@RequestParam(value = "filename", defaultValue = "default_avatar")
-                                                        String filename){
+    public ResponseEntity<Resource> getFile(@RequestParam(value = "filename")
+                                                    String filename){
         Resource file = fileStorageService.loadFile(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                 .body(file);
+    }
+
+    @DeleteMapping("/remove")
+    public void removeFile(@RequestParam(value = "filename") String filename){
+        fileStorageService.deleteFile(filename);
     }
 }

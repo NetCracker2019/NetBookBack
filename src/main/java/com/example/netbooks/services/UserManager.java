@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
+import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.netbooks.dao.implementations.UserRepository;
@@ -19,18 +21,18 @@ import java.util.UUID;
 @Data
 @Service
 public class UserManager {
-	UserRepository userRepository;
-	AchievementRepository achievementRepository;
-	AchievementService achievementService;
+    private UserRepository userRepository;
+	private AchievementRepository achievementRepository;
+	private AchievementService achievementService;
 
 	@Autowired
-	public UserManager(UserRepository userRepository,
-					   AchievementRepository achievementRepository,
-					   AchievementService achievementService) {
-		this.userRepository = userRepository;
-		this.achievementRepository = achievementRepository;
-		this.achievementService = achievementService;
-	}
+    public UserManager(UserRepository userRepository,
+                       AchievementRepository achievementRepository,
+                       AchievementService achievementService) {
+        this.userRepository = userRepository;
+        this.achievementRepository = achievementRepository;
+        this.achievementService = achievementService;
+    }
 
 
 	public User getUserByEmail(String email) {
@@ -42,6 +44,7 @@ public class UserManager {
     }
 
     public void updateUser(User user) {
+
         userRepository.updateUser(user);
     }
 

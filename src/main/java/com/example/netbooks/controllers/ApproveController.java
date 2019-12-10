@@ -28,9 +28,10 @@ public class ApproveController {
     private UserManager userManager;
 
     @GetMapping("/books")
-    public List<ViewAnnouncement> getUnApproveBooks() {
-        logger.info(bookService.getViewUnApproveBooks());
-        return bookService.getViewUnApproveBooks();
+    public List<ViewAnnouncement> getUnApproveAnnouncementList(@RequestParam("page") int page,
+                                                               @RequestParam("itemPerPage") int offset) {
+        logger.info(bookService.getViewUnApproveBooks(page, offset));
+        return bookService.getViewUnApproveBooks(page, offset);
     }
 
     @PostMapping("/confirm-announcement")
@@ -76,6 +77,13 @@ public class ApproveController {
     @PostMapping("cancel-review")
     public boolean cancelReview(@RequestParam("reviewId") long reviewId) {
         return bookService.cancelReview(reviewId);
+    }
+
+
+    @GetMapping("/count-announcement")
+    public int countAnnouncement(@RequestParam("approved") boolean approved){
+        logger.info("Количетсво анонсов: " + bookService.countAnnouncement(approved));
+        return  bookService.countAnnouncement(approved);
     }
 
 

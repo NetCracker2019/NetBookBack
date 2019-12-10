@@ -9,18 +9,19 @@ import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
 @Slf4j
 public class ChatService {
-    ChatRepositoryImpl chatRepository;
+    private ChatRepositoryImpl chatRepository;
     @Autowired
     public ChatService(ChatRepositoryImpl chatRepository) {
         this.chatRepository = chatRepository;
     }
 
-    public List<Chat> getChatsByUserId(Long userId){
+    public List<Chat> getChatsByUserId(Long userId) {
         return chatRepository.getChatsByUserId(userId);
     }
 
@@ -32,7 +33,7 @@ public class ChatService {
         chatRepository.saveMessage(message);
     }
 
-    public void createNewChat(String chatName, List<String> members) {
+    public void createNewChat(String chatName, List<String> members) throws SQLException {
         chatRepository.createNewChat(chatName, members);
     }
 
@@ -40,9 +41,18 @@ public class ChatService {
         return chatRepository.getChatMembers(chatId);
     }
 
-    public void updateChat(Long chatId, String editedChatName, List<String> addedMembers, List<String> removedMembers) {
+    public void updateChat(Long chatId, String editedChatName, List<String> addedMembers, List<String> removedMembers) throws SQLException {
         addedMembers.add("");
         removedMembers.add("");
         chatRepository.updateChat(chatId, editedChatName, addedMembers, removedMembers);
+    }
+
+    public boolean isMemberOfChat(Long chatId, String login){
+        List<User> members = chatRepository.getChatMembers(chatId);
+        for(User member: members){
+            if(member.getLogin().equals(login))
+                return true;
+        }
+        return false;
     }
 }
