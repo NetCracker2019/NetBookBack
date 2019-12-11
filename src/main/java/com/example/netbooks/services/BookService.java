@@ -337,7 +337,7 @@ public class BookService {
     }
 
     public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
-        if(shelf.equals("reading")){
+        if("reading".equals(shelf)){
             jdbcBookRepository.addBookBatchToReading(userId, booksId);
         }else if(shelf.equals("read")){
             jdbcBookRepository.addBookBatchToRead(userId, booksId);
