@@ -31,28 +31,6 @@ public class AchievementService {
         }
     }
 
-    public UserAchievement addAchievementToUser(long achvId, long userId ) {
-        if (achvId > 0){
-            boolean in = achievementRepository.checkAchvInUserAchv(userId, achvId);
-            if (!in){
-                // Перенесите логику в другой метод. Этот метод не трогайте) (Саша, Дима)
-               // Thread notifThread = new Thread(() -> {
-               //     User tmpUser = userManager.getUserById(userId);
-               //     List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
-               //     List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
-               //     friends.addAll(subscribers);
-               //     friends.add(tmpUser);
-               //     notificationService.createAndSaveAchievNotif(userId, friends, achvId);
-               // });
-//
-               // notifThread.start();
-                achievementRepository.addAchievementForUser(achvId, userId);
-                return achievementRepository.getLastUserAchievement(userId);
-            }
-        }
-        return null;
-    }
-
     public boolean addAchievement(Achievement achievement) {
         String validatedTitle = achievement.getTitle().trim().replaceAll(" +", " ");
         achievement.setTitle(validatedTitle.substring(0,1).toUpperCase() + validatedTitle.substring(1));
