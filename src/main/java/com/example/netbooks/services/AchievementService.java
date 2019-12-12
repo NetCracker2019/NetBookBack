@@ -11,37 +11,31 @@ import java.util.List;
 
 @Service
 public class AchievementService {
-
     private final AchievementRepository achievementRepository;
 
-
-     @Autowired
     public AchievementService(AchievementRepository achievementRepository) {
         this.achievementRepository = achievementRepository;
 
     }
 
-
-    long getAchvIdByParameters(int count, String type, int n) {
-        long achvId = 0;
-        switch (count) {
-            case 1:
-                achvId = achievementRepository.getAchvIdByDescription(type, n);
-                break;
-            case 10:
-                achvId = achievementRepository.getAchvIdByDescription(type, 10 * n);
-                break;
-            case 100:
-                achvId = achievementRepository.getAchvIdByDescription(type, 100 * n);
-                break;
+    public void checkBookPatternAchievementsAndSendNotification(long userId, long bookId, String favOrRead) {
+        boolean addedAuthorAchv = achievementRepository.checkAchievementAuthor(userId, bookId, favOrRead);
+        if (addedAuthorAchv) {
+            UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+            // TODO Notification sending must be here.
         }
-
-        return achvId;
+        boolean addedGenreAchv = achievementRepository.checkAchievementGenre(userId, bookId, favOrRead);
+        if (addedGenreAchv) {
+            UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+            // TODO Notification sending must be here.
+        }
     }
-    UserAchievement addAchievementToUser(long achvId, long userId ) {
+
+    public UserAchievement addAchievementToUser(long achvId, long userId ) {
         if (achvId > 0){
             boolean in = achievementRepository.checkAchvInUserAchv(userId, achvId);
             if (!in){
+                // Перенесите логику в другой метод. Этот метод не трогайте) (Саша, Дима)
                // Thread notifThread = new Thread(() -> {
                //     User tmpUser = userManager.getUserById(userId);
                //     List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
