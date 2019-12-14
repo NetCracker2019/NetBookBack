@@ -212,7 +212,7 @@ public class UserManager {
                 + "https://netbooksfront.herokuapp.com/verification-account?token="
                 + verificationToken.getVerificationToken();
         log.info("fff {}", message);
-        //emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+        emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
     }
 
     public void confirmUserAccount(String verificationToken) {
@@ -230,7 +230,7 @@ public class UserManager {
                 + "https://netbooksfront.herokuapp.com/recovery-password?token="
                 + verificationToken.getVerificationToken();
         log.info("dd {}", message);
-        //emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+        emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
 	}
 
     public void recoveryPass(String verificationToken, String newPassword) {
