@@ -89,19 +89,17 @@ public class NotificationService {
 
     public Notification parseViewNotif(Notification notif, String userName) {
         String notifText = notif.getNotifText();
-        if(notif.getFromUserName().equals(userName)) {
+        if (notif.getFromUserName().equals(userName)) {
             notifText = notifText.replaceAll("User user_name", "You");
-        }
-        else{
+        } else {
             notifText = notifText.replaceAll("user_name", notif.getFromUserName());
         }
-            notifText = notifText.replaceAll("book_name", notif.getBookName());
-            notifText = notifText.replaceAll("achiev_name", notif.getAchievName());
-            notif.setNotifText(notifText);
+        notifText = notifText.replaceAll("book_name", notif.getBookName());
+        notifText = notifText.replaceAll("achiev_name", notif.getAchievName());
+        notif.setNotifText(notifText);
 
         return notif;
     }
-
 
 
     public void addNotification(Notification notification) {
@@ -123,12 +121,9 @@ public class NotificationService {
     public int getNotifCount(long userId) {
         return notificationRepository.getNotifCount(userId);
     }
-   /* public  void deleteAllNotificationsByUserId(long id){
+
+    public void deleteAllNotificationsByUserId(long id) {
         notificationRepository.deleteAllNotificationsByUserId(id);
     }
-    public void deleteNotificationByNotifId(Notification notification) {
-        Integer id = notification.getNotificationId();
-        notificationRepository.deleteNotificationByNotifId(id);
-    }
-*/
+
 }

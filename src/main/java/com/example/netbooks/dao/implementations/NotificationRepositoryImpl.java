@@ -100,10 +100,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         }
     }
 
-}
-
-
-/*
     @Override
     public void deleteAllNotificationsByUserId(long id) {
         Map<String, Object> namedParams = new HashMap<>();
@@ -111,11 +107,4 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParameterJdbcTemplate.update(environment.getProperty("deleteAllNotificationsByUserId"), namedParams);
     }
 
-    @Override
-    public void deleteNotificationByNotifId(Integer notifId) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("notification_id", notifId);
-        namedParameterJdbcTemplate.update(environment.getProperty("deleteNotificationByNotifId"), namedParams);
-    }
-*/
-
+}

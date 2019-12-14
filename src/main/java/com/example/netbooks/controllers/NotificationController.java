@@ -84,7 +84,7 @@ public class NotificationController {
 
 
 
-/*
+
     @DeleteMapping("/delete-all")
     public void deleteAllNotificationsByUserId(){
         long userId = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
@@ -92,11 +92,5 @@ public class NotificationController {
                 .getPrincipal()).getUsername());
         notificationService.deleteAllNotificationsByUserId(userId);
     }
-    @DeleteMapping("delete-one")
-    public void deleteNotificationByNotifId(@RequestBody Notification notification){
-        log.debug("Mark notification as read by notifId ");
-        notificationService.deleteNotificationByNotifId(notification);
-    }
 
- */
 }

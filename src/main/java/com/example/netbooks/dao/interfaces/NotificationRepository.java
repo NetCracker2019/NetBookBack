@@ -17,11 +17,8 @@ public interface NotificationRepository {
 
     void markNotifAsReadByNotifId(Integer notifId);
 
-   /* void deleteAllNotificationsByUserId(long id);
+    void deleteAllNotificationsByUserId(long id);
 
-    void deleteNotificationByNotifId(Integer notifId);
-
-    */
 
     int getNotifCount(long userId);
 
