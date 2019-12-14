@@ -1,15 +1,19 @@
 package com.example.netbooks.services;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
+import com.example.netbooks.models.VerificationToken;
 import com.google.common.base.Strings;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +25,27 @@ import java.util.UUID;
 
 @Data
 @Service
+@Slf4j
 public class UserManager {
     private UserRepository userRepository;
 	private AchievementRepository achievementRepository;
 	private AchievementService achievementService;
     private FileStorageService fileStorageService;
-
+    private VerificationTokenManager verificationTokenManager;
+    private EmailSender emailSender;
 	@Autowired
     public UserManager(UserRepository userRepository,
+                       EmailSender emailSender,
                        AchievementRepository achievementRepository,
                        AchievementService achievementService,
-                       FileStorageService fileStorageService) {
+                       FileStorageService fileStorageService,
+                       VerificationTokenManager verificationTokenManager) {
         this.userRepository = userRepository;
+        this.emailSender = emailSender;
         this.achievementRepository = achievementRepository;
         this.achievementService = achievementService;
         this.fileStorageService = fileStorageService;
+        this.verificationTokenManager = verificationTokenManager;
     }
 
 
@@ -56,10 +66,7 @@ public class UserManager {
         userRepository.updateUserById(user, id);
     }
 
-    public void saveUser(User user) throws IOException {
-	    String defaultAvatar = UUID.randomUUID().toString();
-        fileStorageService.copyFile("default_avatar", defaultAvatar);
-        user.setAvatarFilePath(defaultAvatar);
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
@@ -185,4 +192,52 @@ public class UserManager {
     public void deleteFile(String avatarFilePath) {
         fileStorageService.deleteFile(avatarFilePath);
     }
+
+    public void register(User user) {
+        if (userRepository.isExistByLogin(user.getLogin())){
+            throw new CustomException("Login is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        if (userRepository.isExistByMail(user.getEmail())){
+            throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        user.setRegDate(LocalDate.now());
+        userRepository.save(user);
+        VerificationToken verificationToken = new VerificationToken(
+                userRepository.findByLogin(user.getLogin()).getUserId());
+        verificationTokenManager.saveToken(verificationToken);
+
+        String message = "To verification your account, please click here : "
+                + "https://netbooksfront.herokuapp.com/verification-account?token="
+                + verificationToken.getVerificationToken();
+        log.info("fff {}", message);
+        //emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+    }
+
+    public void confirmUserAccount(String verificationToken) {
+        VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+        userRepository.activateUser(token.getUserId());
+        verificationTokenManager.removeVerificationToken(verificationToken);
+        // TODO del addled tokens
+    }
+
+    public void requestFroRecoveryPass(String email) {
+        User user = userRepository.findByEmail(email);
+        VerificationToken verificationToken = new VerificationToken(user.getUserId());
+        verificationTokenManager.saveToken(verificationToken);
+        String message = "To recovery your password, please click here : "
+                + "https://netbooksfront.herokuapp.com/recovery-password?token="
+                + verificationToken.getVerificationToken();
+        log.info("dd {}", message);
+        //emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+	}
+
+    public void recoveryPass(String verificationToken, String newPassword) {
+        VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+        User user = userRepository.findByUserId(token.getUserId());
+        user.setPassword(newPassword);
+        user.setMinRefreshDate(null);
+        userRepository.updateUser(user);
+        verificationTokenManager.removeVerificationToken(verificationToken);
+        // TODO del addled tokens
+	}
 }

@@ -34,7 +34,7 @@ public class User {
 	@JsonProperty("sex")
 	private String sex;
 	@JsonProperty("regDate")
-	private Date regDate;
+	private LocalDate regDate;
 	@JsonProperty("avatarFilePath")
     private String avatarFilePath;
 	@JsonProperty("country")
@@ -54,18 +54,16 @@ public class User {
 	}
 
 	public void compareAndReplace(User user) {
-		this.name = (Strings.isNullOrEmpty(user.getName()) && this.name != null) ? this.name : user.name;
-		this.email = (Strings.isNullOrEmpty(user.getEmail()) && this.email != null) ? this.email : user.email;
+		this.name = user.name;
+		this.email = user.email;
 		this.password = (Strings.isNullOrEmpty(user.getPassword()))
 				? this.password : user.password;
-		this.sex = (Strings.isNullOrEmpty(user.getSex()) && this.sex != null) ? this.sex : user.sex;
+		this.sex = user.sex;
 		this.avatarFilePath = (Strings.isNullOrEmpty(user.getAvatarFilePath())
 				&& this.avatarFilePath != null) ? this.avatarFilePath : user.avatarFilePath;
-		this.country = (Strings.isNullOrEmpty(user.getCountry())
-				&& this.country != null) ? this.country : user.country;
-		this.city = (Strings.isNullOrEmpty(user.getCity()) && this.city != null) ? this.city : user.city;
-		this.status = (Strings.isNullOrEmpty(user.getStatus())
-				&& this.status != null) ? this.status: user.status;
+		this.country = user.country;
+		this.city = user.city;
+		this.status = user.status;
 		this.turnOnNotif = user.turnOnNotif;
 	}
 

@@ -41,6 +41,7 @@ public class ProfileController {
     public User getUser(@PathVariable("login")String login){
         User user = userManager.getUserByLogin(login);
         //block if its admin but not you
+        log.info("dd {}",user.getRole().equals(Role.ROLE_CLIENT));
         if(!user.getRole().equals(Role.ROLE_CLIENT) &&
                 getCurrentUserRole().equals(Role.ROLE_CLIENT)){
             throw new CustomException("User not found", HttpStatus.NOT_FOUND);
@@ -57,7 +58,6 @@ public class ProfileController {
     @PutMapping("/{login}/edit")
     public void editUser(@PathVariable("login")String login,
                          @RequestBody User user){
-        log.info("gfg {}", user.getSex());
         if(!login.equals(getCurrentUserLogin()) && Integer.parseInt(userManager.getUserRole(login)) - 1
                 <= getCurrentUserRole().ordinal()) return;
         userManager.updateUser(compareAndReplace(user));
@@ -145,15 +145,16 @@ public class ProfileController {
                 sought, size, read, favourite, reading, notSet, sortBy, order, page);
     }
     @PutMapping("/{shelf}/add-books")
-    public void addBookBatchTo(@PathVariable("shelf")String shelf,
+    public void addBookBatchTo(@PathVariable("shelf")int shelf,
                                @RequestBody List<Long> booksId){
-        bookService.addBookBatchTo(userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), shelf, booksId);
+        bookService.addBookBatchTo(
+                userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), Shelf.values()[shelf], booksId);
     }
     @PutMapping("/{shelf}/remove-books")
-    public void removeBookBatchFrom(@PathVariable("shelf")String shelf,
+    public void removeBookBatchFrom(@PathVariable("shelf")int shelf,
                                     @RequestBody List<Long> booksId){
         bookService.removeBookBatchFrom(userManager.getUserByLogin(getCurrentUserLogin()).
-                getUserId(), shelf, booksId);
+                getUserId(), Shelf.values()[shelf], booksId);
     }
     @DeleteMapping("/remove-books")
     public void removeBookBatch(@RequestParam("booksid") List<Long> booksId){

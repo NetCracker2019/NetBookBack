@@ -1,0 +1,39 @@
+присойденил юзеррепозитори и токенрепозитори к дб(после листа)
+написал регистрацию(вместе с подтверждением)(бэк)(фронт - подтверждение ток)
+емаил сендер
+вход(бэк)
+функция прервать все сессии
+активация и деактивация любого адмнов и модеров
+jwt
+восстановление пароля(бэк и фронт)
+хероку*
+--------------------
+рефактор рест контролера
+изменил пароли
+circleCi
+User view (add paging friend and bookShortDescription)
+User edit
+--------------------
+обновление токена
+отправка файла
+продолжение списков книг, друз
+фикс разлогирования
+поиск друз
+редактирования только своего профиля
+добавление друзец
+edit list books
+изменить шортбукдескр
+-----------------
+fix friends
+list books
+адаптация
+loader
+TODO SLF4J
+помилки на фронті, toaster
+TODO env properties
+TODO "Access-Control-Allow-Origin" fix
+TODO "Access-Control-Allow-Origin" fix
+TODO "Access-Control-Allow-Origin" fix
+TODO "Access-Control-Allow-Origin" fix
+TODO "Access-Control-Allow-Origin" fix
+TODO {чат, controller -> service}
