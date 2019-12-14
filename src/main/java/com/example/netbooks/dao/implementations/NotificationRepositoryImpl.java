@@ -3,6 +3,7 @@ package com.example.netbooks.dao.implementations;
 import com.example.netbooks.dao.interfaces.NotificationRepository;
 import com.example.netbooks.dao.mappers.NotificationMapper;
 import com.example.netbooks.dao.mappers.ViewNotificationMapper;
+import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -36,10 +38,31 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     private final RowMapper notificationMapper = new NotificationMapper();
     private final RowMapper viewNotificationMapper = new ViewNotificationMapper();
 
+    /*@Override
+    public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("id", findByLogin(login).getUserId());
+            namedParams.put("offset", offset);
+            namedParams.put("cnt", cntFriends);
+            return namedJdbcTemplate.query(getFriendsByLogin, namedParams, new FriendMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
+        }
+    }*/
     @Override
-    public List<Notification> getAllViewNotificationsByUserId(long userId) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
-        return namedParameterJdbcTemplate.query(environment.getProperty("getAllViewNotificationsByUserId"), namedParameters, viewNotificationMapper);
+    public List<Notification> getAllViewNotificationsByUserId(long userId ,int cntNotifForView,int offset) {
+        try {
+
+            Map<String,Object>namedParams=new HashMap<>();
+            namedParams.put("user_id",userId);
+            namedParams.put("offset",offset);
+            namedParams.put("cnt",cntNotifForView);
+            return namedParameterJdbcTemplate.query(environment.getProperty("getAllViewNotificationsByUserId"), namedParams, viewNotificationMapper);
+        } catch (EmptyResultDataAccessException e){
+            throw new CustomException("Notifications not found", HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @Override

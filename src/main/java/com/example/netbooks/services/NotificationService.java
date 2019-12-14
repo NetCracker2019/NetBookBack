@@ -30,8 +30,8 @@ public class NotificationService {
     }
 
 
-    public List<Notification> getAllViewNotificationsByUserId(long userId) {
-        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId);
+    public List<Notification> getAllViewNotificationsByUserId(long userId,int cntNotifsForView,int offset) {
+        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId,cntNotifsForView,offset);
         String userName = userManager.getUserById(userId).getName();
         for (Notification notif : notifList) {
             notifList.set(notifList.indexOf(notif), parseViewNotif(notif, userName));

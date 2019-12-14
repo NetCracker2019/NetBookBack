@@ -48,13 +48,18 @@ public class NotificationController {
 //        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
 //    }
 
+/*@GetMapping("/{login}")
+    public List<User> getUser(@PathVariable("login") String login,
+            @RequestParam("sought") String sought, @RequestParam("where") String where,
+            @RequestParam("cnt") int cntPersons, @RequestParam("offset") int offset)*/
+
     @GetMapping()
-    public ResponseEntity<?> getNotificationsForUser() {
+    public List<Notification> getNotificationsForUser(@RequestParam("cnt")int cnt, @RequestParam("offset")int offset) {
         log.debug("Getting notification for user in {}: ", this.getClass().getName());
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
-        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
+        return notificationService.getAllViewNotificationsByUserId(id, cnt, offset);
     }//
 
     @GetMapping("/count")

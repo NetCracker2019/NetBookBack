@@ -9,7 +9,7 @@ public interface NotificationRepository {
 
     List<Notification> getAllNotificationsByUserId(long userId);
 
-    List<Notification> getAllViewNotificationsByUserId(long userId);
+    List<Notification> getAllViewNotificationsByUserId(long userId,int cntNotifsForView,int offset);
 
     void addNotification(Notification notification);
 
