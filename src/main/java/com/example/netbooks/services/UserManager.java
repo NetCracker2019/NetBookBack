@@ -6,9 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
-import com.example.netbooks.models.Achievement;
-import com.example.netbooks.models.VerificationToken;
-import com.example.netbooks.models.UserAchievement;
+import com.example.netbooks.models.*;
 import com.google.common.base.Strings;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.Role;
-import com.example.netbooks.models.User;
+
 import java.util.UUID;
 
 @Data
@@ -34,6 +31,7 @@ public class UserManager {
     private FileStorageService fileStorageService;
     private VerificationTokenManager verificationTokenManager;
     private EmailSender emailSender;
+    private NotificationService notificationService;
 	@Autowired
     public UserManager(UserRepository userRepository,
                        EmailSender emailSender,
@@ -177,6 +175,15 @@ public class UserManager {
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "friends");
             // TODO Send notif here
+
+            Thread notifThread = new Thread(() -> {
+                Notification notification = new Notification();
+                notification.setNotifTypeId(3);
+                notification.setUserId((int) (getUserByLogin(ownLogin).getUserId()));
+                notification.setFromUserId((int) (getUserByLogin(ownLogin).getUserId()));
+                notificationService.addNotification(notification);
+            });
+            notifThread.start();
         } catch (NullPointerException e){
             e.getMessage();
         }
