@@ -46,6 +46,12 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     @Override
+    public int countReviewsForBook(long bookId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("bookId", bookId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("countReviewsForBook"), namedParameters, Integer.class);
+    }
+
+    @Override
     public boolean addReviewForUserBook(Review review) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("bookId", review.getBookId());
@@ -79,12 +85,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         return namedJdbcTemplate.query(getReviewPeaceForApprove, namedParameters, reviewMapper);
     }
 
-    @Override
-    public int countReviewsForUser(long userId) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("userId", userId);
-        return namedJdbcTemplate.queryForObject(env.getProperty("countUserReviews"), namedParameters, Integer.class);
-    }
 
     @Override
     public int likeReview(long reviewId, long userId) {

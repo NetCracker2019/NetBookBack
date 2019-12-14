@@ -77,15 +77,11 @@ public class BookController {
 
     @GetMapping(value="/bookListPeace")
     public List<ViewBook> getPeaceBook(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
-        log.info("page {} booksPerPage {}",page, booksPerPage);
         return bookService.getPeaceBook(page,booksPerPage);
     }
 
-
-
     @GetMapping(value="/announcementListPeace")
     public List<ViewBook> getPeaceAnnouncement(@RequestParam("page")int page, @RequestParam("booksPerPage")int booksPerPage) {
-        log.info("page {} booksPerPage {}",page, booksPerPage);
         return bookService.getPeaceAnnouncement(page,booksPerPage);
     }
     @GetMapping("/view-books")
@@ -101,9 +97,8 @@ public class BookController {
 //    }
 
     @PostMapping("/add-book-profile")
-    public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int boolId){
-
-        log.info(userName+boolId);
+    public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
+        log.info(userName+bookId);
         Thread notifThread = new Thread(() -> {
             long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                     .getContext().getAuthentication()
@@ -117,23 +112,19 @@ public class BookController {
                 notification.setNotifTypeId(2);
                 notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
                 notification.setFromUserId((int) (tmpUser.getUserId()));
-                notification.setBookId(boolId);
+                notification.setBookId(bookId);
                 notificationService.addNotification(notification);
-
             }
         });
         notifThread.start();
-        return bookService.addBookToProfile(userName, boolId);
+        return bookService.addBookToProfile(userName, bookId);
     }
-    @ResponseStatus(value = HttpStatus.OK)
     @PostMapping("/add-review-user-book")
     public boolean addReviewForUserBook(@RequestBody Review review){
-        log.info(review.toString());
         return bookService.addReviewForUserBook(review);
     }
     @DeleteMapping("/remove-book-profile")
     public boolean removeBookFromProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
-        log.info("Deleted book: "+userName+bookId);
         return bookService.removeBookFromProfile(userName, bookId);
     }
     @PutMapping("/like-book")
@@ -146,48 +137,37 @@ public class BookController {
         bookService.dislikeBook(bookId, userLogin);
         return true;
     }
+
+    /**
+     * Check book is liked, disliked or not liked by some user
+     * @param bookId - book id
+     * @param userLogin - user login
+     * @return 0 if book is not liked/disliked by some user
+     *         1 if book is liked
+     *        -1 if book is disliked
+     */
     @GetMapping("/check-liked-book")
     public int checkLikedBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
         return bookService.checkLikedBook(bookId, userLogin);
     }
     @PutMapping("/like-review")
     public int likeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
-        int result = bookService.likeReview(reviewId, userLogin);
-        log.info("Review Likes: "+result);
-        return result;
+        return bookService.likeReview(reviewId, userLogin);
     }
     @PutMapping("/dislike-review")
     public int dislikeReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
-        int result = bookService.dislikeReview(reviewId, userLogin);
-        log.info("Review Likes: "+result);
-        return result;
+        return bookService.dislikeReview(reviewId, userLogin);
     }
     @GetMapping("/check-liked-review")
     public int checkLikedReview(@RequestParam("reviewId") long reviewId, @RequestParam("userLogin") String userLogin){
         return bookService.checkLikedReview(reviewId, userLogin);
     }
-    //    @PutMapping("/like-review")
-//    public boolean likeReview(@RequestParam("reviewId") long reviewId){
-//        bookService.likeReview(reviewId);
-//        return true;
-//    }
+
     @GetMapping("/check-book-profile")
     public boolean checkBookInProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId) {
         return bookService.checkBookInProfile(userName, bookId);
     }
 
-//    @GetMapping("/home/filter-books")
-//    public List<Book> getFilteredBooks
-//            (@RequestParam(value = "title", required = false, defaultValue = "") String title,
-//             @RequestParam(value = "author", required = false, defaultValue = "") String author,
-//             @RequestParam(value = "genre", required = false, defaultValue = "All") String genre,
-//             @RequestParam(value = "date1", required = false, defaultValue = "0001-01-01") String dateFrom,
-//             @RequestParam(value = "date2", required = false, defaultValue = "3000-01-01") String dateTo,
-//             @RequestParam(value = "page1", required = false, defaultValue = "0") int pageFrom,
-//             @RequestParam(value = "page2", required = false, defaultValue = "1000000") int pageTo
-//            ){
-//        return bookService.filterBooks(title, author, genre, dateFrom, dateTo, pageFrom, pageTo);
-//    }
     @GetMapping("/search/{id}")
     public List<Review> getReviewForSearchBook(@PathVariable("id") int bookId, @RequestParam("count") int count, @RequestParam("offset") int offset ){
         return bookService.getPeaceOfReviewByBook(bookId, count, offset);
@@ -237,13 +217,15 @@ public class BookController {
     }
     @GetMapping("/count-reviews")
     public int countReviews(@RequestParam("approved") boolean approved){
-        log.info("Количетсво ревьюшек: "+bookService.countReviews(approved));
         return  bookService.countReviews(approved);
+    }
+    @GetMapping("/count-reviews-book")
+    public int countReviewsForBook(@RequestParam("bookId") long bookId) {
+        return bookService.countReviewsForBook(bookId);
     }
 
     @GetMapping("/calendar-announcement")
     public List<Event> calendarAnnouncement(@RequestParam("value") String value, @RequestParam("userName") String userName) {
-        log.info(userName);
         return bookService.calendarAnnouncement(value, userName);
     }
 

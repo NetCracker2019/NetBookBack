@@ -12,6 +12,7 @@ import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -246,8 +247,9 @@ public class BookService {
 
     public boolean addReviewForUserBook(Review review) {
         review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
+        review.setReviewText(review.getReviewText().trim().replaceAll(" +", " "));
         boolean result = reviewRepository.addReviewForUserBook(review);
-        if (!userRepository.checkUserIsUser(review.getUserId())) {
+        if (!userRepository.checkPersonIsUser(review.getUserId())) {
             approveReview(review.getReviewId(), review.getUserId());
         }
         return result;
@@ -363,7 +365,13 @@ public class BookService {
     }
     public int checkLikedBook(long bookId, String userLogin){
         long userId = userRepository.getUserIdByLogin(userLogin);
-        return jdbcBookRepository.checkLickedBook(bookId, userId);
+        try {
+            boolean liked = jdbcBookRepository.checkLickedBook(bookId, userId);
+            if (liked) return 1;
+            else return -1;
+        }catch (EmptyResultDataAccessException e){
+            return 0;
+        }
     }
     public int likeReview(long reviewId, String userLogin){
         long userId = userRepository.getUserIdByLogin(userLogin);
@@ -376,5 +384,8 @@ public class BookService {
     public int checkLikedReview(long reviewId, String userLogin){
         long userId = userRepository.getUserIdByLogin(userLogin);
         return reviewRepository.checkLikedReview(reviewId, userId);
+    }
+    public int countReviewsForBook(long bookId) {
+        return reviewRepository.countReviewsForBook(bookId);
     }
 }

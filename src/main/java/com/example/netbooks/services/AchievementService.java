@@ -2,9 +2,7 @@ package com.example.netbooks.services;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
-import com.example.netbooks.models.User;
 import com.example.netbooks.models.UserAchievement;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,7 +36,7 @@ public class AchievementService {
         achievement.setDescription(validatedDescription.substring(0,1).toUpperCase() + validatedDescription.substring(1));
         return achievementRepository.addAchievement(achievement);
     }
-    public List<Achievement> getAllAchievements() {
-        return achievementRepository.getAllAchievements();
+    public List<Achievement> getAchievements(int page, int size) {
+        return achievementRepository.getAchievements(page, size);
     }
 }

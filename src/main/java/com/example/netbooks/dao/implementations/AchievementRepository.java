@@ -133,8 +133,11 @@ public class AchievementRepository {
         namedParameters.addValue("achvId", achvId);
         return namedJdbcTemplate.queryForObject(env.getProperty("checkAchvInUserAchv"), namedParameters, Boolean.class);
     }
-    public List<Achievement> getAllAchievements(){
-        return namedJdbcTemplate.query(env.getProperty("getAllAchievements"),  fullAchievementMapper);
+    public List<Achievement> getAchievements(int page, int size){
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("offset", page);
+        namedParameters.addValue("count", size);
+        return namedJdbcTemplate.query(env.getProperty("getAchievements"),  namedParameters, fullAchievementMapper);
     }
     public UserAchievement checkUserAchievement(long userId, String achievementType) throws NullPointerException {
         SimpleJdbcCall jdbcCall = null;
