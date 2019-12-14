@@ -105,8 +105,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("reviewId", reviewId)
                 .addValue("userId", userId);
-        int resukt = jdbcCall.executeFunction(Integer.class, in);
-        System.out.println();
         return jdbcCall.executeFunction(Integer.class, in);
     }
 
