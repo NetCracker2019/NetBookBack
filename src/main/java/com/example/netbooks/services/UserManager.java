@@ -8,6 +8,7 @@ import java.util.List;
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.models.Achievement;
 import com.example.netbooks.models.VerificationToken;
+import com.example.netbooks.models.UserAchievement;
 import com.google.common.base.Strings;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -172,12 +173,13 @@ public class UserManager {
 
 	public void addFriend(String ownLogin, String friendLogin) {
 		long userId = userRepository.getUserIdByLogin(ownLogin);
-		int friendsAmountForUser = userRepository.countFriendsForUser(userId);
-		long achvId = achievementService.getAchvIdByParameters(friendsAmountForUser, "friends", 1);
-		if (achvId > 0){
-			achievementRepository.addAchievementForUser(achvId, userId);
-
-		}
+        try{
+            UserAchievement userAchievement =
+                    achievementRepository.checkUserAchievement(userId, "friends");
+            // TODO Send notif here
+        } catch (NullPointerException e){
+            e.getMessage();
+        }
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
 

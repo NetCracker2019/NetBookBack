@@ -52,7 +52,7 @@ public class JdbcBookRepository implements BookRepository {
     private final RowMapper<Event> eventMapper;
     private final RowMapper<Genre> genreNameMapper;
     private final RowMapper<Author> authorNameMapper;
-    private final RowMapper<Book> bookIdMapper;
+    private final BookIdRowMapper bookIdMapper;
 
     @Value("${getBookList}")
     private String getBookList;
@@ -95,7 +95,7 @@ public class JdbcBookRepository implements BookRepository {
                               RowMapper<Event> eventMapper,
                               RowMapper<Genre> genreNameMapper,
                               RowMapper<Author> authorNameMapper,
-                              RowMapper<Book> bookIdMapper) {
+                              BookIdRowMapper bookIdMapper) {
         this.namedJdbcTemplate = namedJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
         this.env = env;

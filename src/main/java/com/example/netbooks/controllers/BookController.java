@@ -141,6 +141,11 @@ public class BookController {
         bookService.likeBook(bookId, userLogin);
         return true;
     }
+    @PutMapping("/dislike-book")
+    public boolean dislikeBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
+        bookService.dislikeBook(bookId, userLogin);
+        return true;
+    }
     @GetMapping("/check-liked-book")
     public int checkLikedBook(@RequestParam("bookId") long bookId, @RequestParam("userLogin") String userLogin){
         return bookService.checkLikedBook(bookId, userLogin);

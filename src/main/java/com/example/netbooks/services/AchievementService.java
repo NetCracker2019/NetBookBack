@@ -11,52 +11,24 @@ import java.util.List;
 
 @Service
 public class AchievementService {
-
     private final AchievementRepository achievementRepository;
 
-
-     @Autowired
     public AchievementService(AchievementRepository achievementRepository) {
         this.achievementRepository = achievementRepository;
 
     }
 
-
-    long getAchvIdByParameters(int count, String type, int n) {
-        long achvId = 0;
-        switch (count) {
-            case 1:
-                achvId = achievementRepository.getAchvIdByDescription(type, n);
-                break;
-            case 10:
-                achvId = achievementRepository.getAchvIdByDescription(type, 10 * n);
-                break;
-            case 100:
-                achvId = achievementRepository.getAchvIdByDescription(type, 100 * n);
-                break;
+    public void checkBookPatternAchievementsAndSendNotification(long userId, long bookId, String favOrRead) {
+        boolean addedAuthorAchv = achievementRepository.checkAchievementAuthor(userId, bookId, favOrRead);
+        if (addedAuthorAchv) {
+            UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+            // TODO Notification sending must be here.
         }
-
-        return achvId;
-    }
-    UserAchievement addAchievementToUser(long achvId, long userId ) {
-        if (achvId > 0){
-            boolean in = achievementRepository.checkAchvInUserAchv(userId, achvId);
-            if (!in){
-               // Thread notifThread = new Thread(() -> {
-               //     User tmpUser = userManager.getUserById(userId);
-               //     List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
-               //     List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
-               //     friends.addAll(subscribers);
-               //     friends.add(tmpUser);
-               //     notificationService.createAndSaveAchievNotif(userId, friends, achvId);
-               // });
-//
-               // notifThread.start();
-                achievementRepository.addAchievementForUser(achvId, userId);
-                return achievementRepository.getLastUserAchievement(userId);
-            }
+        boolean addedGenreAchv = achievementRepository.checkAchievementGenre(userId, bookId, favOrRead);
+        if (addedGenreAchv) {
+            UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+            // TODO Notification sending must be here.
         }
-        return null;
     }
 
     public boolean addAchievement(Achievement achievement) {
