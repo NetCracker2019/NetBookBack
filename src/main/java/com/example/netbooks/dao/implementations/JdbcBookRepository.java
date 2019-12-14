@@ -452,21 +452,6 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public void addBookBatchToFavourite(Long userId, List<Long> booksId) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("booksId", booksId);
-        namedParams.put("user_id", userId);
-        namedJdbcTemplate.update(env.getProperty("addBookBatchToFavourite"), namedParams);
-    }
-    @Override
-    public void addBookBatchToRead(Long userId, List<Long> booksId) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("booksId", booksId);
-        namedParams.put("user_id", userId);
-        namedJdbcTemplate.update(env.getProperty("addBookBatchToRead"), namedParams);
-    }
-
-    @Override
     public int countAddedBooksForUser(long userId) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("userId", userId);
@@ -474,14 +459,17 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public void addBookBatchToReading(Long userId, List<Long> booksId) {
+    public void addBookBatchTo(Long userId, Shelf shelf, List<Long> booksId) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
-
-        namedJdbcTemplate.update(env.getProperty("addBookBatchToReading"), namedParams);
-
+        if(Shelf.Reading.equals(shelf)){
+            namedJdbcTemplate.update(addBookBatchToReading, namedParams);
+        }else if(Shelf.Read.equals(shelf)){
+            namedJdbcTemplate.update(addBookBatchToRead, namedParams);
+        }else namedJdbcTemplate.update(addBookBatchToFavourite, namedParams);
     }
+
 //    @Override
 //    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
 //        Map<String, Object> namedParams = new HashMap<>();
@@ -503,13 +491,13 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public void removeBookBatchFrom(Long userId, String shelf, List<Long> booksId) {
+    public void removeBookBatchFrom(Long userId, Shelf shelf, List<Long> booksId) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
-        if(shelf.equals("reading")){
+        if(Shelf.Reading.equals(shelf)){
             namedJdbcTemplate.update(removeBookBatchFromReading, namedParams);
-        }else if(shelf.equals("read")){
+        }else if(Shelf.Read.equals(shelf)){
             namedJdbcTemplate.update(removeBookBatchFromRead, namedParams);
         }else {
             namedJdbcTemplate.update(removeBookBatchFromFavourite, namedParams);

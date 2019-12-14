@@ -51,11 +51,11 @@ public interface BookRepository {
 
     //void likeBook(long bookId);
     int countBooksForUser(long userId);
-    //void addBookBatchTo(Long userId, String shelf, List<Long> booksId);
+    void addBookBatchTo(Long userId, Shelf shelf, List<Long> booksId);
     List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, boolean read,
                                     boolean favourite, boolean reading, boolean notSet, String sortBy, String order);
     void removeBookBatch(long userId, List<Long> booksId);
-    void removeBookBatchFrom(Long userId, String shelf, List<Long> booksId);
+    void removeBookBatchFrom(Long userId, Shelf shelf, List<Long> booksId);
 
 
     int countAnnouncement(boolean approved);
@@ -68,8 +68,5 @@ public interface BookRepository {
     void dislikeBook(long bookId, long userId);
     int checkLickedBook(long bookId, long userId);
 
-    void addBookBatchToReading(Long userId,  List<Long> booksId);
-    void addBookBatchToFavourite(Long userId,  List<Long> booksId);
-    void addBookBatchToRead(Long userId,  List<Long> booksId);
     int countAddedBooksForUser(long userId);
 }

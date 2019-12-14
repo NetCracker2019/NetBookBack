@@ -3,20 +3,18 @@ package com.example.netbooks.dao.implementations;
 import com.example.netbooks.dao.interfaces.ChatRepository;
 import com.example.netbooks.dao.mappers.ChatMapper;
 import com.example.netbooks.dao.mappers.FriendMapper;
+import com.example.netbooks.dao.mappers.MessageMapper;
 import com.example.netbooks.models.Chat;
 import com.example.netbooks.models.Message;
 import com.example.netbooks.models.User;
-import com.example.netbooks.services.UserManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -28,13 +26,11 @@ import java.util.Map;
 public class ChatRepositoryImpl implements ChatRepository {
     private DataSource dataSource;
     private NamedParameterJdbcTemplate namedJdbcTemplate;
-    private UserManager userManager;
 
     @Autowired
     public ChatRepositoryImpl(NamedParameterJdbcTemplate namedJdbcTemplate,
-                              UserManager userManager, DataSource dataSource) {
+                              DataSource dataSource) {
         this.namedJdbcTemplate = namedJdbcTemplate;
-        this.userManager = userManager;
         this.dataSource = dataSource;
     }
 
@@ -71,21 +67,6 @@ public class ChatRepositoryImpl implements ChatRepository {
         namedParams.put("chat_name", chatName);
         namedParams.put("members", dataSource.getConnection().createArrayOf("text", members.toArray()));
         namedJdbcTemplate.queryForObject(createNewChat, namedParams, String.class);
-
-        //SimpleJdbcCall jdbcCall = new
-        //        SimpleJdbcCall(dataSource).withFunctionName("create_new_chat");
-        //SqlParameterSource in = new MapSqlParameterSource()
-        //        .addValue("chatname", chatName)
-        //        .addValue("members",
-        //                dataSource.getConnection().createArrayOf("text", members.toArray()));
-        //jdbcCall.execute(in);
-        //-------------------------------------------------------------------------------------------
-        ///CallableStatement stmt = dataSource.getConnection().prepareCall("select * from create_new_chat(?, ?)");
-        //stmt.setArray(2,
-        //        dataSource.getConnection().createArrayOf("text", members.toArray()));
-        //stmt.setString(1, chatName);
-        //stmt.execute();
-        //--------------------------------------------------------
     }
 
     @Override
@@ -96,16 +77,6 @@ public class ChatRepositoryImpl implements ChatRepository {
                 namedParams, new FriendMapper());
     }
 
-    private class MessageMapper implements RowMapper {
-        @Override
-        public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-            Message message = new Message();
-            message.setDateSend(resultSet.getDate("datetime_send"));
-            message.setFromName(resultSet.getString("login"));
-            message.setMessage(resultSet.getString("messege"));
-            return message;
-        }
-    }
     @Override
     public List<Message> getMessagesByChatId(Long chatId) {
         Map<String, Object> namedParams = new HashMap<>();
@@ -124,9 +95,14 @@ public class ChatRepositoryImpl implements ChatRepository {
     }
 
     @Override
-    public void updateChat(Long chatId, String editedChatName, List<String> addedMembers, List<String> removedMembers) throws SQLException {
+    public void updateChat(Long chatId, String editedChatName,
+                           List<String> addedMembers,
+                           List<String> removedMembers,
+                           String chatAvatar)
+            throws SQLException {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("chat_name", editedChatName);
+        namedParams.put("avatar_filepath", chatAvatar);
         namedParams.put("chat_id", chatId);
         namedParams.put("addedMembers", dataSource.getConnection()
                 .createArrayOf("text", addedMembers.toArray()));

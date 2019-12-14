@@ -16,5 +16,7 @@ public interface ChatRepository {
     void saveMessage(Message message);
     void createNewChat(String chatName, List<String> members) throws SQLException;
 
-    void updateChat(Long chatId, String editedChatName, List<String> addedMembers, List<String> removedMembers) throws SQLException;
+    void updateChat(Long chatId, String editedChatName, List<String> addedMembers,
+                    List<String> removedMembers, String chatAvatar)
+            throws SQLException;
 }
