@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,7 +16,7 @@ public class Message {
     @JsonProperty("message")
     private String message;
     @JsonProperty("dateTimeSend")
-    private Date dateSend;
+    private LocalDateTime dateSend;
     @JsonProperty("fromName")
     private String fromName;
     @JsonProperty("toId")

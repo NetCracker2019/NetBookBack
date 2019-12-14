@@ -1,6 +1,7 @@
 package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.AuthenticationController;
+import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.VerificationToken;
 
 import java.sql.ResultSet;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -80,8 +82,8 @@ public class VerificationTokenRepository implements com.example.netbooks.dao.int
             namedParams.put("token_name", token);
             return namedJdbcTemplate.queryForObject(findByVerificationToken, namedParams, new TokenMapper());
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Token not found - " + token);
-            return null;
+            logger.info("Token is broken or expired - " + token);
+            throw new CustomException("Link is broken or expired", HttpStatus.NOT_FOUND);
         }
     }
     @Override

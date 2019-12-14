@@ -60,9 +60,10 @@ public class ChatController {
     public void updateChat(@PathVariable("chatId") Long chatId,
                            @RequestBody List<String> removedMembers,
                            @RequestParam("addedMembers") List<String> addedMembers,
-                           @PathVariable("editedChatName") String editedChatName) throws SQLException {
+                           @PathVariable("editedChatName") String editedChatName,
+                           @RequestParam("chatAvatar") String chatAvatar) throws SQLException {
         if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return;
-        chatService.updateChat(chatId, editedChatName, addedMembers, removedMembers);
+        chatService.updateChat(chatId, editedChatName, addedMembers, removedMembers, chatAvatar);
     }
 
     private String getCurrentUserLogin(){
