@@ -7,5 +7,4 @@ public class Chat {
     private Long chatId;
     private String chatName;
     private String chatAvatar;
-
 }

@@ -41,10 +41,13 @@ public class ChatService {
         return chatRepository.getChatMembers(chatId);
     }
 
-    public void updateChat(Long chatId, String editedChatName, List<String> addedMembers, List<String> removedMembers) throws SQLException {
+    public void updateChat(Long chatId, String editedChatName,
+                           List<String> addedMembers,
+                           List<String> removedMembers,
+                           String chatAvatar) throws SQLException {
         addedMembers.add("");
         removedMembers.add("");
-        chatRepository.updateChat(chatId, editedChatName, addedMembers, removedMembers);
+        chatRepository.updateChat(chatId, editedChatName, addedMembers, removedMembers, chatAvatar);
     }
 
     public boolean isMemberOfChat(Long chatId, String login){

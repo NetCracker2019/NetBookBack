@@ -332,23 +332,21 @@ public class BookService {
                 sortBy, order);
     }
 
-    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
-        if("reading".equals(shelf)){
-            jdbcBookRepository.addBookBatchToReading(userId, booksId);
-        }else if("read".equals(shelf)){
-            jdbcBookRepository.addBookBatchToRead(userId, booksId);
+    public void addBookBatchTo(Long userId, Shelf shelf, List<Long> booksId) {
+        jdbcBookRepository.addBookBatchTo(userId, shelf, booksId);
+
+        if(Shelf.Read.equals(shelf)){
             for (long bookId: booksId){
                 achievementService.checkBookPatternAchievementsAndSendNotification(userId, bookId, "read");
             }
-        }else {
-            jdbcBookRepository.addBookBatchToFavourite(userId, booksId);
+        }else if(Shelf.Favourite.equals(shelf)){
             for (long bookId: booksId){
                 achievementService.checkBookPatternAchievementsAndSendNotification(userId, bookId, "fav");
             }
         }
     }
 
-    public void removeBookBatchFrom(long userId, String shelf, List<Long> booksId) {
+    public void removeBookBatchFrom(long userId, Shelf shelf, List<Long> booksId) {
         jdbcBookRepository.removeBookBatchFrom(userId, shelf, booksId);
     }
 

@@ -2,6 +2,7 @@ package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.dao.mappers.FriendMapper;
+import com.example.netbooks.dao.mappers.UserMapper;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.User;
 
@@ -30,31 +31,6 @@ import javax.sql.DataSource;
 public class UserRepository implements com.example.netbooks.dao.interfaces.UserRepository {
 	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	private final NamedParameterJdbcTemplate namedJdbcTemplate;
-
-    private static final class UserMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            User user = new User();
-
-            user.setUserId(resultSet.getLong("person_id"));
-            user.setLogin(resultSet.getString("login"));
-            user.setPassword(resultSet.getString("passw"));
-            user.setName(resultSet.getString("person_name"));
-            user.setEmail(resultSet.getString("mail"));
-            user.setAvatarFilePath(resultSet.getString("avatar_filepath"));
-            user.setSex(resultSet.getString("sex"));
-            user.setCountry(resultSet.getString("country"));
-            user.setCity(resultSet.getString("city"));
-            user.setStatus(resultSet.getString("description"));
-            user.setActivity(resultSet.getBoolean("activity"));
-            user.setTurnOnNotif(resultSet.getBoolean("turn_on_notif"));
-            user.setRegDate(resultSet.getDate("reg_date"));
-            user.setRoleInt(resultSet.getInt("role_id"));
-            user.setMinRefreshDate(resultSet.getDate("min_refresh_date"));
-            return user;
-        }
-    }
-
     @Autowired
     public UserRepository(DataSource dataSource) {
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -227,8 +203,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedParams.put("mail", email);
             return namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User not found - " + email);
-            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+            throw new CustomException("User with this email not found", HttpStatus.NOT_FOUND);
         }
     }
     @Override
@@ -406,8 +381,8 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        if(namedJdbcTemplate.queryForObject(
-                isSubscribe, namedParams, Integer.class) > 0) {
+        if(!Objects.equals(namedJdbcTemplate.queryForObject(
+                isSubscribe, namedParams, Integer.class), 0)) {
             namedJdbcTemplate.update(acceptFriendRequest, namedParams);
         }else
         namedJdbcTemplate.update(addFriend, namedParams);
@@ -417,11 +392,11 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        if(namedJdbcTemplate.queryForObject(
-                isFriend, namedParams, Integer.class) > 0){
+        if(!Objects.equals(namedJdbcTemplate.queryForObject(
+                isFriend, namedParams, Integer.class), 0)){
             return 1;
-        }else if(namedJdbcTemplate.queryForObject(
-                isSubscribe, namedParams, Integer.class) > 0){
+        }else if(!Objects.equals(namedJdbcTemplate.queryForObject(
+                isSubscribe, namedParams, Integer.class), 0)){
             return 0;
         } else return -1;
 
@@ -436,7 +411,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     public boolean checkPersonIsUser(long userId) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("userId", userId);
-        return namedJdbcTemplate.queryForObject(checkUserIsUser, namedParams, Boolean.class);
+        return Objects.equals(namedJdbcTemplate.queryForObject(checkUserIsUser, namedParams, Boolean.class), true);
     }
 }
 

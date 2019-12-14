@@ -14,7 +14,7 @@ public class ChatMapper implements RowMapper<Chat> {
         Chat chat = new Chat();
         chat.setChatName(resultSet.getString("chat_name"));
         chat.setChatId(resultSet.getLong("chat_id"));
-        //chat.setChatAvatar(resultSet.getString("avatar_filepath"));
+        chat.setChatAvatar(resultSet.getString("avatar_file_path"));
         return chat;
     }
 }

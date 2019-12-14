@@ -78,7 +78,8 @@ class AuthenticationControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
         this.mockMvc.perform(post("/user-service/recovery/password")
-                .param("email", "test47@mail"))
+                .contentType(MediaType.TEXT_PLAIN)
+                .content("test47@mail"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
@@ -87,7 +88,8 @@ class AuthenticationControllerTest {
 
         this.mockMvc.perform(put("/user-service/change/password")
                 .param("token", token)
-                .param("pass", "123456"))
+                .contentType(MediaType.TEXT_PLAIN)
+                .content("123456"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 

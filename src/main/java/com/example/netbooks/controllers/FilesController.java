@@ -48,8 +48,9 @@ public class FilesController {
                 .body(file);
     }
 
-    @DeleteMapping("/remove")
-    public void removeFile(@RequestParam(value = "filename") String filename){
+    @DeleteMapping("/remove/{filename}")
+    public void removeFile(@PathVariable("filename") String filename){
+        log.info("filename {}", filename);
         fileStorageService.deleteFile(filename);
     }
 }
