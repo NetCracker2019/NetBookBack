@@ -2,10 +2,6 @@ package com.example.netbooks.services;
 
 
 
-import com.example.netbooks.controllers.BookController;
-import com.example.netbooks.dao.implementations.*;
-
-
 import com.example.netbooks.dao.implementations.AchievementRepository;
 import com.example.netbooks.dao.implementations.JdbcBookRepository;
 import com.example.netbooks.dao.implementations.UserRepository;
@@ -16,6 +12,7 @@ import com.example.netbooks.dao.interfaces.ReviewRepository;
 import com.example.netbooks.models.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -103,13 +100,12 @@ public class BookService {
             genreRepository.addRowIntoBookGenre(book.getTitle(), book.getDescription(), book.getGenre());
             authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getDescription(), book.getAuthor());
 
-
-            int addedUserBook = jdbcBookRepository.countAddedBooksForUser(userId);
-            long achvId = achievementService.getAchvIdByParameters(addedUserBook, "book-achievement", 1);
-
-            UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
-            if (userAchievement != null) {
-                // TODO Notification sending must be here.
+            try{
+                UserAchievement userAchievement =
+                        achievementRepository.checkUserAchievement(userId, "addedBooks");
+                // TODO Send notif here
+            } catch (NullPointerException e){
+                e.getMessage();
             }
 
             response.put("status", "ok");
@@ -250,10 +246,10 @@ public class BookService {
 
 
     public boolean addReviewForUserBook(Review review) {
-        // review.setReviewText(review.getReviewText().trim());
         review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
+        review.setReviewText(review.getReviewText().trim().replaceAll(" +", " "));
         boolean result = reviewRepository.addReviewForUserBook(review);
-        if (!userRepository.checkUserIsUser(review.getUserId())) {
+        if (!userRepository.checkPersonIsUser(review.getUserId())) {
             approveReview(review.getReviewId(), review.getUserId());
         }
         return result;
@@ -263,40 +259,40 @@ public class BookService {
     public boolean addBookToProfile(String userName, long bookId) {
         long userId = userRepository.getUserIdByLogin(userName);
         boolean executionResult = jdbcBookRepository.addBookToProfile(userId, bookId);
-        int booksForUser = jdbcBookRepository.countBooksForUser(userId);
-        long achvId = achievementService.getAchvIdByParameters(booksForUser, "book", 10);
-
-        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
-        if (userAchievement != null) {
-            // TODO Notification sending must be here.
+        if (executionResult){
+            try{
+                UserAchievement userAchievement =
+                    achievementRepository.checkUserAchievement(userId, "bookInProfile");
+                // TODO Send notif here
+            } catch (NullPointerException e){
+                e.getMessage();
+            }
+            return true;
         }
-        return executionResult;
+        return false;
     }
 
 
     public boolean approveReview(long reviewId, long userId) {
         boolean executionResult = reviewRepository.approveReview(reviewId);
-        int reviewsForUser = reviewRepository.countReviewsForUser(userId);
-        System.out.println("User id for review approve"+reviewsForUser);
-        long achvId = achievementService.getAchvIdByParameters(reviewsForUser, "review", 1);
-        System.out.println("Achiv id for review approve"+achvId);
-        UserAchievement userAchievement = achievementService.addAchievementToUser(achvId, userId);
-        if (userAchievement != null) {
-            // TODO Notification sending must be here.
+        if (executionResult){
+            try{
+                UserAchievement userAchievement =
+                        achievementRepository.checkUserAchievement(userId, "review");
+                // TODO Send notif here
+            } catch (NullPointerException e){
+                e.getMessage();
+            }
+            return true;
         }
-        return executionResult;
+        return false;
+
     }
 
     public boolean cancelReview(long reviewId) {
         return reviewRepository.cancelReview(reviewId);
     }
 
-//    public void likeReview(long reviewId){
-//        reviewRepository.likeReview(reviewId);
-//    }
-//    public void likeBook(long bookId){
-//        jdbcBookRepository.likeBook(bookId);
-//    }
     public List<Review> getReviewsForApprove(int page, int itemPerPage){
         return reviewRepository.getReviewsForApprove(page, itemPerPage);
     }
@@ -341,31 +337,11 @@ public class BookService {
 
         if(Shelf.Read.equals(shelf)){
             for (long bookId: booksId){
-                boolean addedAuthorAchv = achievementRepository.check_achievement_author(userId, bookId, "read");
-                if (addedAuthorAchv){
-                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
-                    // TODO Notification sending must be here.
-                }
-                boolean addedGenreAchv = achievementRepository.check_achievement_genre(userId, bookId, "read");
-                if (addedGenreAchv){
-                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
-                    // TODO Notification sending must be here.
-                }
-
+                achievementService.checkBookPatternAchievementsAndSendNotification(userId, bookId, "read");
             }
         }else if(Shelf.Favourite.equals(shelf)){
             for (long bookId: booksId){
-                boolean addedAuthorAchv = achievementRepository.check_achievement_author(userId, bookId, "fav");
-                if (addedAuthorAchv){
-                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
-                    // TODO Notification sending must be here.
-                }
-                boolean addedGenreAchv = achievementRepository.check_achievement_genre(userId, bookId, "fav");
-                if (addedGenreAchv){
-                    UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
-                    // TODO Notification sending must be here.
-                }
-
+                achievementService.checkBookPatternAchievementsAndSendNotification(userId, bookId, "fav");
             }
         }
     }
@@ -387,7 +363,13 @@ public class BookService {
     }
     public int checkLikedBook(long bookId, String userLogin){
         long userId = userRepository.getUserIdByLogin(userLogin);
-        return jdbcBookRepository.checkLickedBook(bookId, userId);
+        try {
+            boolean liked = jdbcBookRepository.checkLickedBook(bookId, userId);
+            if (liked) return 1;
+            else return -1;
+        }catch (EmptyResultDataAccessException e){
+            return 0;
+        }
     }
     public int likeReview(long reviewId, String userLogin){
         long userId = userRepository.getUserIdByLogin(userLogin);
@@ -400,5 +382,8 @@ public class BookService {
     public int checkLikedReview(long reviewId, String userLogin){
         long userId = userRepository.getUserIdByLogin(userLogin);
         return reviewRepository.checkLikedReview(reviewId, userId);
+    }
+    public int countReviewsForBook(long bookId) {
+        return reviewRepository.countReviewsForBook(bookId);
     }
 }

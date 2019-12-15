@@ -40,9 +40,6 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public String addRowIntoBookAuthor(String title, String description, List<String> id) {
-
-
-
         for (String item : id) {
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
             namedParameters.addValue("title", title);
@@ -51,7 +48,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
             //boolean isThisAuthorExist = jdbcTemplate.queryForObject("select exists(select 1 from author where fullname='" + item + "')", Boolean.class);
             boolean isThisAuthorExist = namedJdbcTemplate.queryForObject(env.getProperty("isThisAuthorExist"), namedParameters, Boolean.class);
-            if (isThisAuthorExist == false) {
+            if (!isThisAuthorExist) {
                 //jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {item});
                 namedJdbcTemplate.update(env.getProperty("addAuthor"), namedParameters);
             }

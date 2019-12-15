@@ -389,7 +389,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         namedJdbcTemplate.update(deleteFriend, namedParams);
         log.info("Successful remove friend");
     }
-    public boolean checkUserIsUser(long userId) {
+    public boolean checkPersonIsUser(long userId) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("userId", userId);
         return Objects.equals(namedJdbcTemplate.queryForObject(checkUserIsUser, namedParams, Boolean.class), true);

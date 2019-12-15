@@ -2,9 +2,7 @@ package com.example.netbooks.controllers;
 
 
 import com.example.netbooks.models.Achievement;
-import com.example.netbooks.models.ViewBook;
 import com.example.netbooks.services.AchievementService;
-import com.example.netbooks.services.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +28,7 @@ public class AchievementController {
         return result;
     }
     @GetMapping("/achievements")
-    public List<Achievement> getAllAchievements() {
-        return  achievementService.getAllAchievements();
+    public List<Achievement> getAchievements(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return  achievementService.getAchievements(page, size);
     }
 }

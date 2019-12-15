@@ -52,7 +52,7 @@ public class JdbcBookRepository implements BookRepository {
     private final RowMapper<Event> eventMapper;
     private final RowMapper<Genre> genreNameMapper;
     private final RowMapper<Author> authorNameMapper;
-    private final RowMapper<Book> bookIdMapper;
+    private final BookIdRowMapper bookIdMapper;
 
     @Value("${getBookList}")
     private String getBookList;
@@ -95,7 +95,7 @@ public class JdbcBookRepository implements BookRepository {
                               RowMapper<Event> eventMapper,
                               RowMapper<Genre> genreNameMapper,
                               RowMapper<Author> authorNameMapper,
-                              RowMapper<Book> bookIdMapper) {
+                              BookIdRowMapper bookIdMapper) {
         log.info("Class initialized");
         this.namedJdbcTemplate = namedJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
@@ -528,7 +528,7 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     @Override
-    public int checkLickedBook(long bookId, long userId) {
+    public boolean checkLickedBook(long bookId, long userId) throws EmptyResultDataAccessException{
 //        SimpleJdbcCall jdbcCall = new
 //                SimpleJdbcCall(dataSource).withFunctionName("check_book_liked");
 //
@@ -539,13 +539,7 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("bookId", bookId);
         namedParams.put("userId", userId);
-        Boolean likedExist = namedJdbcTemplate.queryForObject(env.getProperty("checkExistsLikedBookForUser"), namedParams, Boolean.class);
-        if (!likedExist) {
-            return 0;
-        }
-        Boolean liked = namedJdbcTemplate.queryForObject(env.getProperty("checkLikedBook"), namedParams, Boolean.class);
-        if (liked) return 1;
-        else return -1;
+        return namedJdbcTemplate.queryForObject(env.getProperty("checkLikedBook"), namedParams, Boolean.class);
     }
 
     @Override
