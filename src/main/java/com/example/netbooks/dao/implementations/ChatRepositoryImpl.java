@@ -30,6 +30,7 @@ public class ChatRepositoryImpl implements ChatRepository {
     @Autowired
     public ChatRepositoryImpl(NamedParameterJdbcTemplate namedJdbcTemplate,
                               DataSource dataSource) {
+        log.info("Class initialized");
         this.namedJdbcTemplate = namedJdbcTemplate;
         this.dataSource = dataSource;
     }
@@ -56,17 +57,19 @@ public class ChatRepositoryImpl implements ChatRepository {
     private String updateChat;
 
     @Override
-    public List<Chat> getChatsByUserId(Long userId) {
+    public List<Chat> getChatsByUserId(Long userId){
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("user_id", userId);
         return namedJdbcTemplate.query(getChatsByUserId, namedParams, new ChatMapper());
     }
     @Override
     public void createNewChat(String chatName, List<String> members) throws SQLException {
+        log.info("Create new chat [{}]", chatName);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("chat_name", chatName);
         namedParams.put("members", dataSource.getConnection().createArrayOf("text", members.toArray()));
         namedJdbcTemplate.queryForObject(createNewChat, namedParams, String.class);
+        log.info("Successful create new chat");
     }
 
     @Override
@@ -100,6 +103,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                            List<String> removedMembers,
                            String chatAvatar)
             throws SQLException {
+        log.info("Update chat id[{}]", chatId);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("chat_name", editedChatName);
         namedParams.put("avatar_filepath", chatAvatar);
@@ -109,6 +113,7 @@ public class ChatRepositoryImpl implements ChatRepository {
         namedParams.put("removedMembers", dataSource.getConnection()
                 .createArrayOf("text", removedMembers.toArray()));
         namedJdbcTemplate.queryForObject(updateChat, namedParams, String.class);
+        log.info("Successful update chat");
     }
 
 }

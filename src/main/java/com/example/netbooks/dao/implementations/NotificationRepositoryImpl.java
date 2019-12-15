@@ -38,18 +38,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     private final RowMapper notificationMapper = new NotificationMapper();
     private final RowMapper viewNotificationMapper = new ViewNotificationMapper();
 
-    /*@Override
-    public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("id", findByLogin(login).getUserId());
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntFriends);
-            return namedJdbcTemplate.query(getFriendsByLogin, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
-        }
-    }*/
     @Override
     public List<Notification> getAllViewNotificationsByUserId(long userId ,int cntNotifForView,int offset) {
         try {
@@ -59,11 +47,28 @@ public class NotificationRepositoryImpl implements NotificationRepository {
             namedParams.put("offset",offset);
             namedParams.put("cnt",cntNotifForView);
             return namedParameterJdbcTemplate.query(environment.getProperty("getAllViewNotificationsByUserId"), namedParams, viewNotificationMapper);
+
+        } catch (EmptyResultDataAccessException e){
+            throw new CustomException("Notifications not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId ,int cntNotifForView,int offset) {
+        try {
+
+            Map<String,Object>namedParams=new HashMap<>();
+            namedParams.put("user_id",userId);
+            namedParams.put("offset",offset);
+            namedParams.put("cnt",cntNotifForView);
+            return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParams, viewNotificationMapper);
+
         } catch (EmptyResultDataAccessException e){
             throw new CustomException("Notifications not found", HttpStatus.NOT_FOUND);
         }
 
     }
+
 
     @Override
     public List<Notification> getAllNotificationsByUserId(long userId) {
@@ -71,18 +76,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         return namedParameterJdbcTemplate.query(environment.getProperty("getAllNotificationsByUserId"), namedParameters, notificationMapper);
     }
 
-    @Override
-    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
-        return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParameters, notificationMapper);
-    }
-
-    @Override
-    public List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
-        namedParameters.addValue("notif_type_id", typeId);
-        return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParameters, notificationMapper);
-    }
 
     @Override
     public void addNotification(Notification notification) {

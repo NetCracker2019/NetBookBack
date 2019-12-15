@@ -27,40 +27,23 @@ public class NotificationController {
     @Autowired
     private UserManager userManager;
 
-   // @GetMapping("/")
-  // public ResponseEntity<?> getNotificationsForUser() {
-  //     log.debug("Getting notification for user in {}: ", this.getClass().getName());
-  //     String username=((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-
-// <<<<<<< HEAD
-//         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
-// =======
- //       return ResponseEntity.ok(notificationService.getAllNotificationsByUserId(userManager.getUserByLogin(username).getUserId()));
-//
- //   }
-
-//    @GetMapping("/user/{type}")
-//    public ResponseEntity<?> getNotificationsForUserByType(@PathVariable long type) {
-//        log.debug("Getting notification for user in {}: ", this.getClass().getName());
-//        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
-//                .getContext().getAuthentication()
-//                .getPrincipal()).getUsername());
-//        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
-//    }
-
-/*@GetMapping("/{login}")
-    public List<User> getUser(@PathVariable("login") String login,
-            @RequestParam("sought") String sought, @RequestParam("where") String where,
-            @RequestParam("cnt") int cntPersons, @RequestParam("offset") int offset)*/
-
-    @GetMapping()
+    @GetMapping("/all")
     public List<Notification> getNotificationsForUser(@RequestParam("cnt")int cnt, @RequestParam("offset")int offset) {
         log.debug("Getting notification for user in {}: ", this.getClass().getName());
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
         return notificationService.getAllViewNotificationsByUserId(id, cnt, offset);
-    }//
+    }
+
+    @GetMapping("/unread-only")
+    public List<Notification> getAllUnreadViewNotificationsByUserId(@RequestParam("cnt")int cnt, @RequestParam("offset")int offset) {
+        log.debug("Getting notification for user in {}: ", this.getClass().getName());
+        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        return notificationService.getAllUnreadViewNotificationsByUserId(id, cnt, offset);
+    }
 
     @GetMapping("/count")
     public ResponseEntity<?> getNotifCount() {
@@ -86,9 +69,6 @@ public class NotificationController {
         log.debug("Mark notification as read by notifId ");
         notificationService.markNotifAsReadByNotifId(notification);
     }
-
-
-
 
     @DeleteMapping("/delete-all")
     public void deleteAllNotificationsByUserId(){
