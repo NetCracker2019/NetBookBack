@@ -225,8 +225,8 @@ public class UserManager {
     public void confirmUserAccount(String verificationToken) {
         VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
         userRepository.activateUser(token.getUserId());
+        log.info("confirmUserAccount for {}", token.getUserId());
         verificationTokenManager.removeVerificationToken(verificationToken);
-        // TODO del addled tokens
     }
 
     public void requestFroRecoveryPass(String email) {
@@ -243,10 +243,10 @@ public class UserManager {
     public void recoveryPass(String verificationToken, String newPassword) {
         VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
         User user = userRepository.findByUserId(token.getUserId());
+        log.info("Change pass for {}", user.getLogin());
         user.setPassword(newPassword);
         user.setMinRefreshDate(null);
         userRepository.updateUser(user);
         verificationTokenManager.removeVerificationToken(verificationToken);
-        // TODO del addled tokens
 	}
 }

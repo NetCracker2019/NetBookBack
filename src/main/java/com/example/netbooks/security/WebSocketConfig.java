@@ -54,9 +54,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     return null;
 
                 String authToken = accessor.getFirstNativeHeader("Authorization");
-                jwtProvider.validateToken(authToken);
-                accessor.setLogin(jwtProvider.getUsername(authToken));
-                checkAccess(accessor);
+                if(!StompCommand.DISCONNECT.equals(accessor.getCommand())){
+                    jwtProvider.validateToken(authToken);
+                    accessor.setLogin(jwtProvider.getUsername(authToken));
+                    checkAccess(accessor);
+                }
                 return message;
             }
         });
@@ -68,7 +70,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         if(dest != null) {
             String chatId = dest.substring(1 + dest.lastIndexOf('/'));
             if (!chatService.isMemberOfChat(Long.parseLong(chatId), accessor.getLogin())) {
-                throw new CustomException("Access denied", HttpStatus.FORBIDDEN);
+                throw new CustomException("Access for chat [" + chatId + "] subscribe denied for " + accessor.getLogin(),
+                        HttpStatus.FORBIDDEN);
             }
         }
     }

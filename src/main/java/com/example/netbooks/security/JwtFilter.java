@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.netbooks.exceptions.TokenValidationException;
 import com.example.netbooks.models.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication auth = jwtProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } catch (CustomException ex) {
-            log.debug("next layer {}", ex.getMessage());
+        } catch (TokenValidationException ex) {
             SecurityContextHolder.clearContext();
             HttpServletResponse response = (HttpServletResponse) httpServletResponse;
             //response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");

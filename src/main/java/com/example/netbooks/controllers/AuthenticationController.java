@@ -7,6 +7,7 @@ import com.example.netbooks.models.VerificationToken;
 import com.example.netbooks.security.JwtProvider;
 import com.example.netbooks.services.EmailSender;
 import com.example.netbooks.services.UserManager;
+import com.example.netbooks.services.ValidationService;
 import com.example.netbooks.services.VerificationTokenManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,20 +37,24 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
     private JwtProvider jwtProvider;
     private VerificationTokenManager verificationTokenManager;
+    private ValidationService validationService;
 
     @Autowired
     public AuthenticationController(UserManager userManager,
-            EmailSender emailSender,
-            PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager,
-            JwtProvider jwtProvider,
-            VerificationTokenManager verificationTokenManager) {
+                                    EmailSender emailSender,
+                                    PasswordEncoder passwordEncoder,
+                                    AuthenticationManager authenticationManager,
+                                    JwtProvider jwtProvider,
+                                    VerificationTokenManager verificationTokenManager,
+                                    ValidationService validationService) {
+        log.info("Class initialized");
         this.userManager = userManager;
         this.emailSender = emailSender;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
         this.verificationTokenManager = verificationTokenManager;
+        this.validationService = validationService;
     }
 
     @GetMapping("/get-id-name")
@@ -59,23 +64,27 @@ public class AuthenticationController {
 
     @PutMapping("/interrupt-sessions/{login}")
     public void interrupt(@PathVariable("login") String login) {
+        log.info("PUT /interrupt-sessions/{}", login);
         userManager.setMinRefreshDate(login, null);
     }
 
     @PostMapping("/register/user")
     public void register(@RequestBody User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("POST /register/user [{}, {}]", user.getLogin(), user.getEmail());
+        user.setPassword(passwordEncoder.encode(validationService.passwordValidation(user.getPassword())));
         user.setRole(Role.ROLE_CLIENT);
-        userManager.register(user);
+        userManager.register(validationService.userValidation(user));
     }
 
     @PutMapping("/verification/user")
     public void confirmUserAccount(@RequestParam("token") String verificationToken) {
+        log.info("PUT /verification/user");
         userManager.confirmUserAccount(verificationToken);
     }
 
     @PostMapping("/signin")
     public ResponseEntity<Map> signin(@RequestBody User user) {
+        log.info("POST /signin [{}]", user.getLogin());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
         String role = userManager.getUserRole(user.getLogin());
@@ -168,12 +177,15 @@ public class AuthenticationController {
     //request for recovery password
     @PostMapping("/recovery/password")
     public void requestFroRecoveryPass(@RequestBody String email) {
-        userManager.requestFroRecoveryPass(email);
+        log.info("POST /recovery/password for {}", email);
+        userManager.requestFroRecoveryPass(validationService.emailValidation(email));
     }
 
     @PutMapping("/change/password")
     public void recoveryPass(@RequestParam("token") String verificationToken,
-                                            @RequestBody String newPass) {
-        userManager.recoveryPass(verificationToken, passwordEncoder.encode(newPass));
+                             @RequestBody String newPass) {
+        log.info("PUT /change/password");
+        userManager.recoveryPass(verificationToken, passwordEncoder.encode(
+                validationService.passwordValidation(newPass)));
     }
 }

@@ -56,7 +56,7 @@ class AuthenticationControllerTest {
                         "  \"username\" : \"test47\",\n" +
                         "  \"email\" : \"test47@mail\",\n" +
                         "  \"name\" : \"test47\",\n" +
-                        "  \"password\" : \"12345\"\n" +
+                        "  \"password\" : \"123456\"\n" +
                         "}"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
@@ -72,7 +72,7 @@ class AuthenticationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"username\" : \"test47\",\n" +
-                        "  \"password\" : \"12345\"\n" +
+                        "  \"password\" : \"123456\"\n" +
                         "}"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
@@ -89,7 +89,7 @@ class AuthenticationControllerTest {
         this.mockMvc.perform(put("/user-service/change/password")
                 .param("token", token)
                 .contentType(MediaType.TEXT_PLAIN)
-                .content("123456"))
+                .content("1234567"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
@@ -97,7 +97,7 @@ class AuthenticationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"username\" : \"test47\",\n" +
-                        "  \"password\" : \"123456\"\n" +
+                        "  \"password\" : \"1234567\"\n" +
                         "}"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
