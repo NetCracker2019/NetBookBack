@@ -39,16 +39,8 @@ public class NotificationService {
         return notifList;
     }
 
-    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId) {
-        List<Notification> notifList = notificationRepository.getAllUnreadViewNotificationsByUserId(userId);
-        for (Notification notif : notifList) {
-            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
-        }
-        return notifList;
-    }
-
-    public List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long notif_type_id) {
-        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserIdAndTypeId(userId, notif_type_id);
+    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId,int cntNotifsForView,int offset) {
+        List<Notification> notifList = notificationRepository.getAllUnreadViewNotificationsByUserId(userId,cntNotifsForView,offset);
         for (Notification notif : notifList) {
             notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
         }
