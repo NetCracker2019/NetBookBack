@@ -1,11 +1,9 @@
 package com.example.netbooks.controllers;
 
 import com.example.netbooks.exceptions.CustomException;
+import com.example.netbooks.exceptions.UserNotFoundException;
 import com.example.netbooks.models.*;
-import com.example.netbooks.services.BookService;
-import com.example.netbooks.services.FileStorageService;
-import com.example.netbooks.services.NotificationService;
-import com.example.netbooks.services.UserManager;
+import com.example.netbooks.services.*;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.netbooks.services.NotificationEnum.ADD_FRIEND_NOTIF;
@@ -28,39 +27,47 @@ public class ProfileController {
     private BookService bookService;
     private NotificationService notificationService;
     private PasswordEncoder passwordEncoder;
+    private ValidationService validationService;
     @Autowired
     public ProfileController(UserManager userManager, BookService bookService,
                              NotificationService notificationService,
-                             PasswordEncoder passwordEncoder) {
+                             PasswordEncoder passwordEncoder,
+                             ValidationService validationService) {
+        log.info("Class initialized");
         this.userManager = userManager;
         this.bookService = bookService;
         this.notificationService = notificationService;
         this.passwordEncoder = passwordEncoder;
+        this.validationService = validationService;
     }
     @GetMapping("/{login}")
     public User getUser(@PathVariable("login")String login){
+        log.info("GET /{}", login);
         User user = userManager.getUserByLogin(login);
         //block if its admin but not you
-        log.info("dd {}",user.getRole().equals(Role.ROLE_CLIENT));
         if(!user.getRole().equals(Role.ROLE_CLIENT) &&
                 getCurrentUserRole().equals(Role.ROLE_CLIENT)){
-            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+            log.info("Cannot get access to view {} profile from {}", getCurrentUserLogin(), login);
+            throw new UserNotFoundException("User not found");
         }
         return user;
     }
 
     @GetMapping("/{login}/get-achievement")
     public List<Achievement> getAchievements(@PathVariable("login")String login){
-        log.info("fd {}", userManager.getAchievementByLogin(login));
         return userManager.getAchievementByLogin(login);
     }
 
     @PutMapping("/{login}/edit")
     public void editUser(@PathVariable("login")String login,
                          @RequestBody User user){
+        log.info("PUT /{}/edit", login);
         if(!login.equals(getCurrentUserLogin()) && Integer.parseInt(userManager.getUserRole(login)) - 1
-                <= getCurrentUserRole().ordinal()) return;
-        userManager.updateUser(compareAndReplace(user));
+                <= getCurrentUserRole().ordinal()) {
+            log.info("Cannot get access to edit {} profile from {}", getCurrentUserLogin(), login);
+            return;
+        }
+        userManager.updateUser(compareAndReplace(validationService.userValidation(user)));
     }
 
     @GetMapping("/{login}/friends")
@@ -101,6 +108,7 @@ public class ProfileController {
     }
     @PostMapping("/add-friend/{friendLogin}")
     public void addFriend(@PathVariable("friendLogin") String friendLogin) {
+        log.info("POST /add-friend/{} by {}", friendLogin, getCurrentUserLogin());
         String ownLogin = getCurrentUserLogin();
         if(!userManager.getUserRole(friendLogin).equals("4")) return;
         userManager.addFriend(ownLogin, friendLogin);
@@ -127,6 +135,7 @@ public class ProfileController {
     }
     @DeleteMapping("/delete-friend/{friendLogin}")
     public void deleteFriend(@PathVariable("friendLogin") String friendLogin){
+        log.info("DELETE /delete-friend/{} by {}", friendLogin, getCurrentUserLogin());
         userManager.deleteFriend(getCurrentUserLogin(), friendLogin);
     }
     @GetMapping("/{login}/book-list")
@@ -147,17 +156,20 @@ public class ProfileController {
     @PutMapping("/{shelf}/add-books")
     public void addBookBatchTo(@PathVariable("shelf")int shelf,
                                @RequestBody List<Long> booksId){
+        log.info("PUT /{}/add-books/ by {}", Shelf.values()[shelf], getCurrentUserLogin());
         bookService.addBookBatchTo(
                 userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), Shelf.values()[shelf], booksId);
     }
     @PutMapping("/{shelf}/remove-books")
     public void removeBookBatchFrom(@PathVariable("shelf")int shelf,
                                     @RequestBody List<Long> booksId){
+        log.info("PUT /{}/remove-books/ by {}", Shelf.values()[shelf], getCurrentUserLogin());
         bookService.removeBookBatchFrom(userManager.getUserByLogin(getCurrentUserLogin()).
                 getUserId(), Shelf.values()[shelf], booksId);
     }
     @DeleteMapping("/remove-books")
     public void removeBookBatch(@RequestParam("booksid") List<Long> booksId){
+        log.info("DELETE /remove-books by {}", getCurrentUserLogin());
         bookService.removeBookBatch(userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), booksId);
     }
     private User compareAndReplace(User user){

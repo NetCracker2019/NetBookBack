@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import com.example.netbooks.exceptions.TokenValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,8 +100,8 @@ public class JwtProvider {
             }
             return true;
         } catch (Exception e) {
-            log.info("valid error ");
-            throw new CustomException("Expired or invalid JWT token", HttpStatus.UNAUTHORIZED);
+            log.warn("Validation token error ");
+            throw new TokenValidationException("Expired or invalid JWT token", HttpStatus.UNAUTHORIZED);
         }
     }
 

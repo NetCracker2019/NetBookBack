@@ -1,6 +1,8 @@
 package com.example.netbooks.controllers;
 
 import com.example.netbooks.exceptions.CustomException;
+import com.example.netbooks.exceptions.DownloadFileException;
+import com.example.netbooks.exceptions.UploadFileException;
 import com.example.netbooks.services.FileStorageService;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,21 +31,20 @@ public class FilesController {
 
     @Autowired
     public FilesController(FileStorageService fileStorageService) {
+        log.info("Class initialized");
         this.fileStorageService = fileStorageService;
     }
 
     @PostMapping("/upload")
     public void uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String name){
-        try{
-            fileStorageService.saveFile(file, name);
-        }catch (Exception e){
-            throw new CustomException("FAIL to upload", HttpStatus.EXPECTATION_FAILED);
-        }
+        log.info("POST /upload/{} by {}", name, getCurrentUserLogin());
+        fileStorageService.saveFile(file, name);
     }
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> getFile(@RequestParam(value = "filename")
+    public ResponseEntity<Resource> getFile(@RequestParam("filename")
                                                     String filename){
+        if("null".equals(filename) || "undefined".equals(filename)) return null;
         Resource file = fileStorageService.loadFile(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
@@ -50,7 +53,11 @@ public class FilesController {
 
     @DeleteMapping("/remove/{filename}")
     public void removeFile(@PathVariable("filename") String filename){
-        log.info("filename {}", filename);
+        log.info("GELETE /remove/{} by {}", filename, getCurrentUserLogin());
         fileStorageService.deleteFile(filename);
+    }
+    private String getCurrentUserLogin(){
+        return ((UserDetails) SecurityContextHolder.getContext().
+                getAuthentication().getPrincipal()).getUsername();
     }
 }

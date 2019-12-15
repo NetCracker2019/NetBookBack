@@ -1,5 +1,8 @@
 package com.example.netbooks.services;
 
+import com.example.netbooks.exceptions.DownloadFileException;
+import com.example.netbooks.exceptions.UploadFileException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -16,11 +19,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
+@Slf4j
 public class FileStorageService {
     private final Path rootLocation = Paths.get("files");
 
-    public void saveFile(MultipartFile file, String name) throws IOException {
-        Files.copy(file.getInputStream(), this.rootLocation.resolve(name));
+    public void saveFile(MultipartFile file, String name) {
+        try{
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(name));
+            log.info("Successful upload file");
+        }catch (Exception e){
+            throw new UploadFileException("Fail to upload image - " + name);
+        }
     }
 
     public void copyFile(String name, String newName) throws IOException {
@@ -30,7 +39,12 @@ public class FileStorageService {
     }
 
     public void deleteFile(String filename) {
-        FileSystemUtils.deleteRecursively(rootLocation.resolve(filename).toFile());
+        try{
+            FileSystemUtils.deleteRecursively(rootLocation.resolve(filename).toFile());
+            log.info("Successful remove image");
+        }catch (Exception e){
+            throw new DownloadFileException("Fail to remove image - " + filename);
+        }
     }
 
     public Resource loadFile(String filename) {
@@ -40,10 +54,10 @@ public class FileStorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new RuntimeException("fail load file " + filename);
+                throw new DownloadFileException("Fail to download image - " + filename);
             }
         } catch (MalformedURLException e) {
-            throw new RuntimeException("fail load file " + filename);
+            throw new DownloadFileException("[MalformedURLException] Fail to download image" + filename);
         }
     }
 }

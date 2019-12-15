@@ -5,6 +5,7 @@ import com.example.netbooks.dao.interfaces.BookRepository;
 import com.example.netbooks.dao.mappers.*;
 
 import com.example.netbooks.models.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,14 +39,13 @@ import java.util.*;
 
 @PropertySource("classpath:queries/book.properties")
 @Repository
+@Slf4j
 public class JdbcBookRepository implements BookRepository {
 
     private DataSource dataSource;
     private final Environment env;
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
-
-    private final Logger logger = LogManager.getLogger(ProfileController.class);
 
     private final RowMapper<ViewAnnouncement> viewAnnouncementMapper;
     private final RowMapper<ViewBook> viewBooksMapper;
@@ -96,6 +96,7 @@ public class JdbcBookRepository implements BookRepository {
                               RowMapper<Genre> genreNameMapper,
                               RowMapper<Author> authorNameMapper,
                               RowMapper<Book> bookIdMapper) {
+        log.info("Class initialized");
         this.namedJdbcTemplate = namedJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
         this.env = env;
@@ -132,7 +133,7 @@ public class JdbcBookRepository implements BookRepository {
     public List<ViewBook> getPeaceAnnouncement(int page, int booksPerPage) {
         int startIndex = booksPerPage * (page - 1);
 //        int amount = startIndex + booksPerPage;
-        logger.info(jdbcTemplate.query("SELECT book_id, title, authors, likes, image_path, release_date, lang, pages, genres, description FROM view_book_list WHERE approved = true AND release_date >= now() ORDER BY book_id LIMIT " + booksPerPage + " OFFSET " + startIndex, viewBooksMapper));
+        log.info("res - {}", jdbcTemplate.query("SELECT book_id, title, authors, likes, image_path, release_date, lang, pages, genres, description FROM view_book_list WHERE approved = true AND release_date >= now() ORDER BY book_id LIMIT " + booksPerPage + " OFFSET " + startIndex, viewBooksMapper));
         return jdbcTemplate.query("SELECT book_id, title, description, image_path, release_date, pages, genres, authors, likes, lang FROM view_book_list WHERE approved = true AND release_date >= now() ORDER BY book_id LIMIT " + booksPerPage + " OFFSET " + startIndex, viewBooksMapper);
     }
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,19 +223,19 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<Event> getCalendarAllAnnouncement() {
-        logger.info(namedJdbcTemplate.query(env.getProperty("getCalendarAllAnnouncement"),eventMapper));
+        log.info("res {}", namedJdbcTemplate.query(env.getProperty("getCalendarAllAnnouncement"),eventMapper));
         return namedJdbcTemplate.query(env.getProperty("getCalendarAllAnnouncement"),eventMapper);
     }
 
     @Override
     public List<Event> getCalendarPersonalizeAnnouncement(int userId) {
-        logger.info(userId);
+        log.info("user id = {}", userId);
 
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("value", userId);
 /////
         List<Book> favouriteGenreAndAuthorBooksId = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenreAndAuthor"),namedParameters, bookIdMapper);
-        logger.info("New feature request = " + favouriteGenreAndAuthorBooksId);
+        log.info("New feature request = " + favouriteGenreAndAuthorBooksId);
 /////
 //        List<Genre> favouriteGenre = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteGenre"),namedParameters,genreNameMapper);
 //        List<Author> favouriteAuthor = namedJdbcTemplate.query(env.getProperty("getUsersFavouriteAuthor"),namedParameters,authorNameMapper);
@@ -271,7 +272,7 @@ public class JdbcBookRepository implements BookRepository {
             result.addAll(namedJdbcTemplate.query(env.getProperty("getPersonilizeAnnouncementNew"), namedParameters, eventMapper));
         }
 
-        logger.info("Test of person book = " + result);
+        log.info("Test of person book = {}", result);
 
         return result;
     }
@@ -460,6 +461,7 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public void addBookBatchTo(Long userId, Shelf shelf, List<Long> booksId) {
+        log.info("Adding book batch to {} by id[{}]", shelf, userId);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
@@ -468,21 +470,9 @@ public class JdbcBookRepository implements BookRepository {
         }else if(Shelf.Read.equals(shelf)){
             namedJdbcTemplate.update(addBookBatchToRead, namedParams);
         }else namedJdbcTemplate.update(addBookBatchToFavourite, namedParams);
+        log.info("Successful adding books");
     }
 
-//    @Override
-//    public void addBookBatchTo(Long userId, String shelf, List<Long> booksId) {
-//        Map<String, Object> namedParams = new HashMap<>();
-//        namedParams.put("booksId", booksId);
-//        namedParams.put("user_id", userId);
-//        if(shelf.equals("reading")){
-//            namedJdbcTemplate.update(env.getProperty("addBookBatchToReading"), namedParams);
-//        }else if(shelf.equals("read")){
-//            namedJdbcTemplate.update(env.getProperty("addBookBatchToRead"), namedParams);
-//        }else {
-//            namedJdbcTemplate.update(env.getProperty("addBookBatchToFavourite"), namedParams);
-//        }
-//    }
 
     public List<ViewBook> getSuggestions(long userId) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
@@ -492,6 +482,7 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public void removeBookBatchFrom(Long userId, Shelf shelf, List<Long> booksId) {
+        log.info("Remove book batch from {} by id[{}]", shelf, userId);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
@@ -502,13 +493,16 @@ public class JdbcBookRepository implements BookRepository {
         }else {
             namedJdbcTemplate.update(removeBookBatchFromFavourite, namedParams);
         }
+        log.info("Successful remove books");
     }
     @Override
     public void removeBookBatch(long userId, List<Long> booksId) {
+        log.info("Сompletely remove book batch by id[{}]", userId);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
         namedJdbcTemplate.update(removeBookBatch, namedParams);
+        log.info("Successful remove books");
     }
     @Override
     public void likeBook(long bookId, long userId) {

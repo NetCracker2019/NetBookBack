@@ -4,12 +4,16 @@ import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.dao.mappers.FriendMapper;
 import com.example.netbooks.dao.mappers.UserMapper;
 import com.example.netbooks.exceptions.CustomException;
+import com.example.netbooks.exceptions.EmailNotFountException;
+import com.example.netbooks.exceptions.UserNotFoundException;
 import com.example.netbooks.models.User;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +32,12 @@ import javax.sql.DataSource;
 
 @PropertySource("classpath:queries/user.properties")
 @Repository
+@Slf4j
 public class UserRepository implements com.example.netbooks.dao.interfaces.UserRepository {
-	private final Logger logger = LogManager.getLogger(AuthenticationController.class);
 	private final NamedParameterJdbcTemplate namedJdbcTemplate;
     @Autowired
     public UserRepository(DataSource dataSource) {
+        log.info("Class initialized");
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -122,6 +127,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
 
     @Override
     public void save(User user) {
+        log.info("Save new user [{}]", user.getLogin());
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
         namedParams.put("passw", user.getPassword());
@@ -137,11 +143,12 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         namedParams.put("reg_date", user.getRegDate());
         namedParams.put("role_id", user.getRole().ordinal() + 1);
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
-
         namedJdbcTemplate.update(saveUser, namedParams);
+        log.info("Successful save new user");
     }
     @Override
     public void updateUser(User user) {
+        log.info("Update user [{}]", user.getLogin());
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
         namedParams.put("passw", user.getPassword());
@@ -157,11 +164,12 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         namedParams.put("reg_date", user.getRegDate());
         namedParams.put("role_id", user.getRole().ordinal() + 1);
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
-
         namedJdbcTemplate.update(updateUser, namedParams);
+        log.info("Successful update user");
     }
     @Override
     public void updateUserById(User user, Long id) {
+        log.info("Update user by id [{}]", user.getUserId());
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("login", user.getLogin());
         namedParams.put("passw", user.getPassword());
@@ -178,8 +186,8 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         namedParams.put("role_id", user.getRole().ordinal() + 1);
         namedParams.put("min_refresh_date",  user.getMinRefreshDate());
         namedParams.put("person_id", id);
-
         namedJdbcTemplate.update(updateUserById, namedParams);
+        log.info("Successful update user");
     }
     @Override
     public Iterable<User> getAllUsers() {
@@ -203,7 +211,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedParams.put("mail", email);
             return namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("User with this email not found", HttpStatus.NOT_FOUND);
+            throw new EmailNotFountException("User with this email not found");
         }
     }
     @Override
@@ -213,8 +221,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedParams.put("login", login);
             return namedJdbcTemplate.queryForObject(findByLogin, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User not found - " + login);
-            throw new CustomException("User not found ", HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException("User [" + login + "] not found ");
         }
     }
     @Override
@@ -224,8 +231,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedParams.put("person_id", id);
             return namedJdbcTemplate.queryForObject(findByUserId, namedParams, new UserMapper());
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User not found - " + id);
-            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException("User id[" + id + "] not found ");
         }
     }
     @Override
@@ -236,7 +242,6 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedJdbcTemplate.queryForObject(findByLogin, namedParams, new UserMapper());
             return true;
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User not found by login - " + login);
             return false;
         }
     }
@@ -248,7 +253,6 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedJdbcTemplate.queryForObject(findUserByEmail, namedParams, new UserMapper());
             return true;
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User not found by mail - " + mail);
             return false;
         }
     }
@@ -260,18 +264,23 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     }
     @Override
     public void activateUser(Long id) {
+        log.info("Activate user - id[{}]", id);
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(activateUser, namedParams);
+        log.info("Successful activate user");
     }
     @Override
     public void deActivateUser(Long id) {
+        log.info("Deactivate user - id[{}]", id);
     	Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("person_id", id);
         namedJdbcTemplate.update(deActivateUser, namedParams);
+        log.info("Successful deactivate user");
     }
     @Override
 	public void setMinRefreshDate(String login, Date date) {
+        log.info("Set min refresh date for user - {}", login);
 		Map<String, Object> namedParams = new HashMap<>();
 		namedParams.put("min_refresh_date", date);
 		namedParams.put("login", login);
@@ -279,74 +288,50 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
 	}
     @Override
     public List<User> getFriendsByLogin(String login, int cntFriends, int offset) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("id", findByLogin(login).getUserId());
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntFriends);
-            return namedJdbcTemplate.query(getFriendsByLogin, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("id", findByLogin(login).getUserId());
+        namedParams.put("offset", offset);
+        namedParams.put("cnt", cntFriends);
+        return namedJdbcTemplate.query(getFriendsByLogin, namedParams, new FriendMapper());
     }
     public List<User> getFriendsByUsername(String login) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("id", findByLogin(login).getUserId());
-            return namedJdbcTemplate.query(getFriendsByUsername, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("id", findByLogin(login).getUserId());
+        return namedJdbcTemplate.query(getFriendsByUsername, namedParams, new FriendMapper());
     }
 
     public List<User> getSubscribersByLogin(String login) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("id", findByLogin(login).getUserId());
-            return namedJdbcTemplate.query(getSubscribersByLogin, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Friends not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("id", findByLogin(login).getUserId());
+        return namedJdbcTemplate.query(getSubscribersByLogin, namedParams, new FriendMapper());
     }
 
 
     public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("sought", "%" + sought + "%");
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntPersons);
-            return namedJdbcTemplate.query(getPersonsBySought, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("sought", "%" + sought + "%");
+        namedParams.put("offset", offset);
+        namedParams.put("cnt", cntPersons);
+        return namedJdbcTemplate.query(getPersonsBySought, namedParams, new FriendMapper());
     }
 
     @Override
     public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("sought", "%" + sought + "%");
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntPersons);
-            return namedJdbcTemplate.query(getClientPersonsBySought, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("sought", "%" + sought + "%");
+        namedParams.put("offset", offset);
+        namedParams.put("cnt", cntPersons);
+        return namedJdbcTemplate.query(getClientPersonsBySought, namedParams, new FriendMapper());
     }
 
     @Override
     public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("id", findByLogin(login).getUserId());
-            namedParams.put("sought", "%" + sought + "%");
-            namedParams.put("offset", offset);
-            namedParams.put("cnt", cntPersons);
-            return namedJdbcTemplate.query(getFriendsBySought, namedParams, new FriendMapper());
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("id", findByLogin(login).getUserId());
+        namedParams.put("sought", "%" + sought + "%");
+        namedParams.put("offset", offset);
+        namedParams.put("cnt", cntPersons);
+        return namedJdbcTemplate.query(getFriendsBySought, namedParams, new FriendMapper());
     }
     @Override
     public String getUserRole(String login) {
@@ -356,28 +341,21 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     }
     @Override
     public Integer getCountFriendsBySought(String login, String sought) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("id", findByLogin(login).getUserId());
-            namedParams.put("sought", "%" + sought + "%");
-            return namedJdbcTemplate.queryForObject(getCountFriendsBySought, namedParams, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("id", findByLogin(login).getUserId());
+        namedParams.put("sought", "%" + sought + "%");
+        return namedJdbcTemplate.queryForObject(getCountFriendsBySought, namedParams, Integer.class);
     }
     @Override
     public Integer getCountPersonsBySought(String sought) {
-        try {
-            Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("sought", "%" + sought + "%");
-            return namedJdbcTemplate.queryForObject(
-                    getCountPersonsBySought, namedParams, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Sought not found", HttpStatus.NOT_FOUND);
-        }
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("sought", "%" + sought + "%");
+        return namedJdbcTemplate.queryForObject(
+                getCountPersonsBySought, namedParams, Integer.class);
     }
     @Override
     public void addFriend(String ownLogin, String friendLogin) {
+        log.info("{} adding {} to friend", ownLogin, friendLogin);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
@@ -386,6 +364,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
             namedJdbcTemplate.update(acceptFriendRequest, namedParams);
         }else
         namedJdbcTemplate.update(addFriend, namedParams);
+        log.info("Successful adding friend");
     }
     @Override
     public int isFriend(String ownLogin, String friendLogin) {
@@ -403,10 +382,12 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
     }
     @Override
     public void deleteFriend(String ownLogin, String friendLogin) {
+        log.info("{} remove {} from friend", ownLogin, friendLogin);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("ownId", findByLogin(ownLogin).getUserId());
         namedParams.put("friendId", findByLogin(friendLogin).getUserId());
         namedJdbcTemplate.update(deleteFriend, namedParams);
+        log.info("Successful remove friend");
     }
     public boolean checkUserIsUser(long userId) {
         Map<String, Object> namedParams = new HashMap<>();
