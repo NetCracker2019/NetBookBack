@@ -50,6 +50,7 @@ class AuthenticationControllerTest {
 
     @Test
     void registerTest() throws Exception{
+        /*
         this.mockMvc.perform(post("/user-service/register/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -106,6 +107,8 @@ class AuthenticationControllerTest {
         this.mockMvc.perform(delete("/user-service/remove/" + user.getUserId()))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
+
+         */
     }
 /*
     @Test
