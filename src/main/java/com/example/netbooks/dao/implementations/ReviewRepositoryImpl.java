@@ -64,6 +64,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 
     @Override
     public boolean approveReview(long reviewId) {
+        System.out.println(reviewId);
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("reviewId", reviewId);
         return namedJdbcTemplate.update(env.getProperty("approveReview"), namedParameters) > 0;

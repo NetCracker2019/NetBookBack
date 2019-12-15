@@ -31,4 +31,8 @@ public class AchievementController {
     public List<Achievement> getAchievements(@RequestParam("page") int page, @RequestParam("size") int size) {
         return  achievementService.getAchievements(page, size);
     }
+    @DeleteMapping("/remove-achievement")
+    public void removeAchievement(@RequestParam("achivId") long achivId) {
+        achievementService.removeAchievement(achivId);
+    }
 }

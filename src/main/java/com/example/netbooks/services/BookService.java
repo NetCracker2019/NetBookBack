@@ -100,14 +100,6 @@ public class BookService {
             genreRepository.addRowIntoBookGenre(book.getTitle(), book.getDescription(), book.getGenre());
             authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getDescription(), book.getAuthor());
 
-            try{
-                UserAchievement userAchievement =
-                        achievementRepository.checkUserAchievement(userId, "addedBooks");
-                // TODO Send notif here
-            } catch (NullPointerException e){
-                e.getMessage();
-            }
-
             response.put("status", "ok");
             return ResponseEntity.ok(response);
         } else {
@@ -118,7 +110,14 @@ public class BookService {
 
     public ResponseEntity<Map> confirmAnnouncement(long announcementId) {
         jdbcBookRepository.confirmAnnouncement(announcementId);
-
+        long userId = jdbcBookRepository.getUserIdByAnnouncementId(announcementId);
+        try{
+            UserAchievement userAchievement =
+                    achievementRepository.checkUserAchievement(userId, "addedBooks");
+            // TODO Send notif here
+        } catch (NullPointerException e){
+            e.getMessage();
+        }
         Map<Object, Object> response = new HashMap<>();
         response.put("status", "ok");
         return ResponseEntity.ok(response);
@@ -248,11 +247,18 @@ public class BookService {
     public boolean addReviewForUserBook(Review review) {
         review.setUserId(userRepository.getUserIdByLogin(review.getUserName()));
         review.setReviewText(review.getReviewText().trim().replaceAll(" +", " "));
-        boolean result = reviewRepository.addReviewForUserBook(review);
+
         if (!userRepository.checkPersonIsUser(review.getUserId())) {
-            approveReview(review.getReviewId(), review.getUserId());
+            review.setApproved(true);
+            try{
+                UserAchievement userAchievement =
+                        achievementRepository.checkUserAchievement(review.getUserId(), "review");
+                // TODO Send notif here
+            } catch (NullPointerException e){
+                e.getMessage();
+            }
         }
-        return result;
+        return reviewRepository.addReviewForUserBook(review);
     }
 
 

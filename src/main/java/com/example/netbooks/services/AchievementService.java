@@ -17,12 +17,12 @@ public class AchievementService {
     }
 
     public void checkBookPatternAchievementsAndSendNotification(long userId, long bookId, String favOrRead) {
-        boolean addedAuthorAchv = achievementRepository.checkAchievementAuthor(userId, bookId, favOrRead);
+        boolean addedAuthorAchv = achievementRepository.checkAchievementAuthor(bookId, userId, favOrRead);
         if (addedAuthorAchv) {
             UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
             // TODO Notification sending must be here.
         }
-        boolean addedGenreAchv = achievementRepository.checkAchievementGenre(userId, bookId, favOrRead);
+        boolean addedGenreAchv = achievementRepository.checkAchievementGenre(bookId, userId,  favOrRead);
         if (addedGenreAchv) {
             UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
             // TODO Notification sending must be here.
@@ -38,5 +38,8 @@ public class AchievementService {
     }
     public List<Achievement> getAchievements(int page, int size) {
         return achievementRepository.getAchievements(page, size);
+    }
+    public void removeAchievement(long achvId) {
+        achievementRepository.removeAchievement(achvId);
     }
 }

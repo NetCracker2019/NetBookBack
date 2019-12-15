@@ -171,6 +171,10 @@ public class AchievementRepository {
         userAchievement.setImagePath((String) out.get("image_path"));
         return userAchievement;
     }
-
+    public void removeAchievement(long achvId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("achvId", achvId);
+        namedJdbcTemplate.update(env.getProperty("deleteAchievement"),  namedParameters);
+    }
 
 }

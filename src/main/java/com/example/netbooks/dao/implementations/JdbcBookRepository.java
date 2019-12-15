@@ -548,5 +548,8 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.queryForObject(env.getProperty("countUnApproveAnnouncement"), namedParameters, Integer.class);
     }
 
-
+    public long getUserIdByAnnouncementId(long bookId) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("bookId", bookId);
+        return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByAnnouncementId"), namedParameters, Long.class);
+    }
 }
