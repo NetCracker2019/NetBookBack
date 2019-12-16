@@ -207,6 +207,8 @@ public class BookService {
         } else if (author != null && genre != null && from != null && to != null) {
             //log.info("search with title, author, genre, from, to params: {}, {}, {}, {}, {}", title, author, genre, from, to);
             books = jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
+        }else{
+            books =  jdbcBookRepository.findBooksByAuthor(author);
         }
 
         List<ViewBook> result;

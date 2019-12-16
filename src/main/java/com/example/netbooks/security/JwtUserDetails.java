@@ -29,7 +29,7 @@ public class JwtUserDetails implements UserDetailsService {
 			throw new UserNotFoundException("User '" + login + "' not found");
 		}
 
-		return org.springframework.security.core.userdetails.User//
+		return org.springframework.security.core.userdetails.User
 				.withUsername(user.getLogin())
 				.password(user.getPassword())
 				.authorities(user.getRole())

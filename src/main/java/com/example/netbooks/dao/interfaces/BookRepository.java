@@ -35,7 +35,7 @@ public interface BookRepository {
     List<ViewBook> findBooksByTitleAndAuthor(String title, String author, Date from, Date to);
     List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
     List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to);
-
+    List<ViewBook> findBooksByAuthor(String author);
     void confirmAnnouncement(long announcementId);
     void cancelAnnouncement(long announcementId);
 

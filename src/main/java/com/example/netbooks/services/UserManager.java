@@ -215,7 +215,7 @@ public class UserManager {
         String message = "To verification your account, please click here : "
                 + "https://netbooksfront.herokuapp.com/verification-account?token="
                 + verificationToken.getVerificationToken();
-        log.info("fff {}", message);
+        //log.info("fff {}", message);
         emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
     }
 
