@@ -36,6 +36,7 @@ public class NotificationService {
         for (Notification notif : notifList) {
             notifList.set(notifList.indexOf(notif), parseViewNotif(notif, userName));
         }
+        log.info("Get all  notifications for user by id {}", userId);
         return notifList;
     }
 
@@ -44,6 +45,7 @@ public class NotificationService {
         for (Notification notif : notifList) {
             notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
         }
+        log.info("Get all unread notifications for user by id {}", userId);
         return notifList;
     }
 
@@ -99,23 +101,28 @@ public class NotificationService {
         java.util.Date now = new java.util.Date();
         notification.setDate(new Date(now.getTime()));
         notificationRepository.addNotification(notification);
+        log.info("Add notification for user with id {}", notification.getUserId());
     }
 
     public void markAllAsRead(long id) {
         notificationRepository.markAllAsRead(id);
+        log.info("Mark all notifications as read where usere id {}",id);
     }
 
     public void markNotifAsReadByNotifId(Notification notification) {
         Integer id = notification.getNotificationId();
         notificationRepository.markNotifAsReadByNotifId(id);
+        log.info("Mark notification as read by notif id {}", notification.getNotificationId());
     }
 
     public int getNotifCount(long userId) {
+        log.info("get count of unread notifications for user with id {}",userId);
         return notificationRepository.getNotifCount(userId);
     }
 
     public void deleteAllNotificationsByUserId(long id) {
         notificationRepository.deleteAllNotificationsByUserId(id);
+        log.info("Delete all notifications for user with id {}", id);
     }
 
 }
