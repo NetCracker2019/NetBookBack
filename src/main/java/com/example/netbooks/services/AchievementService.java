@@ -9,39 +9,24 @@ import java.util.List;
 
 @Service
 public class AchievementService {
-
     private final AchievementRepository achievementRepository;
 
     public AchievementService(AchievementRepository achievementRepository) {
         this.achievementRepository = achievementRepository;
+
     }
 
-
-    long getAchvIdByParameters(int count, String type, int n) {
-        long achvId = 0;
-        switch (count) {
-            case 1:
-                achvId = achievementRepository.getAchvIdByDescription(type, n);
-                break;
-            case 10:
-                achvId = achievementRepository.getAchvIdByDescription(type, 10 * n);
-                break;
-            case 100:
-                achvId = achievementRepository.getAchvIdByDescription(type, 100 * n);
-                break;
+    public void checkBookPatternAchievementsAndSendNotification(long userId, long bookId, String favOrRead) {
+        boolean addedAuthorAchv = achievementRepository.checkAchievementAuthor(bookId, userId, favOrRead);
+        if (addedAuthorAchv) {
+            UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+            // TODO Notification sending must be here.
         }
-
-        return achvId;
-    }
-    UserAchievement addAchievementToUser(long achvId, long userId ) {
-        if (achvId > 0){
-            boolean in = achievementRepository.checkAchvInUserAchv(userId, achvId);
-            if (!in){
-                achievementRepository.addAchievementForUser(achvId, userId);
-                return achievementRepository.getLastUserAchievement(userId);
-            }
+        boolean addedGenreAchv = achievementRepository.checkAchievementGenre(bookId, userId,  favOrRead);
+        if (addedGenreAchv) {
+            UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
+            // TODO Notification sending must be here.
         }
-        return null;
     }
 
     public boolean addAchievement(Achievement achievement) {
@@ -51,7 +36,10 @@ public class AchievementService {
         achievement.setDescription(validatedDescription.substring(0,1).toUpperCase() + validatedDescription.substring(1));
         return achievementRepository.addAchievement(achievement);
     }
-    public List<Achievement> getAllAchievements() {
-        return achievementRepository.getAllAchievements();
+    public List<Achievement> getAchievements(int page, int size) {
+        return achievementRepository.getAchievements(page, size);
+    }
+    public void removeAchievement(long achvId) {
+        achievementRepository.removeAchievement(achvId);
     }
 }

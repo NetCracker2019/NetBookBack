@@ -30,27 +30,22 @@ public class NotificationService {
     }
 
 
-    public List<Notification> getAllViewNotificationsByUserId(long userId) {
-        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId);
+    public List<Notification> getAllViewNotificationsByUserId(long userId,int cntNotifsForView,int offset) {
+        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserId(userId,cntNotifsForView,offset);
+        String userName = userManager.getUserById(userId).getName();
         for (Notification notif : notifList) {
-            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
+            notifList.set(notifList.indexOf(notif), parseViewNotif(notif, userName));
         }
+        log.info("Get all  notifications for user by id {}", userId);
         return notifList;
     }
 
-    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId) {
-        List<Notification> notifList = notificationRepository.getAllUnreadViewNotificationsByUserId(userId);
+    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId,int cntNotifsForView,int offset) {
+        List<Notification> notifList = notificationRepository.getAllUnreadViewNotificationsByUserId(userId,cntNotifsForView,offset);
         for (Notification notif : notifList) {
             notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
         }
-        return notifList;
-    }
-
-    public List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long notif_type_id) {
-        List<Notification> notifList = notificationRepository.getAllViewNotificationsByUserIdAndTypeId(userId, notif_type_id);
-        for (Notification notif : notifList) {
-            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
-        }
+        log.info("Get all unread notifications for user by id {}", userId);
         return notifList;
     }
 
@@ -66,6 +61,17 @@ public class NotificationService {
         }
     }
 
+    public void createAndSaveAchievNotif(long fromUserId, List<User> friends, long achvId) {
+        for (User user : friends) {
+            Notification notification = new Notification();
+            notification.setNotifTypeId(3);
+            notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
+            notification.setFromUserId((int) fromUserId);
+            notification.setAchievId((int) achvId);
+            addNotification(notification);
+        }
+    }
+
     public Notification parseViewNotif(Notification notif) {
         String notifText = notif.getNotifText();
         notifText = notifText.replaceAll("user_name", notif.getFromUserName());
@@ -75,21 +81,48 @@ public class NotificationService {
         return notif;
     }
 
+    public Notification parseViewNotif(Notification notif, String userName) {
+        String notifText = notif.getNotifText();
+        if (notif.getFromUserName().equals(userName)) {
+            notifText = notifText.replaceAll("User user_name", "You");
+        } else {
+            notifText = notifText.replaceAll("user_name", notif.getFromUserName());
+        }
+        notifText = notifText.replaceAll("book_name", notif.getBookName());
+        notifText = notifText.replaceAll("achiev_name", notif.getAchievName());
+        notif.setNotifText(notifText);
+
+        return notif;
+    }
+
+
     public void addNotification(Notification notification) {
 
         java.util.Date now = new java.util.Date();
         notification.setDate(new Date(now.getTime()));
         notificationRepository.addNotification(notification);
+        log.info("Add notification for user with id {}", notification.getUserId());
     }
 
     public void markAllAsRead(long id) {
         notificationRepository.markAllAsRead(id);
+        log.info("Mark all notifications as read where usere id {}",id);
     }
 
     public void markNotifAsReadByNotifId(Notification notification) {
         Integer id = notification.getNotificationId();
         notificationRepository.markNotifAsReadByNotifId(id);
+        log.info("Mark notification as read by notif id {}", notification.getNotificationId());
     }
 
+    public int getNotifCount(long userId) {
+        log.info("get count of unread notifications for user with id {}",userId);
+        return notificationRepository.getNotifCount(userId);
+    }
+
+    public void deleteAllNotificationsByUserId(long id) {
+        notificationRepository.deleteAllNotificationsByUserId(id);
+        log.info("Delete all notifications for user with id {}", id);
+    }
 
 }

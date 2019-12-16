@@ -3,6 +3,7 @@ package com.example.netbooks.dao.implementations;
 import com.example.netbooks.dao.interfaces.NotificationRepository;
 import com.example.netbooks.dao.mappers.NotificationMapper;
 import com.example.netbooks.dao.mappers.ViewNotificationMapper;
+import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.models.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -37,10 +39,36 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     private final RowMapper viewNotificationMapper = new ViewNotificationMapper();
 
     @Override
-    public List<Notification> getAllViewNotificationsByUserId(long userId) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
-        return namedParameterJdbcTemplate.query(environment.getProperty("getAllViewNotificationsByUserId"), namedParameters, viewNotificationMapper);
+    public List<Notification> getAllViewNotificationsByUserId(long userId ,int cntNotifForView,int offset) {
+        try {
+
+            Map<String,Object>namedParams=new HashMap<>();
+            namedParams.put("user_id",userId);
+            namedParams.put("offset",offset);
+            namedParams.put("cnt",cntNotifForView);
+            return namedParameterJdbcTemplate.query(environment.getProperty("getAllViewNotificationsByUserId"), namedParams, viewNotificationMapper);
+
+        } catch (EmptyResultDataAccessException e){
+            throw new CustomException("Notifications not found", HttpStatus.NOT_FOUND);
+        }
     }
+
+    @Override
+    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId ,int cntNotifForView,int offset) {
+        try {
+
+            Map<String,Object>namedParams=new HashMap<>();
+            namedParams.put("user_id",userId);
+            namedParams.put("offset",offset);
+            namedParams.put("cnt",cntNotifForView);
+            return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParams, viewNotificationMapper);
+
+        } catch (EmptyResultDataAccessException e){
+            throw new CustomException("Notifications not found", HttpStatus.NOT_FOUND);
+        }
+
+    }
+
 
     @Override
     public List<Notification> getAllNotificationsByUserId(long userId) {
@@ -48,18 +76,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         return namedParameterJdbcTemplate.query(environment.getProperty("getAllNotificationsByUserId"), namedParameters, notificationMapper);
     }
 
-    @Override
-    public List<Notification> getAllUnreadViewNotificationsByUserId(long userId) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
-        return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParameters, notificationMapper);
-    }
-
-    @Override
-    public List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
-        namedParameters.addValue("notif_type_id", typeId);
-        return namedParameterJdbcTemplate.query(environment.getProperty("getAllUnreadViewNotificationsByUserId"), namedParameters, notificationMapper);
-    }
 
     @Override
     public void addNotification(Notification notification) {
@@ -90,5 +106,21 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         namedParameterJdbcTemplate.update(environment.getProperty("markNotifAsReadByNotifId"), namedParams);
     }
 
+    @Override
+    public int getNotifCount(long userId) {
+        try {
+            SqlParameterSource namedParameters = new MapSqlParameterSource("user_id", userId);
+            return namedParameterJdbcTemplate.queryForObject(environment.getProperty("getCountNotifications"), namedParameters, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
+    @Override
+    public void deleteAllNotificationsByUserId(long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", id);
+        namedParameterJdbcTemplate.update(environment.getProperty("deleteAllNotificationsByUserId"), namedParams);
+    }
 
 }

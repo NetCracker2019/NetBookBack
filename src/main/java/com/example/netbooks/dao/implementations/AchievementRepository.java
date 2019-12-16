@@ -68,7 +68,13 @@ public class AchievementRepository {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("achvType", achvType);
         namedParameters.addValue("n", n);
-        return namedJdbcTemplate.queryForObject(env.getProperty("getAchvIdByDesc"), namedParameters, Long.class);
+        try {
+            return namedJdbcTemplate.queryForObject(env.getProperty("getAchvIdByDesc"), namedParameters, Long.class);
+        }
+        catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
     }
 
     public void addAchievementForUser(long achvId, long userId){
@@ -94,7 +100,7 @@ public class AchievementRepository {
         return jdbcCall.executeFunction(Boolean.class, in);
     }
 
-    public boolean check_achievement_author(long bookId, long userId, String favOrRead) {
+    public boolean checkAchievementAuthor(long bookId, long userId, String favOrRead) {
         SimpleJdbcCall jdbcCall = new
                 SimpleJdbcCall(dataSource).withFunctionName("check_achievement_author");
 
@@ -105,7 +111,7 @@ public class AchievementRepository {
         return jdbcCall.executeFunction(Boolean.class, in);
     }
 
-    public boolean check_achievement_genre(long bookId, long userId, String favOrRead) {
+    public boolean checkAchievementGenre(long bookId, long userId, String favOrRead) {
         SimpleJdbcCall jdbcCall = new
                 SimpleJdbcCall(dataSource).withFunctionName("check_achievement_genre");
 
@@ -127,7 +133,48 @@ public class AchievementRepository {
         namedParameters.addValue("achvId", achvId);
         return namedJdbcTemplate.queryForObject(env.getProperty("checkAchvInUserAchv"), namedParameters, Boolean.class);
     }
-    public List<Achievement> getAllAchievements(){
-        return namedJdbcTemplate.query(env.getProperty("getAllAchievements"),  fullAchievementMapper);
+    public List<Achievement> getAchievements(int page, int size){
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("offset", page);
+        namedParameters.addValue("count", size);
+        return namedJdbcTemplate.query(env.getProperty("getAchievements"),  namedParameters, fullAchievementMapper);
     }
+    public UserAchievement checkUserAchievement(long userId, String achievementType) throws NullPointerException {
+        SimpleJdbcCall jdbcCall = null;
+        switch (achievementType){
+            case "review":
+                jdbcCall = new
+                    SimpleJdbcCall(dataSource).withProcedureName("check_review_achievement");
+                break;
+            case "bookInProfile":
+                jdbcCall = new
+                    SimpleJdbcCall(dataSource).withProcedureName("check_book_in_profile_achievement");
+                break;
+            case "addedBooks":
+                jdbcCall = new
+                        SimpleJdbcCall(dataSource).withProcedureName("check_add_book_or_announcement_achievement");
+                break;
+            case "friends":
+                jdbcCall = new
+                        SimpleJdbcCall(dataSource).withProcedureName("check_friend_achievement");
+                break;
+        }
+
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("userId", userId);
+        Map<String, Object> out = jdbcCall.execute(in);
+        UserAchievement userAchievement = new UserAchievement();
+        userAchievement.setUserId(((Integer) out.get("user_id")).longValue());
+        userAchievement.setAchvId(((Integer) out.get("achv_id")).longValue());
+        userAchievement.setTitle((String) out.get("title"));
+        userAchievement.setDescription((String) out.get("description"));
+        userAchievement.setImagePath((String) out.get("image_path"));
+        return userAchievement;
+    }
+    public void removeAchievement(long achvId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("achvId", achvId);
+        namedJdbcTemplate.update(env.getProperty("deleteAchievement"),  namedParameters);
+    }
+
 }

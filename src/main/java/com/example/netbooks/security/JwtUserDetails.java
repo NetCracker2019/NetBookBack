@@ -1,5 +1,6 @@
 package com.example.netbooks.security;
 
+import com.example.netbooks.exceptions.UserNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class JwtUserDetails implements UserDetailsService {
 		final User user = userRepository.findByLogin(login);
 
 		if (user == null) {
-			throw new UsernameNotFoundException("User '" + login + "' not found");
+			throw new UserNotFoundException("User '" + login + "' not found");
 		}
 
 		return org.springframework.security.core.userdetails.User//

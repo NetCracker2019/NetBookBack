@@ -18,7 +18,7 @@ public class ViewBook {
     @JsonProperty("authors")
     private String[] authors;
     private long likes;
-    @JsonProperty("image_path")
+    @JsonProperty("imagePath")
     private String imagePath;
     private Date releaseDate;
     private String lang;

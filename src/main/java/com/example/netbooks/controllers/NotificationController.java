@@ -27,50 +27,56 @@ public class NotificationController {
     @Autowired
     private UserManager userManager;
 
-   // @GetMapping("/")
-  // public ResponseEntity<?> getNotificationsForUser() {
-  //     log.debug("Getting notification for user in {}: ", this.getClass().getName());
-  //     String username=((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-
-// <<<<<<< HEAD
-//         return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
-// =======
- //       return ResponseEntity.ok(notificationService.getAllNotificationsByUserId(userManager.getUserByLogin(username).getUserId()));
-//
- //   }
-
-//    @GetMapping("/user/{type}")
-//    public ResponseEntity<?> getNotificationsForUserByType(@PathVariable long type) {
-//        log.debug("Getting notification for user in {}: ", this.getClass().getName());
-//        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
-//                .getContext().getAuthentication()
-//                .getPrincipal()).getUsername());
-//        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserIdAndTypeId(id, type));
-//    }
-
-    @GetMapping()
-    public ResponseEntity<?> getNotificationsForUser() {
-        log.debug("Getting notification for user in {}: ", this.getClass().getName());
+    @GetMapping("/all")
+    public List<Notification> getNotificationsForUser(@RequestParam("cnt")int cnt, @RequestParam("offset")int offset) {
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
-        return ResponseEntity.ok(notificationService.getAllViewNotificationsByUserId(id));
+        log.info("Getting all notifications for user with id {}", id);
+        return notificationService.getAllViewNotificationsByUserId(id, cnt, offset);
+    }
+
+    @GetMapping("/unread-only")
+    public List<Notification> getAllUnreadViewNotificationsByUserId(@RequestParam("cnt")int cnt, @RequestParam("offset")int offset) {
+        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        log.info("Getting unread notifications for user with id {}", id);
+        return notificationService.getAllUnreadViewNotificationsByUserId(id, cnt, offset);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getNotifCount() {
+
+        long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        log.info("Get count of unread notifications for user with id {}",id);
+        return ResponseEntity.ok(notificationService.getNotifCount(id));
     }
 
     @PutMapping("/mark")
     public void markAllAsRead(){
-        log.debug("Mark notification as read for user  {}: ", this.getClass().getName());
-
         long userId = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
+        log.info("Mark all notification as read for user with id {} ",userId);
         notificationService.markAllAsRead(userId);
     }
 
     @PutMapping("mark-one")
     public void markNotifAsReadByNotifId(@RequestBody Notification notification){
-        log.debug("Mark notification as read by notifId ");
+        log.info("UPDATE/mark one with notif id {}", notification.getNotificationId());
         notificationService.markNotifAsReadByNotifId(notification);
+    }
+
+    @DeleteMapping("/delete-all")
+    public void deleteAllNotificationsByUserId(){
+        long userId = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal()).getUsername());
+        log.info("delete-all by userId {}",userId );
+        notificationService.deleteAllNotificationsByUserId(userId);
     }
 
 }

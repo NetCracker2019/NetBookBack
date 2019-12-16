@@ -3,6 +3,7 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.models.Role;
 import com.example.netbooks.models.User;
 import com.example.netbooks.services.UserManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/find-persons")
+@Slf4j
 public class FindPersonController {
 
-    private final Logger logger = LogManager.getLogger(ProfileController.class);
     private UserManager userManager;
 
     @Autowired
@@ -28,7 +29,7 @@ public class FindPersonController {
             @RequestParam("sought") String sought, @RequestParam("where") String where,
             @RequestParam("cnt") int cntPersons, @RequestParam("offset") int offset) {
         if (sought == null) {
-            sought = new String("");
+            sought = "";
         }
         if (userManager.getUserByLogin(login).getRole() == Role.ROLE_CLIENT) {
             if ("all".equals(where)) {

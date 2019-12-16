@@ -7,7 +7,8 @@ import java.util.List;
 
 @Repository
 public interface GenreRepository {
-    List<String> getAllGenreNames();
-    List<Genre> getAllGenres();
-    String addRowIntoBookGenre(String title, List<String> id);
+    public List<String> getAllGenreNames();
+    public List<Genre> getAllGenres();
+    public String addRowIntoBookGenre(String title, String description, List<String> id);
+
 }

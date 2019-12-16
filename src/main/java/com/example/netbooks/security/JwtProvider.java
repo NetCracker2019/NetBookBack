@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import com.example.netbooks.exceptions.TokenValidationException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +30,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
+@Slf4j
 public class JwtProvider {
 
-    private final Logger logger = LogManager.getLogger(JwtProvider.class);
     @Value("${jwt.token.secret}")
     private String secretKey;
 
@@ -93,15 +95,13 @@ public class JwtProvider {
         try {
             Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
             final User user = userManager.getUserByLogin(claims.getSubject());
-            if (claims.getIssuedAt().compareTo(user.getMinRefreshDate()) == -1) {
-                logger.debug("fal {}", user.getLogin());
+            if (claims.getIssuedAt().compareTo(user.getMinRefreshDate()) < 0) {
                 throw new Exception();
-                //return false;
             }
             return true;
         } catch (Exception e) {
-            logger.info("valid error ");
-            throw new CustomException("Expired or invalid JWT token", HttpStatus.UNAUTHORIZED);
+            log.warn("Validation token error ");
+            throw new TokenValidationException("Expired or invalid JWT token", HttpStatus.UNAUTHORIZED);
         }
     }
 

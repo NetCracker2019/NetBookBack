@@ -1,36 +1,53 @@
 package com.example.netbooks.services;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
-import com.example.netbooks.models.Achievement;
+import com.example.netbooks.exceptions.EmailExistException;
+import com.example.netbooks.exceptions.LoginExistException;
+import com.example.netbooks.models.*;
+import com.google.common.base.Strings;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
-import com.example.netbooks.models.Role;
-import com.example.netbooks.models.User;
+
 import java.util.UUID;
 
 @Data
 @Service
+@Slf4j
 public class UserManager {
-	UserRepository userRepository;
-	AchievementRepository achievementRepository;
-	AchievementService achievementService;
-
+    private UserRepository userRepository;
+	private AchievementRepository achievementRepository;
+	private AchievementService achievementService;
+    private FileStorageService fileStorageService;
+    private VerificationTokenManager verificationTokenManager;
+    private EmailSender emailSender;
+    private NotificationService notificationService;
 	@Autowired
-	public UserManager(UserRepository userRepository,
-					   AchievementRepository achievementRepository,
-					   AchievementService achievementService) {
-		this.userRepository = userRepository;
-		this.achievementRepository = achievementRepository;
-		this.achievementService = achievementService;
-	}
+    public UserManager(UserRepository userRepository,
+                       EmailSender emailSender,
+                       AchievementRepository achievementRepository,
+                       AchievementService achievementService,
+                       FileStorageService fileStorageService,
+                       VerificationTokenManager verificationTokenManager) {
+        this.userRepository = userRepository;
+        this.emailSender = emailSender;
+        this.achievementRepository = achievementRepository;
+        this.achievementService = achievementService;
+        this.fileStorageService = fileStorageService;
+        this.verificationTokenManager = verificationTokenManager;
+    }
 
 
 	public User getUserByEmail(String email) {
@@ -42,6 +59,11 @@ public class UserManager {
     }
 
     public void updateUser(User user) {
+        if (!userRepository.findByLogin(user.getLogin()).getEmail().equals(user.getEmail())
+                && userRepository.isExistByLogin(user.getLogin())){
+            log.info("Email - {} already in use", user.getEmail());
+            throw new EmailExistException("Email is already in use");
+        }
         userRepository.updateUser(user);
     }
 
@@ -53,7 +75,7 @@ public class UserManager {
         userRepository.save(user);
     }
 
-    public User createAndSaveTempAdmin() {
+    public User createAndSaveTempAdmin() throws IOException {
         User user = new User();
         String tempLogPass = UUID.randomUUID().toString();
         user.setLogin(tempLogPass);
@@ -65,7 +87,7 @@ public class UserManager {
         return user;
     }
 
-    public User createAndSaveTempModer() {
+    public User createAndSaveTempModer() throws IOException {
         User user = new User();
         String tempLogPass = UUID.randomUUID().toString();
         user.setLogin(tempLogPass);
@@ -102,11 +124,7 @@ public class UserManager {
     }
 
     public User getUserByLogin(String login) {
-        try {
-            return userRepository.findByLogin(login);
-        } catch (CustomException ex) {
-            throw ex;
-        }
+        return userRepository.findByLogin(login);
     }
 
     public Iterable<User> getAllUsers() {
@@ -159,11 +177,13 @@ public class UserManager {
 
 	public void addFriend(String ownLogin, String friendLogin) {
 		long userId = userRepository.getUserIdByLogin(ownLogin);
-		int friendsAmountForUser = userRepository.countFriendsForUser(userId);
-		long achvId = achievementService.getAchvIdByParameters(friendsAmountForUser, "friends", 1);
-		if (achvId > 0){
-			achievementRepository.addAchievementForUser(achvId, userId);
-		}
+        try{
+            UserAchievement userAchievement =
+                    achievementRepository.checkUserAchievement(userId, "friends");
+            // TODO Send notif here
+        } catch (NullPointerException e){
+            e.getMessage();
+        }
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
 
@@ -173,5 +193,57 @@ public class UserManager {
 
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
+	}
+
+    public void deleteFile(String avatarFilePath) {
+        fileStorageService.deleteFile(avatarFilePath);
+    }
+
+    public void register(User user) {
+        if (userRepository.isExistByLogin(user.getLogin())){
+            throw new LoginExistException("Login is already in use");
+        }
+        if (userRepository.isExistByMail(user.getEmail())){
+            throw new EmailExistException("Email is already in use");
+        }
+        user.setRegDate(LocalDate.now());
+        userRepository.save(user);
+        VerificationToken verificationToken = new VerificationToken(
+                userRepository.findByLogin(user.getLogin()).getUserId());
+        verificationTokenManager.saveToken(verificationToken);
+
+        String message = "To verification your account, please click here : "
+                + "https://netbooksfront.herokuapp.com/verification-account?token="
+                + verificationToken.getVerificationToken();
+        log.info("fff {}", message);
+        emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
+    }
+
+    public void confirmUserAccount(String verificationToken) {
+        VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+        userRepository.activateUser(token.getUserId());
+        log.info("confirmUserAccount for {}", token.getUserId());
+        verificationTokenManager.removeVerificationToken(verificationToken);
+    }
+
+    public void requestForRecoveryPass(String email) {
+        User user = userRepository.findByEmail(email);
+        VerificationToken verificationToken = new VerificationToken(user.getUserId());
+        verificationTokenManager.saveToken(verificationToken);
+        String message = "To recovery your password, please click here : "
+                + "https://netbooksfront.herokuapp.com/recovery-password?token="
+                + verificationToken.getVerificationToken();
+        log.info("dd {}", message);
+        emailSender.sendMessage(user.getEmail(), "Recovery your password", message);
+	}
+
+    public void recoveryPass(String verificationToken, String newPassword) {
+        VerificationToken token = verificationTokenManager.findVerificationToken(verificationToken);
+        User user = userRepository.findByUserId(token.getUserId());
+        log.info("Change pass for {}", user.getLogin());
+        user.setPassword(newPassword);
+        user.setMinRefreshDate(null);
+        userRepository.updateUser(user);
+        verificationTokenManager.removeVerificationToken(verificationToken);
 	}
 }
