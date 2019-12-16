@@ -313,3 +313,483 @@ org.postgresql.util.PSQLException: FATAL: too many connections for role "uftbtbu
 
 2019-12-16 16:28:29.213  WARN 2040 --- [http-nio-8080-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.InternalAuthenticationServiceException: Failed to obtain JDBC Connection; nested exception is org.postgresql.util.PSQLException: FATAL: too many connections for role "uftbtbusfgdqit"]
 2019-12-16 16:29:07.072  INFO 2040 --- [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2019-12-16 20:20:56.271  INFO 6056 --- [restartedMain] c.example.netbooks.NetbooksApplication   : Starting NetbooksApplication on HPpavilionHome15 with PID 6056 (C:\Users\dmtkr\Documents\GitHub\NetBookBack\target\classes started by dmtkr in C:\Users\dmtkr\Documents\GitHub\NetBookBack)
+2019-12-16 20:20:56.276  INFO 6056 --- [restartedMain] c.example.netbooks.NetbooksApplication   : No active profile set, falling back to default profiles: default
+2019-12-16 20:20:56.419  INFO 6056 --- [restartedMain] o.s.b.devtools.restart.ChangeableUrls    : The Class-Path manifest attribute in C:\Users\dmtkr\.m2\repository\com\sun\xml\bind\jaxb-impl\2.1.3\jaxb-impl-2.1.3.jar referenced one or more files that do not exist: file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/jaxb-api.jar,file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/activation.jar,file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/jsr173_1.0_api.jar,file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/jaxb1-impl.jar
+2019-12-16 20:20:56.419  INFO 6056 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-12-16 20:20:56.419  INFO 6056 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-12-16 20:20:57.730  INFO 6056 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-16 20:20:57.783  INFO 6056 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 47ms. Found 0 repository interfaces.
+2019-12-16 20:20:58.173  INFO 6056 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:20:58.181  INFO 6056 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:20:58.201  INFO 6056 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:20:58.204  INFO 6056 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@6cc54156' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:20:58.205  INFO 6056 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:20:58.208  INFO 6056 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:20:58.579  INFO 6056 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2019-12-16 20:20:58.590  INFO 6056 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-16 20:20:58.591  INFO 6056 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.27]
+2019-12-16 20:20:58.700  INFO 6056 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-16 20:20:58.700  INFO 6056 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2281 ms
+2019-12-16 20:20:58.767  INFO 6056 --- [restartedMain] c.e.n.d.implementations.UserRepository   : Class initialized
+2019-12-16 20:20:58.952  INFO 6056 --- [restartedMain] c.e.n.d.i.JdbcBookRepository             : Class initialized
+2019-12-16 20:20:59.088  INFO 6056 --- [restartedMain] c.e.n.c.AuthenticationController         : Class initialized
+2019-12-16 20:20:59.094  INFO 6056 --- [restartedMain] c.e.n.d.i.ChatRepositoryImpl             : Class initialized
+2019-12-16 20:20:59.100  INFO 6056 --- [restartedMain] c.e.netbooks.controllers.ChatController  : Class initialized
+2019-12-16 20:20:59.103  INFO 6056 --- [restartedMain] c.e.n.controllers.FilesController        : Class initialized
+2019-12-16 20:20:59.110  INFO 6056 --- [restartedMain] c.e.n.controllers.ProfileController      : Class initialized
+2019-12-16 20:20:59.224  INFO 6056 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'clientInboundChannelExecutor'
+2019-12-16 20:20:59.234  INFO 6056 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'clientOutboundChannelExecutor'
+2019-12-16 20:20:59.286  INFO 6056 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'messageBrokerTaskScheduler'
+2019-12-16 20:20:59.323  INFO 6056 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'brokerChannelExecutor'
+2019-12-16 20:20:59.572  INFO 6056 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6f22caea, org.springframework.security.web.context.SecurityContextPersistenceFilter@1f653295, org.springframework.security.web.header.HeaderWriterFilter@2ab26e81, org.springframework.security.web.authentication.logout.LogoutFilter@3de7a477, com.example.netbooks.security.JwtFilter@7b85021f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3d803726, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@56051bb2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@37654f15, org.springframework.security.web.session.SessionManagementFilter@6a56fc7a, org.springframework.security.web.access.ExceptionTranslationFilter@705953ec, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1ca858dc]
+2019-12-16 20:20:59.875  WARN 6056 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2019-12-16 20:21:00.119  INFO 6056 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-12-16 20:21:00.154  INFO 6056 --- [restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2019-12-16 20:21:00.154  INFO 6056 --- [restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [DefaultSubscriptionRegistry[cache[0 destination(s)], registry[0 sessions]]]]
+2019-12-16 20:21:00.156  INFO 6056 --- [restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2019-12-16 20:21:00.190  INFO 6056 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2019-12-16 20:21:00.196  INFO 6056 --- [restartedMain] c.example.netbooks.NetbooksApplication   : Started NetbooksApplication in 4.674 seconds (JVM running for 7.026)
+2019-12-16 20:21:18.655  INFO 6056 --- [http-nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-16 20:21:18.657  INFO 6056 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-12-16 20:21:18.673  INFO 6056 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 16 ms
+2019-12-16 20:21:18.763  INFO 6056 --- [http-nio-8080-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2019-12-16 20:21:20.381  INFO 6056 --- [http-nio-8080-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2019-12-16 20:21:20.678  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:21:24.431  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.AuthenticationController         : POST /signin [dmitriy]
+2019-12-16 20:21:33.541  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:21:33.548  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:21:33.683  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:21:33.807  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:21:36.063  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:21:36.065  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:21:37.543  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:21:37.803  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:21:46.080  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:21:46.081  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:21:56.075  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:21:56.076  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:21:59.321  INFO 6056 --- [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2019-12-16 20:22:06.067  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:22:06.068  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:22:13.580  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:22:13.839  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:22:16.053  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:22:16.054  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:22:16.686  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:22:16.696  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:22:16.827  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:22:16.943  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:22:19.701  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:22:19.961  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:22:26.069  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:22:26.069  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:22:26.565  WARN 6056 --- [http-nio-8080-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [DownloadFileException(message=Fail to download image - 0083b4f6-cb6a-45eb-9848-548804aac695)]
+2019-12-16 20:22:27.368  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:22:27.482  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:22:27.501  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:22:27.738  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:22:36.081  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:22:36.082  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:22:46.074  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:22:46.074  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:22:46.516  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:22:46.779  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:22:56.084  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:22:56.085  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:23:06.083  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:23:06.083  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:23:16.085  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:23:16.085  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:23:26.064  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:23:26.065  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:23:36.071  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:23:36.072  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:23:46.322  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:23:46.322  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:23:56.104  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:23:56.105  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:03.412  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:24:03.422  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:03.541  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:24:03.682  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:06.440  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:06.716  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:06.778  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:24:13.392  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:13.393  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:16.806  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:16.807  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:21.654  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:21.661  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:24:21.791  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:24:21.913  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:23.404  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:23.404  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:23.668  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:23.929  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:24.657  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:24.912  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:26.673  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:26.789  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:26.789  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:26.931  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:33.409  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:33.411  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:35.681  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:35.940  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:36.792  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:36.793  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:41.691  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:41.950  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:42.676  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:42.941  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:43.417  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:43.418  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:45.572  WARN 6056 --- [http-nio-8080-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [DownloadFileException(message=Fail to download image - 0083b4f6-cb6a-45eb-9848-548804aac695)]
+2019-12-16 20:24:46.789  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:46.789  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:47.133  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:24:47.133  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:47.263  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:24:47.394  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:50.161  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:24:50.426  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:24:53.419  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:53.420  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:24:56.808  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:24:56.809  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:03.427  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:03.427  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:06.804  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:06.805  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:13.429  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:13.430  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:16.822  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:16.822  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:23.416  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:23.417  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:26.804  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:26.805  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:33.416  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:33.416  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:36.820  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:36.821  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:43.403  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:43.403  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:46.811  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:46.811  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:53.402  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:53.403  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:25:56.811  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:25:56.811  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:03.419  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:03.420  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:06.812  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:06.813  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:13.441  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:13.441  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:16.808  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:16.809  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:23.414  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:23.416  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:26.810  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:26.810  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:33.437  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:33.438  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:36.995  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:36.995  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:43.411  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:43.412  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:46.993  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:46.994  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:53.429  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:53.429  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:26:57.002  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:26:57.003  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:08.007  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:27:08.010  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:27:08.137  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:27:08.267  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:27:09.974  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:27:11.160  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:27:17.966  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:27:17.978  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:27:18.109  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:27:18.222  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:27:19.983  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:19.983  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:21.195  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:21.195  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:21.979  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:27:22.236  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:27:30.002  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:30.003  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:31.189  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:31.189  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:39.983  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:39.983  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:41.208  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:41.208  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:49.981  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:49.982  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:51.200  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:51.200  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:27:59.990  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:27:59.990  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:01.206  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:01.206  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:09.995  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:09.995  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:11.196  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:11.196  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:19.990  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:19.991  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:21.079  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:21.080  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:29.969  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:29.970  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:31.203  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:31.203  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:39.988  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:39.988  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:41.748  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:41.749  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:50.009  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:50.009  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:28:51.749  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:28:51.750  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:00.008  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:00.009  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:02.604  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:02.605  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:09.986  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:09.987  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:12.624  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:12.624  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:19.972  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:19.972  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:22.639  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:22.639  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:29.994  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:29.994  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:32.644  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:32.644  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:40.006  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:40.006  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:42.659  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:42.660  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:50.007  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:50.007  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:52.672  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:52.672  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:29:59.988  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:29:59.988  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:02.700  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:02.700  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:10.444  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:10.444  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:12.786  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:12.786  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:22.649  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:30:22.649  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:30:22.778  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:30:22.905  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:30:24.368  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:30:24.676  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:30:24.933  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:30:25.663  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:30:25.921  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:30:27.697  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:30:27.957  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:30:33.461  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:33.462  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:34.400  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:34.402  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:43.492  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:43.493  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:44.385  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:44.385  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:53.510  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:53.511  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:30:54.396  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:30:54.396  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:03.513  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:03.513  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:04.385  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:04.385  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:13.562  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:13.562  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:14.398  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:14.398  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:23.552  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:23.553  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:24.406  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:24.407  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:37.424  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:31:37.437  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:31:37.571  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:31:37.682  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:31:38.404  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:31:39.298  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:31:39.553  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:31:47.406  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:47.407  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:48.419  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:48.420  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:57.484  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:57.484  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:31:58.596  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:31:58.597  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:06.116  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:32:06.123  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:32:06.246  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:32:06.385  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:32:09.792  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:32:09.801  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Getting unread notifications for user with id 193
+2019-12-16 20:32:09.930  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : Get all unread notifications for user by id 193
+2019-12-16 20:32:10.049  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:32:10.245  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.d.i.JdbcBookRepository             : res - [ViewBook(bookId=1063, title=Time, authors=[Joanne Rowling], likes=0, imagePath=test, releaseDate=2020-05-05, lang=ru, pages=20, genres=[Detective], description=some test text, favourite=null, reading=null, read=null), ViewBook(bookId=1071, title=Time3, authors=[Arthur Conan Doyle], likes=0, imagePath=test, releaseDate=2020-06-06, lang=null, pages=0, genres=[Drama], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1072, title=Time4, authors=[Oscar Wild], likes=0, imagePath=null, releaseDate=2020-07-07, lang=null, pages=0, genres=[Fantasy], description=Saome text3, favourite=null, reading=null, read=null), ViewBook(bookId=1073, title=Time5, authors=[John Tolkien], likes=0, imagePath=null, releaseDate=2020-08-08, lang=null, pages=0, genres=[Detective], description=Saome text3, favourite=null, reading=null, read=null)]
+2019-12-16 20:32:12.811  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Getting all notifications for user with id 193
+2019-12-16 20:32:13.066  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : Get all  notifications for user by id 193
+2019-12-16 20:32:19.797  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:19.797  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:20.275  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:20.276  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:29.811  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:29.811  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:30.258  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:30.258  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:39.802  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:39.802  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:40.259  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:40.259  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:50.246  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:50.246  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:32:50.667  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:32:50.668  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:00.264  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:00.264  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:00.665  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:00.665  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:10.274  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:10.275  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:10.792  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:10.793  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:20.260  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:20.260  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:20.704  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:20.704  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:30.276  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:30.276  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:30.737  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:30.738  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:40.263  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:40.263  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:40.765  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:40.766  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:50.283  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:50.283  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:33:50.788  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:33:50.788  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:00.270  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:00.270  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:00.804  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:00.805  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:10.267  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:10.267  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:10.793  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:10.795  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:20.288  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:20.288  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:20.830  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:20.831  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:30.270  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:30.270  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:30.856  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:30.857  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:40.278  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:40.278  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:40.855  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:40.856  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:50.264  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:50.264  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:34:50.877  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:34:50.878  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:00.260  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:00.260  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:00.865  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:00.866  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:10.280  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:10.281  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:10.908  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:10.908  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:20.263  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:20.264  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:20.929  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:20.929  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:30.284  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:30.285  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:30.947  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:30.947  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:40.268  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:40.268  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:40.970  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:40.971  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:50.272  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:50.273  INFO 6056 --- [http-nio-8080-exec-8] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:35:50.969  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:35:50.970  INFO 6056 --- [http-nio-8080-exec-6] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:00.286  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:00.286  INFO 6056 --- [http-nio-8080-exec-5] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:00.997  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:00.998  INFO 6056 --- [http-nio-8080-exec-10] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:10.264  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:10.264  INFO 6056 --- [http-nio-8080-exec-2] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:11.015  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:11.016  INFO 6056 --- [http-nio-8080-exec-9] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:20.290  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:20.290  INFO 6056 --- [http-nio-8080-exec-4] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:21.021  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:21.022  INFO 6056 --- [http-nio-8080-exec-1] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:30.278  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:30.278  INFO 6056 --- [http-nio-8080-exec-3] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:36:31.042  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.c.NotificationController           : Get count of unread notifications for user with id 193
+2019-12-16 20:36:31.043  INFO 6056 --- [http-nio-8080-exec-7] c.e.n.services.NotificationService       : get count of unread notifications for user with id 193
+2019-12-16 20:38:13.582  INFO 828 --- [restartedMain] c.example.netbooks.NetbooksApplication   : Starting NetbooksApplication on HPpavilionHome15 with PID 828 (C:\Users\dmtkr\Documents\GitHub\NetBookBack\target\classes started by dmtkr in C:\Users\dmtkr\Documents\GitHub\NetBookBack)
+2019-12-16 20:38:13.587  INFO 828 --- [restartedMain] c.example.netbooks.NetbooksApplication   : No active profile set, falling back to default profiles: default
+2019-12-16 20:38:13.719  INFO 828 --- [restartedMain] o.s.b.devtools.restart.ChangeableUrls    : The Class-Path manifest attribute in C:\Users\dmtkr\.m2\repository\com\sun\xml\bind\jaxb-impl\2.1.3\jaxb-impl-2.1.3.jar referenced one or more files that do not exist: file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/jaxb-api.jar,file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/activation.jar,file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/jsr173_1.0_api.jar,file:/C:/Users/dmtkr/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.3/jaxb1-impl.jar
+2019-12-16 20:38:13.720  INFO 828 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-12-16 20:38:13.721  INFO 828 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-12-16 20:38:16.142  INFO 828 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-16 20:38:16.198  INFO 828 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 49ms. Found 0 repository interfaces.
+2019-12-16 20:38:16.594  INFO 828 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:38:16.602  INFO 828 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:38:16.621  INFO 828 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:38:16.624  INFO 828 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@53444011' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:38:16.626  INFO 828 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:38:16.629  INFO 828 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-16 20:38:16.976  INFO 828 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2019-12-16 20:38:16.987  INFO 828 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-16 20:38:16.987  INFO 828 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.27]
+2019-12-16 20:38:17.088  INFO 828 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-16 20:38:17.088  INFO 828 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 3367 ms
+2019-12-16 20:38:17.159  INFO 828 --- [restartedMain] c.e.n.d.implementations.UserRepository   : Class initialized
+2019-12-16 20:38:17.355  INFO 828 --- [restartedMain] c.e.n.d.i.JdbcBookRepository             : Class initialized
+2019-12-16 20:38:17.493  INFO 828 --- [restartedMain] c.e.n.c.AuthenticationController         : Class initialized
+2019-12-16 20:38:17.499  INFO 828 --- [restartedMain] c.e.n.d.i.ChatRepositoryImpl             : Class initialized
+2019-12-16 20:38:17.506  INFO 828 --- [restartedMain] c.e.netbooks.controllers.ChatController  : Class initialized
+2019-12-16 20:38:17.507  INFO 828 --- [restartedMain] c.e.n.controllers.FilesController        : Class initialized
+2019-12-16 20:38:17.511  INFO 828 --- [restartedMain] c.e.n.controllers.ProfileController      : Class initialized
+2019-12-16 20:38:17.600  INFO 828 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'clientInboundChannelExecutor'
+2019-12-16 20:38:17.609  INFO 828 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'clientOutboundChannelExecutor'
+2019-12-16 20:38:17.659  INFO 828 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'messageBrokerTaskScheduler'
+2019-12-16 20:38:17.693  INFO 828 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'brokerChannelExecutor'
+2019-12-16 20:38:17.898  INFO 828 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@510bc4e5, org.springframework.security.web.context.SecurityContextPersistenceFilter@57897714, org.springframework.security.web.header.HeaderWriterFilter@1995375b, org.springframework.security.web.authentication.logout.LogoutFilter@55f24359, com.example.netbooks.security.JwtFilter@585b8df9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@13ea5d32, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@30c146e9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3b5d1ec5, org.springframework.security.web.session.SessionManagementFilter@74055088, org.springframework.security.web.access.ExceptionTranslationFilter@47c7d72d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1ed7590]
+2019-12-16 20:38:18.218  WARN 828 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2019-12-16 20:38:18.457  INFO 828 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-12-16 20:38:18.486  INFO 828 --- [restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2019-12-16 20:38:18.486  INFO 828 --- [restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [DefaultSubscriptionRegistry[cache[0 destination(s)], registry[0 sessions]]]]
+2019-12-16 20:38:18.488  INFO 828 --- [restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2019-12-16 20:38:18.525  INFO 828 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2019-12-16 20:38:18.531  INFO 828 --- [restartedMain] c.example.netbooks.NetbooksApplication   : Started NetbooksApplication in 5.713 seconds (JVM running for 7.776)
