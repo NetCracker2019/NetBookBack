@@ -10,9 +10,11 @@ import java.util.List;
 @Service
 public class AchievementService {
     private final AchievementRepository achievementRepository;
+    private final NotificationService notificationService;
 
-    public AchievementService(AchievementRepository achievementRepository) {
+    public AchievementService(AchievementRepository achievementRepository, NotificationService notificationService) {
         this.achievementRepository = achievementRepository;
+        this.notificationService = notificationService;
 
     }
 
@@ -20,12 +22,14 @@ public class AchievementService {
         boolean addedAuthorAchv = achievementRepository.checkAchievementAuthor(bookId, userId, favOrRead);
         if (addedAuthorAchv) {
             UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
-            // TODO Notification sending must be here.
+            notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
         }
         boolean addedGenreAchv = achievementRepository.checkAchievementGenre(bookId, userId,  favOrRead);
         if (addedGenreAchv) {
             UserAchievement userAchievement = achievementRepository.getLastUserAchievement(userId);
-            // TODO Notification sending must be here.
+            notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
         }
     }
 
