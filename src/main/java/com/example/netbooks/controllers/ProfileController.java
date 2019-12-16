@@ -44,7 +44,7 @@ public class ProfileController {
     public User getUser(@PathVariable("login")String login){
         log.info("GET /{}", login);
         User user = userManager.getUserByLogin(login);
-        //block if its admin but not you
+        //block if its admin but not you`
         if(!user.getRole().equals(Role.ROLE_CLIENT) &&
                 getCurrentUserRole().equals(Role.ROLE_CLIENT)){
             log.info("Cannot get access to view {} profile from {}", getCurrentUserLogin(), login);
@@ -146,12 +146,12 @@ public class ProfileController {
                                       @RequestParam("favourite")boolean favourite,
                                       @RequestParam("reading")boolean reading,
                                       @RequestParam("notset")boolean notSet,
-                                      @RequestParam("sortby")String sortBy,
-                                      @RequestParam("order")String order,
+                                      @RequestParam("sortby")int sortBy,
+                                      @RequestParam("order")int order,
                                       @RequestParam("page")int page){
         return bookService.getBooksByUserId(
                 userManager.getUserByLogin(login).getUserId(),
-                sought, size, read, favourite, reading, notSet, sortBy, order, page);
+                sought, size, read, favourite, reading, notSet, BookParam.values()[sortBy], Order.values()[order], page);
     }
     @PutMapping("/{shelf}/add-books")
     public void addBookBatchTo(@PathVariable("shelf")int shelf,

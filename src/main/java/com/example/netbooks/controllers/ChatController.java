@@ -58,7 +58,7 @@ public class ChatController {
     public void createNewChat(@PathVariable("chatName")String chatName,
                               @RequestBody List<String> members) throws SQLException {
         log.info("POST /create/{}", chatName);
-        chatService.createNewChat(validationService.plainTextValidation(chatName, 20), members);
+        chatService.createNewChat(validationService.plainTextValidation(chatName, 2,20), members);
     }
 
 
@@ -70,7 +70,7 @@ public class ChatController {
                            @RequestParam("chatAvatar") String chatAvatar) throws SQLException {
         log.info("POST /{}/update/{} by {}", chatId, editedChatName, getCurrentUserLogin());
         if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return;
-        chatService.updateChat(chatId, validationService.plainTextValidation(editedChatName, 20),
+        chatService.updateChat(chatId, validationService.plainTextValidation(editedChatName, 2, 20),
                 addedMembers, removedMembers, chatAvatar);
     }
 

@@ -227,17 +227,17 @@ public class BookService {
 
     public List<ViewBook> getFavouriteBooksByUserId(Long id, String sought, int cntBooks, int offset) {
         return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, false, true,
-                false, false,"", "");
+                false, false,BookParam.TITLE, Order.ASC);
     }
 
     public List<ViewBook> getReadingBooksByUserId(Long id, String sought, int cntBooks, int offset) {
         return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, false, false,
-                true, false, "", "");
+                true, false, BookParam.TITLE, Order.ASC);
     }
 
     public List<ViewBook> getReadBooksByUserId(Long id, String sought, int cntBooks, int offset) {
         return jdbcBookRepository.getBooksByUserId(id, sought, cntBooks, offset, true, false,
-                false, false,"", "");
+                false, false,BookParam.TITLE, Order.ASC);
     }
 
     public Date getMinDateRelease() {
@@ -331,7 +331,7 @@ public class BookService {
     }
   
     public List<ViewBook> getBooksByUserId(long userId, String sought, int cntBooks, boolean read, boolean favourite,
-                                           boolean reading, boolean notSet, String sortBy, String order, int offset) {
+                                           boolean reading, boolean notSet, BookParam sortBy, Order order, int offset) {
         return jdbcBookRepository.getBooksByUserId(userId, sought, cntBooks, offset, read, favourite, reading, notSet,
                 sortBy, order);
     }
