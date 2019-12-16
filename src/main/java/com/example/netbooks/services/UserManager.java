@@ -163,7 +163,6 @@ public class UserManager {
 		long achvId = achievementService.getAchvIdByParameters(friendsAmountForUser, "friends", 1);
 		if (achvId > 0){
 			achievementRepository.addAchievementForUser(achvId, userId);
-
 		}
 		userRepository.addFriend(ownLogin, friendLogin);
 	}
