@@ -235,4 +235,9 @@ public class BookController {
                                          @RequestParam("size") int size) {
         return bookService.getSuggestions(userName, PageRequest.of(page, size));
     }
+
+    @GetMapping("/count-books-unapproved")
+    public int countBooks(@RequestParam("approved") boolean approved){
+        return  bookService.countBooks(approved);
+    }
 }
