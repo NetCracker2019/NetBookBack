@@ -423,7 +423,7 @@ public class JdbcBookRepository implements BookRepository {
     }
     @Override
     public List<ViewBook> getBooksByUserId(Long id, String sought, int cntBooks, int offset, boolean read,
-                                           boolean favourite, boolean reading, boolean notSet, String sortBy, String order) {
+                                           boolean favourite, boolean reading, boolean notSet, BookParam sortBy, Order order) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("offset", offset);
         namedParams.put("cnt", cntBooks);
@@ -433,8 +433,8 @@ public class JdbcBookRepository implements BookRepository {
         namedParams.put("reading", reading);
         namedParams.put("not_set", notSet);
         namedParams.put("sought", "%" + sought + "%");
-        if("asc".equals(order)){
-            if("title".equals(sortBy)){
+        if(Order.ASC.equals(order)){
+            if(BookParam.TITLE.equals(sortBy)){
                 return namedJdbcTemplate.query(getBookList,
                         namedParams, new ShortViewBookMapper());
             }else{
@@ -442,7 +442,7 @@ public class JdbcBookRepository implements BookRepository {
                         namedParams, new ShortViewBookMapper());
             }
         }else{
-            if("title".equals(sortBy)){
+            if(BookParam.TITLE.equals(sortBy)){
                 return namedJdbcTemplate.query(getBookListDesc,
                         namedParams, new ShortViewBookMapper());
             }else{
