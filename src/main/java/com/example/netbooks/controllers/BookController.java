@@ -99,24 +99,10 @@ public class BookController {
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
         log.info(userName+bookId);
-        Thread notifThread = new Thread(() -> {
             long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                     .getContext().getAuthentication()
                     .getPrincipal()).getUsername());
-            User tmpUser = userManager.getUserById(id);
-            List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
-            List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
-            friends.addAll(subscribers);
-            for (User user : friends) {
-                Notification notification = new Notification();
-                notification.setNotifTypeId(2);
-                notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
-                notification.setFromUserId((int) (tmpUser.getUserId()));
-                notification.setBookId(bookId);
-                notificationService.addNotification(notification);
-            }
-        });
-        notifThread.start();
+            notificationService.createAndSaveAddBookNotif(id, bookId);
         return bookService.addBookToProfile(userName, bookId);
     }
     @PostMapping("/add-review-user-book")

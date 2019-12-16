@@ -60,7 +60,7 @@ public class ApproveController {
 
     @PostMapping("confirm-review")
     public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId) {
-        Thread notifThread = new Thread(() -> {
+
             Review review = bookService.getReviewById(reviewId);
             User tmpUser = userManager.getUserById(review.getUserId());
             List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
@@ -68,9 +68,9 @@ public class ApproveController {
             friends.addAll(subscribers);
             notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId(), reviewId);
 
-        });
 
-        notifThread.start();
+
+
         return bookService.approveReview(reviewId, userId);
     }
 

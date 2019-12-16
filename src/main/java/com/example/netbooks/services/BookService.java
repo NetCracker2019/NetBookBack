@@ -37,6 +37,7 @@ public class BookService {
     private final UserRepository userRepository;
     private final AchievementRepository achievementRepository;
     private final AchievementService achievementService;
+    private final NotificationService notificationService;
 
     @Autowired
     public BookService(JdbcBookRepository jdbcBookRepository,
@@ -45,7 +46,8 @@ public class BookService {
                        ReviewRepository reviewRepository,
                        UserRepository userRepository,
                        AchievementRepository achievementRepository,
-                       AchievementService achievementService) {
+                       AchievementService achievementService,
+                       NotificationService notificationService) {
 
         this.jdbcBookRepository = jdbcBookRepository;
         this.genreRepository = genreRepository;
@@ -54,6 +56,7 @@ public class BookService {
         this.userRepository = userRepository;
         this.achievementRepository = achievementRepository;
         this.achievementService = achievementService;
+        this.notificationService = notificationService;
     }
 
     public List<Book> getAllBooks(){
@@ -114,7 +117,8 @@ public class BookService {
         try{
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "addedBooks");
-            // TODO Send notif here
+            notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
         } catch (NullPointerException e){
             e.getMessage();
         }
@@ -255,7 +259,8 @@ public class BookService {
             try{
                 UserAchievement userAchievement =
                         achievementRepository.checkUserAchievement(review.getUserId(), "review");
-                // TODO Send notif here
+                notificationService.createAndSaveAchievNotif(review.getUserId(), userAchievement.getAchvId());
+
             } catch (NullPointerException e){
                 e.getMessage();
             }
@@ -271,7 +276,8 @@ public class BookService {
             try{
                 UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "bookInProfile");
-                // TODO Send notif here
+                notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
             } catch (NullPointerException e){
                 e.getMessage();
             }
@@ -287,7 +293,8 @@ public class BookService {
             try{
                 UserAchievement userAchievement =
                         achievementRepository.checkUserAchievement(userId, "review");
-                // TODO Send notif here
+                notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
             } catch (NullPointerException e){
                 e.getMessage();
             }
