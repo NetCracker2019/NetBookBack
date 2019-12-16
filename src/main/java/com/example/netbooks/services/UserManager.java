@@ -181,15 +181,6 @@ public class UserManager {
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "friends");
             // TODO Send notif here
-
-            Thread notifThread = new Thread(() -> {
-                Notification notification = new Notification();
-                notification.setNotifTypeId(3);
-                notification.setUserId((int) (getUserByLogin(ownLogin).getUserId()));
-                notification.setFromUserId((int) (getUserByLogin(ownLogin).getUserId()));
-                notificationService.addNotification(notification);
-            });
-            notifThread.start();
         } catch (NullPointerException e){
             e.getMessage();
         }
