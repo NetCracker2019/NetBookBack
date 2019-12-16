@@ -15,7 +15,7 @@ public class ValidationService {
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-.]+@[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$";
     private static final String PLAIN_Text_PATTERN =
-            "^[A-Za-z0-9-. ]+$";
+            "^\\s*[a-zA-Z0-9а-яёАЯЁ_]+(?:\\s*[a-zA-Z0-9а-яёАЯЁ_]+)*\\s*$";
     private static final String LOGIN_PATTERN =
             "^[A-Za-z0-9-._]+$";
 
@@ -33,12 +33,12 @@ public class ValidationService {
         if (matcher.matches()) return stringValidation(email, 7, 25);
         else throw new ValidationException("Incorrect email");
     }
-    public String plainTextValidation(String text, int maxSize){
-        if(text == null) return null;
+    public String plainTextValidation(String text, int minSize, int maxSize){
+        if(text == null || minSize == text.length()) return null;
         Pattern pattern = Pattern.compile(PLAIN_Text_PATTERN);
         Matcher matcher = pattern.matcher(text);
-        if (matcher.matches()) return stringValidation(text, 0, maxSize);
-        else throw new ValidationException("Incorrect data");
+        if (matcher.matches()) return stringValidation(text, minSize, maxSize);
+        else { log.info("test {}", text); throw new ValidationException("Incorrect data");}
     }
 
     public String loginValidation(String login){
@@ -54,11 +54,11 @@ public class ValidationService {
     public User userValidation(User user){
         loginValidation(user.getLogin());
         emailValidation(user.getEmail());
-        plainTextValidation(user.getName(), 30);
-        plainTextValidation(user.getCity(), 20);
-        plainTextValidation(user.getCountry(), 20);
-        plainTextValidation(user.getStatus(), 50);
-        plainTextValidation(user.getSex(), 25);
+        plainTextValidation(user.getName(), 4,30);
+        plainTextValidation(user.getCity(), 0,20);
+        plainTextValidation(user.getCountry(), 0,20);
+        plainTextValidation(user.getStatus(), 0,50);
+        plainTextValidation(user.getSex(), 0,25);
         return user;
     }
 }

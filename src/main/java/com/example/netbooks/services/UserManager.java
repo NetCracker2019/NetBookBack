@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.netbooks.dao.implementations.AchievementRepository;
+import com.example.netbooks.exceptions.EmailExistException;
+import com.example.netbooks.exceptions.LoginExistException;
 import com.example.netbooks.models.*;
 import com.google.common.base.Strings;
 import lombok.Data;
@@ -57,7 +59,11 @@ public class UserManager {
     }
 
     public void updateUser(User user) {
-
+        if (!userRepository.findByLogin(user.getLogin()).getEmail().equals(user.getEmail())
+                && userRepository.isExistByLogin(user.getLogin())){
+            log.info("Email - {} already in use", user.getEmail());
+            throw new EmailExistException("Email is already in use");
+        }
         userRepository.updateUser(user);
     }
 
@@ -175,15 +181,6 @@ public class UserManager {
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "friends");
             // TODO Send notif here
-
-            Thread notifThread = new Thread(() -> {
-                Notification notification = new Notification();
-                notification.setNotifTypeId(3);
-                notification.setUserId((int) (getUserByLogin(ownLogin).getUserId()));
-                notification.setFromUserId((int) (getUserByLogin(ownLogin).getUserId()));
-                notificationService.addNotification(notification);
-            });
-            notifThread.start();
         } catch (NullPointerException e){
             e.getMessage();
         }
@@ -204,10 +201,10 @@ public class UserManager {
 
     public void register(User user) {
         if (userRepository.isExistByLogin(user.getLogin())){
-            throw new CustomException("Login is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new LoginExistException("Login is already in use");
         }
         if (userRepository.isExistByMail(user.getEmail())){
-            throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new EmailExistException("Email is already in use");
         }
         user.setRegDate(LocalDate.now());
         userRepository.save(user);
@@ -229,7 +226,7 @@ public class UserManager {
         verificationTokenManager.removeVerificationToken(verificationToken);
     }
 
-    public void requestFroRecoveryPass(String email) {
+    public void requestForRecoveryPass(String email) {
         User user = userRepository.findByEmail(email);
         VerificationToken verificationToken = new VerificationToken(user.getUserId());
         verificationTokenManager.saveToken(verificationToken);

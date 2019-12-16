@@ -38,6 +38,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 body(new SimpleException("Incorrect data"));
     }
 
+    @ExceptionHandler(LoginExistException.class)
+    protected ResponseEntity handleLoginExistException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                body(new SimpleException("User with this login already exist"));
+    }
+    @ExceptionHandler(EmailExistException.class)
+    protected ResponseEntity handleEmailExistException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                body(new SimpleException("User with this email already exist"));
+    }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity handleDefaultException() {

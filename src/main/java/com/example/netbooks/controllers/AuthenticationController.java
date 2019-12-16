@@ -178,7 +178,7 @@ public class AuthenticationController {
     @PostMapping("/recovery/password")
     public void requestFroRecoveryPass(@RequestBody String email) {
         log.info("POST /recovery/password for {}", email);
-        userManager.requestFroRecoveryPass(validationService.emailValidation(email));
+        userManager.requestForRecoveryPass(validationService.emailValidation(email));
     }
 
     @PutMapping("/change/password")
