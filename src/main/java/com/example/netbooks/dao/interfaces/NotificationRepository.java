@@ -9,7 +9,9 @@ public interface NotificationRepository {
 
     List<Notification> getAllNotificationsByUserId(long userId);
 
-    List<Notification> getAllViewNotificationsByUserId(long userId);
+    List<Notification> getAllViewNotificationsByUserId(long userId,int cntNotifsForView,int offset);
+
+    List<Notification> getAllUnreadViewNotificationsByUserId(long userId ,int cntNotifForView,int offset);
 
     void addNotification(Notification notification);
 
@@ -17,17 +19,8 @@ public interface NotificationRepository {
 
     void markNotifAsReadByNotifId(Integer notifId);
 
-   /* void deleteAllNotificationsByUserId(long id);
-
-    void deleteNotificationByNotifId(Integer notifId);
-
-    */
+    void deleteAllNotificationsByUserId(long id);
 
     int getNotifCount(long userId);
 
-    List<Notification> getAllUnreadViewNotificationsByUserId(long userId);
-
-    List<Notification> getAllViewNotificationsByUserIdAndTypeId(long userId, long typeId);
-
-    // Notification getNotification(int notificationId);
 }

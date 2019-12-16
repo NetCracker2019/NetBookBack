@@ -36,10 +36,6 @@ public interface BookRepository {
     List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
     List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to);
 
-
-
-
-
     void confirmAnnouncement(long announcementId);
     void cancelAnnouncement(long announcementId);
 
@@ -66,7 +62,7 @@ public interface BookRepository {
   
     void likeBook(long bookId, long userId);
     void dislikeBook(long bookId, long userId);
-    int checkLickedBook(long bookId, long userId);
+    boolean checkLickedBook(long bookId, long userId);
 
     int countAddedBooksForUser(long userId);
 }
