@@ -99,24 +99,10 @@ public class BookController {
     @PostMapping("/add-book-profile")
     public boolean addBookToProfile(@RequestParam("userName") String userName, @RequestParam("bookId") int bookId){
         log.info(userName+bookId);
-        Thread notifThread = new Thread(() -> {
             long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                     .getContext().getAuthentication()
                     .getPrincipal()).getUsername());
-            User tmpUser = userManager.getUserById(id);
-            List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
-            List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
-            friends.addAll(subscribers);
-            for (User user : friends) {
-                Notification notification = new Notification();
-                notification.setNotifTypeId(2);
-                notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
-                notification.setFromUserId((int) (tmpUser.getUserId()));
-                notification.setBookId(bookId);
-                notificationService.addNotification(notification);
-            }
-        });
-        notifThread.start();
+            notificationService.createAndSaveAddBookNotif(id, bookId);
         return bookService.addBookToProfile(userName, bookId);
     }
     @PostMapping("/add-review-user-book")
@@ -186,13 +172,14 @@ public class BookController {
     }
 
     @GetMapping("/find-books")
-    public Page<ViewBook> findBooks(@RequestParam(value = "title") String title,
+    public Page<ViewBook> findBooks(@RequestParam(value = "title", required = false) String title,
                                     @RequestParam(value = "author", required = false) String author,
                                     @RequestParam(value = "genre", required = false) Integer genre,
                                     @RequestParam(value = "from", required = false) Date from,
                                     @RequestParam(value = "to", required = false) Date to,
                                     @RequestParam(value = "page") int page,
                                     @RequestParam(value = "size") int size) {
+        log.info("author - {}, title - {}", author, title);
         return bookService.getBooksByParameters(title, author, genre, from, to, PageRequest.of(page, size));
     }
 
@@ -234,5 +221,10 @@ public class BookController {
                                          @RequestParam("page") int page,
                                          @RequestParam("size") int size) {
         return bookService.getSuggestions(userName, PageRequest.of(page, size));
+    }
+
+    @GetMapping("/count-books-unapproved")
+    public int countBooks(@RequestParam("approved") boolean approved){
+        return  bookService.countBooks(approved);
     }
 }

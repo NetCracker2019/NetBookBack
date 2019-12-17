@@ -29,7 +29,6 @@ import java.util.UUID;
 public class UserManager {
     private UserRepository userRepository;
 	private AchievementRepository achievementRepository;
-	private AchievementService achievementService;
     private FileStorageService fileStorageService;
     private VerificationTokenManager verificationTokenManager;
     private EmailSender emailSender;
@@ -38,13 +37,11 @@ public class UserManager {
     public UserManager(UserRepository userRepository,
                        EmailSender emailSender,
                        AchievementRepository achievementRepository,
-                       AchievementService achievementService,
                        FileStorageService fileStorageService,
                        VerificationTokenManager verificationTokenManager) {
         this.userRepository = userRepository;
         this.emailSender = emailSender;
         this.achievementRepository = achievementRepository;
-        this.achievementService = achievementService;
         this.fileStorageService = fileStorageService;
         this.verificationTokenManager = verificationTokenManager;
     }
@@ -180,7 +177,7 @@ public class UserManager {
         try{
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "friends");
-            // TODO Send notif here
+            notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
         } catch (NullPointerException e){
             e.getMessage();
         }
@@ -215,7 +212,7 @@ public class UserManager {
         String message = "To verification your account, please click here : "
                 + "https://netbooksfront.herokuapp.com/verification-account?token="
                 + verificationToken.getVerificationToken();
-        log.info("fff {}", message);
+        //log.info("fff {}", message);
         emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
     }
 

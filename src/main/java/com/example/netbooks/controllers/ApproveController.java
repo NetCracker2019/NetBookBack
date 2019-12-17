@@ -4,6 +4,7 @@ package com.example.netbooks.controllers;
 import com.example.netbooks.models.Review;
 import com.example.netbooks.models.User;
 import com.example.netbooks.models.ViewAnnouncement;
+import com.example.netbooks.models.ViewBook;
 import com.example.netbooks.services.BookService;
 import com.example.netbooks.services.NotificationService;
 import com.example.netbooks.services.UserManager;
@@ -35,7 +36,7 @@ public class ApproveController {
     }
 
     @PostMapping("/confirm-announcement")
-    public ResponseEntity confirmAnnouncement(@RequestBody ViewAnnouncement announcement) {
+    public boolean confirmAnnouncement(@RequestBody ViewAnnouncement announcement) {
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
@@ -43,7 +44,7 @@ public class ApproveController {
     }
 
     @PostMapping("/cancel-announcement")
-    public ResponseEntity cancelAnnouncement(@RequestBody ViewAnnouncement announcement) {
+    public boolean cancelAnnouncement(@RequestBody ViewAnnouncement announcement) {
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
@@ -60,7 +61,7 @@ public class ApproveController {
 
     @PostMapping("confirm-review")
     public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId) {
-        Thread notifThread = new Thread(() -> {
+
             Review review = bookService.getReviewById(reviewId);
             User tmpUser = userManager.getUserById(review.getUserId());
             List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
@@ -68,9 +69,9 @@ public class ApproveController {
             friends.addAll(subscribers);
             notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId(), reviewId);
 
-        });
 
-        notifThread.start();
+
+
         return bookService.approveReview(reviewId, userId);
     }
 
@@ -86,5 +87,28 @@ public class ApproveController {
         return  bookService.countAnnouncement(approved);
     }
 
+    @GetMapping("/books-for-approve")
+    public List<ViewBook> getBooksForApprove(@RequestParam("page") int page,
+                                             @RequestParam("itemPerPage") int offset) {
+        logger.info(bookService.getBooksForApprove(page, offset));
+        return bookService.getBooksForApprove(page, offset);
+    }
+
+    @PostMapping("/confirm-book")
+    public boolean confirmBook(@RequestBody ViewBook book) {
+        logger.info(book);
+        long id = book.getBookId();
+        logger.info(id);
+        return bookService.confirmBook(id);
+    }
+
+    @PostMapping("/cancel-book")
+    public boolean cancelBook(@RequestBody ViewBook book) {
+        logger.info(book);
+        long id = book.getBookId();
+        logger.info(id);
+        return bookService.cancelBook(id);
+
+    }
 
 }
