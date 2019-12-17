@@ -39,24 +39,20 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public String addRowIntoBookAuthor(String title, String description, List<String> id) {
+    public void addRowIntoBookAuthor(int bookId, List<String> id) {
         for (String item : id) {
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-            namedParameters.addValue("title", title);
-            namedParameters.addValue("description", description);
+            namedParameters.addValue("bookId", bookId);
             namedParameters.addValue("fullname", item);
 
-            //boolean isThisAuthorExist = jdbcTemplate.queryForObject("select exists(select 1 from author where fullname='" + item + "')", Boolean.class);
+
             boolean isThisAuthorExist = namedJdbcTemplate.queryForObject(env.getProperty("isThisAuthorExist"), namedParameters, Boolean.class);
             if (!isThisAuthorExist) {
-                //jdbcTemplate.update("insert into author (fullname) values (?)", new Object[] {item});
                 namedJdbcTemplate.update(env.getProperty("addAuthor"), namedParameters);
             }
 
             namedJdbcTemplate.update(env.getProperty("addRowIntoBookAuthor"), namedParameters);
-            //jdbcTemplate.update("insert into book_author values ((select book_id from book where title ='" + title + "'), \n" +
-            //        "\t\t   (select author_id from author where fullname ='" +  item + "'))");
+
         }
-        return "Add Author";
     }
 }
