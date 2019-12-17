@@ -44,22 +44,16 @@ public class GenreRepositoryImpl implements GenreRepository {
     }
 
     @Override
-    public String addRowIntoBookGenre(String title, String description, List<String> id) {
+    public void addRowIntoBookGenre(int bookId, List<String> id) {
 
 
 
         for (String item : id) {
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-            namedParameters.addValue("title", title);
-            namedParameters.addValue("description", description);
+            namedParameters.addValue("bookId", bookId);
             namedParameters.addValue("item", item);
-            //for (int i = 0; i < book.getGenre().size(); i++) {
             namedJdbcTemplate.update(env.getProperty("addRowIntoBookGenre"), namedParameters);
-//                jdbcTemplate.update("insert into book_genre values ((select book_id from book where title ='" + title
-//                        + "'), " + item + ")");
-            //}
         }
-            return "Add Genre";
 
     }
 
