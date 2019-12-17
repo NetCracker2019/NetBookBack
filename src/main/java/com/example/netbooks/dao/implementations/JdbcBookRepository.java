@@ -556,6 +556,7 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.queryForObject(env.getProperty("getUserIdByAnnouncementId"), namedParameters, Long.class);
     }
 
+
     @Override
     public int countBooks(boolean approved) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("approved", approved);
@@ -582,5 +583,12 @@ public class JdbcBookRepository implements BookRepository {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("BookId", BookId);
         return namedJdbcTemplate.update(env.getProperty("cancelBook"), namedParameters) > 0;
+    }
+    @Override
+    public List<ViewBook> findBooksByAuthor(String author) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("author", author);
+        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByAuthor"), namedParameters, viewBooksMapper);
+
     }
 }
