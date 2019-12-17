@@ -305,7 +305,7 @@ public class JdbcBookRepository implements BookRepository {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<ViewBook> findBooksByTitleAndAuthor(String title, String author, Date from, Date to) {
+    public List<ViewBook> findBooksByTitleAndAuthor(String title, Integer author, Date from, Date to) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("author", author);
@@ -322,7 +322,7 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleAndDate"), namedParameters, viewBooksMapper);
     }
 
-    public List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to) {
+    public List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("author", author);

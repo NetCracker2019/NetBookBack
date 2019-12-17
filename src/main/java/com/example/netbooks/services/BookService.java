@@ -185,7 +185,7 @@ public class BookService {
         return jdbcBookRepository.getPeaceOfBook(count, offset);
     }
 
-    public Page<ViewBook> getBooksByParameters(String title, String author, Integer genre, Date from, Date to, Pageable pageable) {
+    public Page<ViewBook> getBooksByParameters(String title, Integer author, Integer genre, Date from, Date to, Pageable pageable) {
         List<ViewBook> books = Collections.emptyList();
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();

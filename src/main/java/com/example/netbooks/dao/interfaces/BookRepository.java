@@ -32,9 +32,9 @@ public interface BookRepository {
     List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset);
 
     List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndAuthor(String title, String author, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndAuthor(String title, Integer author, Date from, Date to);
     List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to);
 
     void confirmAnnouncement(long announcementId);
     void cancelAnnouncement(long announcementId);

@@ -187,7 +187,7 @@ public class BookController {
 
     @GetMapping("/find-books")
     public Page<ViewBook> findBooks(@RequestParam(value = "title") String title,
-                                    @RequestParam(value = "author", required = false) String author,
+                                    @RequestParam(value = "author", required = false) Integer author,
                                     @RequestParam(value = "genre", required = false) Integer genre,
                                     @RequestParam(value = "from", required = false) Date from,
                                     @RequestParam(value = "to", required = false) Date to,
