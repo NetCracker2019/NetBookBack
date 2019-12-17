@@ -26,15 +26,15 @@ public interface BookRepository {
 
     List<ViewBook> findAllViewBooks();
 
-    List<ViewBook> findViewBooksByTitle(String title);
+    List<ViewBook> findViewBooksByTitle(String title, int pageSize, int startIndex);
     ViewBook getBookById(int id);
 
     List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset);
 
-    List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndAuthor(String title, Integer author, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to);
+    List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to, int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleAndAuthor(String title, Integer author, Date from, Date to,  int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to, int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to, int pageSize, int startIndex);
 
     void confirmAnnouncement(long announcementId);
     void cancelAnnouncement(long announcementId);
