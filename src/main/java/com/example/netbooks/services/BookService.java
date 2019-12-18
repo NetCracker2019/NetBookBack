@@ -37,6 +37,7 @@ public class BookService {
     private final UserRepository userRepository;
     private final AchievementRepository achievementRepository;
     private final AchievementService achievementService;
+    private final FileStorageService fileStorageService;
     private final NotificationService notificationService;
 
     @Autowired
@@ -45,6 +46,7 @@ public class BookService {
                        AuthorRepository authorRepository,
                        ReviewRepository reviewRepository,
                        UserRepository userRepository,
+                       FileStorageService fileStorageService,
                        AchievementRepository achievementRepository,
                        AchievementService achievementService,
                        NotificationService notificationService) {
@@ -55,6 +57,7 @@ public class BookService {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.achievementRepository = achievementRepository;
+        this.fileStorageService = fileStorageService;
         this.achievementService = achievementService;
         this.notificationService = notificationService;
     }
@@ -128,7 +131,8 @@ public class BookService {
         return jdbcBookRepository.confirmAnnouncement(announcementId);
     }
 
-    public boolean cancelAnnouncement(long announcementId) {
+    public boolean cancelAnnouncement(long announcementId, String imagePath) {
+        fileStorageService.deleteFile(imagePath);
         return jdbcBookRepository.cancelAnnouncement(announcementId);
     }
 
