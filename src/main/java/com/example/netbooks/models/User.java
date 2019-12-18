@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,11 +16,11 @@ import com.example.netbooks.dao.implementations.UserRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Data
-@Getter
-@Setter
+@NoArgsConstructor
 public class User {
 	@JsonProperty("id")
 	private long userId;
@@ -46,21 +47,29 @@ public class User {
     private boolean activity;
     private boolean turnOnNotif;
 	@JsonProperty("role")
-    private Role role;
+	private Role role;
     private Date minRefreshDate;
 
 	public void setRoleInt(int roleId) {
 		this.role = Role.values()[roleId - 1];
 	}
-
+	public User(String login, String name, String password, String status, String city, String country,
+				String email, String sex){
+		this.name = name;
+		this.login = login;
+		this.email = email;
+		this.password = password;
+		this.sex = sex;
+		this.country = country;
+		this.city = city;
+		this.status = status;
+	}
 	public void compareAndReplace(User user) {
 		this.name = user.name;
 		this.email = user.email;
 		this.password = (Strings.isNullOrEmpty(user.getPassword()))
 				? this.password : user.password;
 		this.sex = user.sex;
-		this.avatarFilePath = (Strings.isNullOrEmpty(user.getAvatarFilePath())
-				&& this.avatarFilePath != null) ? this.avatarFilePath : user.avatarFilePath;
 		this.country = user.country;
 		this.city = user.city;
 		this.status = user.status;

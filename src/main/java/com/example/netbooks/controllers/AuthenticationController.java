@@ -174,13 +174,23 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    //request for recovery password
+
+    /**
+     * Sent link for recovery password on user email
+     * @param email user email
+     * @exception com.example.netbooks.exceptions.EmailNotFountException when email not found
+     */
     @PostMapping("/recovery/password")
     public void requestFroRecoveryPass(@RequestBody String email) {
         log.info("POST /recovery/password for {}", email);
         userManager.requestForRecoveryPass(validationService.emailValidation(email));
     }
 
+    /**
+     * Change user password
+     * @param verificationToken verification token
+     * @param newPass new password
+     */
     @PutMapping("/change/password")
     public void recoveryPass(@RequestParam("token") String verificationToken,
                              @RequestBody String newPass) {

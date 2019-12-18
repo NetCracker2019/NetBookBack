@@ -179,7 +179,6 @@ public class BookController {
                                     @RequestParam(value = "to", required = false) Date to,
                                     @RequestParam(value = "page") int page,
                                     @RequestParam(value = "size") int size) {
-        log.info("author - {}, title - {}", author, title);
         return bookService.getBooksByParameters(title, author, genre, from, to, PageRequest.of(page, size));
     }
 
