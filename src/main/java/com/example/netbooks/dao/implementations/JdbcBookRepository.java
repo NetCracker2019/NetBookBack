@@ -193,22 +193,6 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.update(env.getProperty("removeBookFromProfile"), namedParameters) > 0;
     }
 
-
-    @Override
-    public List<ViewBook> findViewBooksByTitle(String title, int pageSize, int startIndex) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("title", "%" + title + "%");
-        namedParameters.addValue("limit", pageSize);
-        namedParameters.addValue("offset", startIndex);
-        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitle"), namedParameters, viewBooksMapper);
-    }
-
-    public Integer findAmountViewBooksByTitle(String title) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("title", "%" + title + "%");
-        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitle"), namedParameters, Integer.class);
-    }
-
     @Override
     public ViewBook getBookById(int id) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
@@ -218,27 +202,6 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public List<Book> findAllBooks() {
         return jdbcTemplate.query("select * from book", new BookRowMapper());
-    }
-
-    @Override
-    public List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to, int pageSize, int startIndex) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("title", "%"+title+"%");
-        namedParameters.addValue("genre", genre);
-        namedParameters.addValue("from", from);
-        namedParameters.addValue("to", to);
-        namedParameters.addValue("limit", pageSize);
-        namedParameters.addValue("offset", startIndex);
-        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleAndGenre") , namedParameters, viewBooksMapper);
-    }
-
-    public Integer findAmountBooksByTitleAndGenre(String title, Integer genre, Date from, Date to) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("title", "%"+title+"%");
-        namedParameters.addValue("genre", genre);
-        namedParameters.addValue("from", from);
-        namedParameters.addValue("to", to);
-        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitleAndGenre"), namedParameters, Integer.class);
     }
 
     @Override
@@ -325,26 +288,22 @@ public class JdbcBookRepository implements BookRepository {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<ViewBook> findBooksByTitleAndAuthor(String title, Integer author, Date from, Date to, int pageSize, int startIndex) {
+    @Override
+    public List<ViewBook> findBooksByTitle(String title, int pageSize, int startIndex) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("title", "%"+title+"%");
-        namedParameters.addValue("author", author);
-        namedParameters.addValue("from", from);
-        namedParameters.addValue("to", to);
+        namedParameters.addValue("title", "%" + title + "%");
         namedParameters.addValue("limit", pageSize);
         namedParameters.addValue("offset", startIndex);
-        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleAndAuthor") , namedParameters, viewBooksMapper);
+        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitle"), namedParameters, viewBooksMapper);
     }
 
-    public Integer findAmountBooksByTitleAndAuthor(String title, Integer author, Date from, Date to) {
+    public Integer findAmountBooksByTitle(String title) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("title", "%"+title+"%");
-        namedParameters.addValue("author", author);
-        namedParameters.addValue("from", from);
-        namedParameters.addValue("to", to);
-        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitleAndAuthor"), namedParameters, Integer.class);
+        namedParameters.addValue("title", "%" + title + "%");
+        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitle"), namedParameters, Integer.class);
     }
 
+    @Override
     public List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to, int pageSize, int startIndex) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
@@ -363,7 +322,48 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitleAndDate"), namedParameters, Integer.class);
     }
 
-    public List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to, int pageSize, int startIndex) {
+    @Override
+    public List<ViewBook> findBooksByTitleGenreDate(String title, Integer genre, Date from, Date to, int pageSize, int startIndex) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", "%"+title+"%");
+        namedParameters.addValue("genre", genre);
+        namedParameters.addValue("from", from);
+        namedParameters.addValue("to", to);
+        namedParameters.addValue("limit", pageSize);
+        namedParameters.addValue("offset", startIndex);
+        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleGenreDate") , namedParameters, viewBooksMapper);
+    }
+
+    public Integer findAmountBooksByTitleGenreDate(String title, Integer genre, Date from, Date to) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", "%"+title+"%");
+        namedParameters.addValue("genre", genre);
+        namedParameters.addValue("from", from);
+        namedParameters.addValue("to", to);
+        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitleGenreDate"), namedParameters, Integer.class);
+    }
+
+    public List<ViewBook> findBooksByTitleAuthorDate(String title, Integer author, Date from, Date to, int pageSize, int startIndex) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", "%"+title+"%");
+        namedParameters.addValue("author", author);
+        namedParameters.addValue("from", from);
+        namedParameters.addValue("to", to);
+        namedParameters.addValue("limit", pageSize);
+        namedParameters.addValue("offset", startIndex);
+        return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleAuthorDate") , namedParameters, viewBooksMapper);
+    }
+
+    public Integer findAmountBooksByTitleAuthorDate(String title, Integer author, Date from, Date to) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("title", "%"+title+"%");
+        namedParameters.addValue("author", author);
+        namedParameters.addValue("from", from);
+        namedParameters.addValue("to", to);
+        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("findAmountBooksByTitleAuthorDate"), namedParameters, Integer.class);
+    }
+
+    public List<ViewBook> findBooksByTitleAuthorGenreDate(String title, Integer author, Integer genre, Date from, Date to, int pageSize, int startIndex) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("author", author);
@@ -375,7 +375,7 @@ public class JdbcBookRepository implements BookRepository {
         return namedJdbcTemplate.query(env.getRequiredProperty("findBooksByTitleAuthorGenre"), namedParameters, viewBooksMapper);
     }
 
-    public Integer findAmountBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to) {
+    public Integer findAmountBooksByTitleAuthorGenreDate(String title, Integer author, Integer genre, Date from, Date to) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("title", "%"+title+"%");
         namedParameters.addValue("author", author);

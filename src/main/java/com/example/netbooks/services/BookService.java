@@ -200,20 +200,20 @@ public class BookService {
         title = title.toLowerCase().trim().replaceAll(" +", " ");
 
         if (author == null && genre == null && from == null && to == null) {
-            sizeOfBooks = jdbcBookRepository.findAmountViewBooksByTitle(title);
-            books = jdbcBookRepository.findViewBooksByTitle(title, pageSize, startIndex);
+            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitle(title);
+            books = jdbcBookRepository.findBooksByTitle(title, pageSize, startIndex);
         } else if (author == null && genre == null && from != null && to != null) {
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndDate(title, from, to);
             books = jdbcBookRepository.findBooksByTitleAndDate(title, from, to, pageSize, startIndex);
         } else if (author == null && genre != null && from != null && to != null) {
-            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndGenre(title, genre, from, to);
-            books =  jdbcBookRepository.findBooksByTitleAndGenre(title, genre, from, to, pageSize, startIndex);
+            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleGenreDate(title, genre, from, to);
+            books =  jdbcBookRepository.findBooksByTitleGenreDate(title, genre, from, to, pageSize, startIndex);
         } else if (author != null && genre == null && from != null && to != null) {
-            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndAuthor(title, author, from, to);
-            books = jdbcBookRepository.findBooksByTitleAndAuthor(title, author, from, to, pageSize, startIndex);
+            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAuthorDate(title, author, from, to);
+            books = jdbcBookRepository.findBooksByTitleAuthorDate(title, author, from, to, pageSize, startIndex);
         } else if (author != null && genre != null && from != null && to != null) {
-            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
-            books = jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(title, author, genre, from, to, pageSize, startIndex);
+            sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAuthorGenreDate(title, author, genre, from, to);
+            books = jdbcBookRepository.findBooksByTitleAuthorGenreDate(title, author, genre, from, to, pageSize, startIndex);
         }
 
         return new PageImpl<>(books, PageRequest.of(currentPage, pageSize), sizeOfBooks);
