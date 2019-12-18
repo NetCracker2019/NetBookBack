@@ -132,9 +132,6 @@ public class UserManager {
         return userRepository.findByLogin(login);
     }
 
-    public Iterable<User> getAllUsers() {
-        return userRepository.getAllUsers();
-    }
 
     public void setMinRefreshDate(String login, Date date) {
         userRepository.setMinRefreshDate(login, date);
@@ -185,10 +182,6 @@ public class UserManager {
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
-
-    public void deleteFile(String avatarFilePath) {
-        fileStorageService.deleteFile(avatarFilePath);
-    }
 
     public void register(User user) {
         if (userRepository.isExistByLogin(user.getLogin())){
