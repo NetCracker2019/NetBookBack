@@ -8,7 +8,7 @@ import java.util.List;
 public interface BookRepository {
     List<Book> findAllBooks();
     List<Announcement> findAllAnnouncement();
-    String addBook(Book book, int userId);
+    int addBook(Book book, int userId);
 //    String addAnnouncement(Book book);
 //    void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
@@ -31,13 +31,18 @@ public interface BookRepository {
 
     List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset);
 
+
     List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to, int pageSize, int startIndex);
     List<ViewBook> findBooksByTitleAndAuthor(String title, Integer author, Date from, Date to,  int pageSize, int startIndex);
     List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to, int pageSize, int startIndex);
     List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, Integer author, Integer genre, Date from, Date to, int pageSize, int startIndex);
+    List<ViewBook> findBooksByAuthor(String author);
 
-    void confirmAnnouncement(long announcementId);
-    void cancelAnnouncement(long announcementId);
+
+    boolean confirmAnnouncement(long announcementId);
+    boolean cancelAnnouncement(long announcementId);
+
+
 
     List<Event> getCalendarAllAnnouncement();
     List<Event> getCalendarPersonalizeAnnouncement(int userId);
@@ -56,7 +61,7 @@ public interface BookRepository {
 
     int countAnnouncement(boolean approved);
 
-    int checkIsDuplicate(String title, String description);
+    boolean checkIsDuplicate(String title, String description);
 
     List<ViewBook> getSuggestions(long userId);
   
@@ -65,4 +70,10 @@ public interface BookRepository {
     boolean checkLickedBook(long bookId, long userId);
 
     int countAddedBooksForUser(long userId);
+
+    int countBooks(boolean approved);
+    List<ViewBook> getBooksForApprove(int page, int offset);
+
+    boolean confirmBook (long BookId);
+    boolean cancelBook (long BookId);
 }

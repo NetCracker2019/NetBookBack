@@ -1,22 +1,17 @@
 package com.example.netbooks.controllers;
 
-import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.exceptions.UserNotFoundException;
+import com.example.netbooks.exceptions.ValidationException;
 import com.example.netbooks.models.*;
 import com.example.netbooks.services.*;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-
-import static com.example.netbooks.services.NotificationEnum.ADD_FRIEND_NOTIF;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
@@ -40,34 +35,69 @@ public class ProfileController {
         this.passwordEncoder = passwordEncoder;
         this.validationService = validationService;
     }
+
+    /**
+     * Get user information
+     * @param login user login
+     * @exception UserNotFoundException when user not found or access denied
+     * @return User
+     */
     @GetMapping("/{login}")
     public User getUser(@PathVariable("login")String login){
         log.info("GET /{}", login);
         User user = userManager.getUserByLogin(login);
         //block if its admin but not you`
         if(!user.getRole().equals(Role.ROLE_CLIENT) &&
-                getCurrentUserRole().equals(Role.ROLE_CLIENT)){
-            log.info("Cannot get access to view {} profile from {}", getCurrentUserLogin(), login);
+                userManager.getCurrentUserRole().equals(Role.ROLE_CLIENT)){
+            log.info("Cannot get access to view {} profile from {}", userManager.getCurrentUserLogin(), login);
             throw new UserNotFoundException("User not found");
         }
         return user;
     }
 
+    /**
+     * Get list of user achievements
+     * @param login user login
+     * @return List of Achievements
+     * @exception UserNotFoundException when user not found
+     */
     @GetMapping("/{login}/get-achievement")
     public List<Achievement> getAchievements(@PathVariable("login")String login){
         return userManager.getAchievementByLogin(login);
     }
 
+    /**
+     * Edit user profile information
+     * @param login Edited user login
+     * @param file new user avatar
+     * @param name user name
+     * @param country user country
+     * @param city user city
+     * @param password user password
+     * @param email user email
+     * @param sex user sex
+     * @param status user status
+     * @exception UserNotFoundException when user not found
+     * @exception ValidationException when edited user data is not valid
+     */
     @PutMapping("/{login}/edit")
     public void editUser(@PathVariable("login")String login,
-                         @RequestBody User user){
+                         @RequestParam(value = "file", required = false) MultipartFile file,
+                         @RequestParam("name") String name,
+                         @RequestParam("country") String country,
+                         @RequestParam("city") String city,
+                         @RequestParam("password") String password,
+                         @RequestParam("email") String email,
+                         @RequestParam("sex") String sex,
+                         @RequestParam("status") String status) {
         log.info("PUT /{}/edit", login);
-        if(!login.equals(getCurrentUserLogin()) && Integer.parseInt(userManager.getUserRole(login)) - 1
-                <= getCurrentUserRole().ordinal()) {
-            log.info("Cannot get access to edit {} profile from {}", getCurrentUserLogin(), login);
+        User user = new User(login, name, password, status, city, country, email, sex);
+        if(!login.equals(userManager.getCurrentUserLogin()) && Integer.parseInt(userManager.getUserRole(login)) - 1
+                <= userManager.getCurrentUserRole().ordinal()) {
+            log.info("Cannot get access to edit {} profile from {}", userManager.getCurrentUserLogin(), login);
             return;
         }
-        userManager.updateUser(compareAndReplace(validationService.userValidation(user)));
+        userManager.updateUser(compareAndReplace(validationService.userValidation(user)), file);
     }
 
     @GetMapping("/{login}/friends")
@@ -100,33 +130,36 @@ public class ProfileController {
                 userManager.getUserByLogin(login).getUserId(), sought, cntBooks, offset);
     }
 
+    /**
+     * Check if requested user is editable
+     * @param login user login
+     * @return true if you can edit this user, otherwise - false
+     */
     @GetMapping("/{login}/is-editable")
     public boolean isEditable(@PathVariable("login")String login){
-        if(getCurrentUserLogin().equals(login)) return true;
+        if(userManager.getCurrentUserLogin().equals(login)) return true;
         return Integer.parseInt(userManager.getUserRole(login)) - 1 >
-                getCurrentUserRole().ordinal();
+                userManager.getCurrentUserRole().ordinal();
     }
     @PostMapping("/add-friend/{friendLogin}")
     public void addFriend(@PathVariable("friendLogin") String friendLogin) {
-        log.info("POST /add-friend/{} by {}", friendLogin, getCurrentUserLogin());
-        String ownLogin = getCurrentUserLogin();
+        log.info("POST /add-friend/{} by {}", friendLogin, userManager.getCurrentUserLogin());
+        String ownLogin = userManager.getCurrentUserLogin();
         if(!userManager.getUserRole(friendLogin).equals("4")) return;
         userManager.addFriend(ownLogin, friendLogin);
 
-        Thread notifThread = new Thread(() -> {
             Notification notification = new Notification();
             notification.setNotifTypeId(1);
             notification.setUserId((int) (userManager.getUserByLogin(friendLogin).getUserId()));
             notification.setFromUserId((int) (userManager.getUserByLogin(ownLogin).getUserId()));
             notificationService.addNotification(notification);
-        });
-        notifThread.start();
-
-
     }
-    /* 1 - is friend
-     * 0 - is subscribe
-     * -1 - not friend */
+    /**
+     * Check if requested user is your friend
+     * @param ownLogin own user login
+     * @param friendLogin requested user login
+     * @return 1 - user is your friend, 0 - you are subscribe on this user, -1 - otherwise(not friend)
+     */
     @GetMapping("/is-friend/{ownLogin}/{friendLogin}")
     public int isFriend(@PathVariable("ownLogin")String ownLogin,
                         @PathVariable("friendLogin") String friendLogin){
@@ -135,9 +168,24 @@ public class ProfileController {
     }
     @DeleteMapping("/delete-friend/{friendLogin}")
     public void deleteFriend(@PathVariable("friendLogin") String friendLogin){
-        log.info("DELETE /delete-friend/{} by {}", friendLogin, getCurrentUserLogin());
-        userManager.deleteFriend(getCurrentUserLogin(), friendLogin);
+        log.info("DELETE /delete-friend/{} by {}", friendLogin, userManager.getCurrentUserLogin());
+        userManager.deleteFriend(userManager.getCurrentUserLogin(), friendLogin);
     }
+
+    /**
+     * Get user book list
+     * @param login user login
+     * @param sought sought for search in user book list
+     * @param size count returning books
+     * @param read if true - returning book on this shelf
+     * @param favourite if true - returning book on this shelf
+     * @param reading if true - returning book on this shelf
+     * @param notSet if true - returning book on this shelf
+     * @param sortBy sort result by (BookParam.TITLE or BookParam.LIKES)
+     * @param order oreder of the result set (Order.ASC or Order.DESC)
+     * @param page current page
+     * @return list of books
+     */
     @GetMapping("/{login}/book-list")
     public List<ViewBook> getBookList(@PathVariable("login")String login,
                                       @RequestParam("sought")String sought,
@@ -153,44 +201,54 @@ public class ProfileController {
                 userManager.getUserByLogin(login).getUserId(),
                 sought, size, read, favourite, reading, notSet, BookParam.values()[sortBy], Order.values()[order], page);
     }
+
+    /**
+     * Add selected books into {shelf}
+     * @param shelf a shelf in which will be added books
+     * @param booksId list of selected books id
+     */
     @PutMapping("/{shelf}/add-books")
     public void addBookBatchTo(@PathVariable("shelf")int shelf,
                                @RequestBody List<Long> booksId){
-        log.info("PUT /{}/add-books/ by {}", Shelf.values()[shelf], getCurrentUserLogin());
+        log.info("PUT /{}/add-books/ by {}", Shelf.values()[shelf], userManager.getCurrentUserLogin());
         bookService.addBookBatchTo(
-                userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), Shelf.values()[shelf], booksId);
+                userManager.getUserByLogin(userManager.getCurrentUserLogin()).getUserId(), Shelf.values()[shelf], booksId);
     }
+
+    /**
+     * Remove selected books from {shelf}
+     * @param shelf a shelf from which will be removed books
+     * @param booksId list of selected books id
+     */
     @PutMapping("/{shelf}/remove-books")
     public void removeBookBatchFrom(@PathVariable("shelf")int shelf,
                                     @RequestBody List<Long> booksId){
-        log.info("PUT /{}/remove-books/ by {}", Shelf.values()[shelf], getCurrentUserLogin());
-        bookService.removeBookBatchFrom(userManager.getUserByLogin(getCurrentUserLogin()).
+        log.info("PUT /{}/remove-books/ by {}", Shelf.values()[shelf], userManager.getCurrentUserLogin());
+        bookService.removeBookBatchFrom(userManager.getUserByLogin(userManager.getCurrentUserLogin()).
                 getUserId(), Shelf.values()[shelf], booksId);
     }
+
+    /**
+     * Completely remove selected book from user book list
+     * @param booksId list of selected books id
+     */
     @DeleteMapping("/remove-books")
     public void removeBookBatch(@RequestParam("booksid") List<Long> booksId){
-        log.info("DELETE /remove-books by {}", getCurrentUserLogin());
-        bookService.removeBookBatch(userManager.getUserByLogin(getCurrentUserLogin()).getUserId(), booksId);
+        log.info("DELETE /remove-books by {}", userManager.getCurrentUserLogin());
+        bookService.removeBookBatch(userManager.getUserByLogin(userManager.getCurrentUserLogin()).getUserId(), booksId);
     }
+
+    /**
+     * Compare and replace fields which was changed compared with current user profile setting
+     * @param user edited user
+     * @return user with replaced fields
+     */
     private User compareAndReplace(User user){
         User originalUser = userManager.getUserByLogin(user.getLogin());
         if(!Strings.isNullOrEmpty(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        if(!Strings.isNullOrEmpty(originalUser.getAvatarFilePath()) && !
-                originalUser.getAvatarFilePath().equals(user.getAvatarFilePath())){
-            userManager.deleteFile(originalUser.getAvatarFilePath());
-        }
         originalUser.compareAndReplace(user);
         return originalUser;
-    }
-    private String getCurrentUserLogin(){
-        return ((UserDetails) SecurityContextHolder.getContext().
-                getAuthentication().getPrincipal()).getUsername();
-    }
-    private Role getCurrentUserRole(){
-        UserDetails currentUserDetails
-                = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return (Role) (currentUserDetails.getAuthorities().iterator().next());
     }
 }

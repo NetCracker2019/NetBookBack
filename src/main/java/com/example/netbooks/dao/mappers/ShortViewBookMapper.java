@@ -19,6 +19,7 @@ public class ShortViewBookMapper implements RowMapper<ViewBook> {
         book.setBookId(resultSet.getLong("book_id"));
         book.setFavourite(resultSet.getBoolean("favourite"));
         book.setReading(resultSet.getBoolean("reading"));
+        book.setLikes(resultSet.getInt("likes"));
         book.setRead(resultSet.getDate("read_date") != null);
         Array tmpArray = resultSet.getArray("authors");
         book.setAuthors((String[])tmpArray.getArray());

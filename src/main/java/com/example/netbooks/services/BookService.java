@@ -37,6 +37,8 @@ public class BookService {
     private final UserRepository userRepository;
     private final AchievementRepository achievementRepository;
     private final AchievementService achievementService;
+    private final FileStorageService fileStorageService;
+    private final NotificationService notificationService;
 
     @Autowired
     public BookService(JdbcBookRepository jdbcBookRepository,
@@ -44,8 +46,10 @@ public class BookService {
                        AuthorRepository authorRepository,
                        ReviewRepository reviewRepository,
                        UserRepository userRepository,
+                       FileStorageService fileStorageService,
                        AchievementRepository achievementRepository,
-                       AchievementService achievementService) {
+                       AchievementService achievementService,
+                       NotificationService notificationService) {
 
         this.jdbcBookRepository = jdbcBookRepository;
         this.genreRepository = genreRepository;
@@ -53,7 +57,9 @@ public class BookService {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.achievementRepository = achievementRepository;
+        this.fileStorageService = fileStorageService;
         this.achievementService = achievementService;
+        this.notificationService = notificationService;
     }
 
     public List<Book> getAllBooks(){
@@ -94,41 +100,40 @@ public class BookService {
         Map<Object, Object> response = new HashMap<>();
         int userId = userRepository.getUserIdByLogin(book.getUser());
 
-        if (jdbcBookRepository.checkIsDuplicate(book.getTitle(),book.getDescription()) == 0) {
+        if (jdbcBookRepository.checkIsDuplicate(book.getTitle(),book.getDescription())) {
 
-            jdbcBookRepository.addBook(book, userId);
-            genreRepository.addRowIntoBookGenre(book.getTitle(), book.getDescription(), book.getGenre());
-            authorRepository.addRowIntoBookAuthor(book.getTitle(),book.getDescription(), book.getAuthor());
+            int bookId = jdbcBookRepository.addBook(book, userId);
+            genreRepository.addRowIntoBookGenre(bookId, book.getGenre());
+            authorRepository.addRowIntoBookAuthor(bookId, book.getAuthor());
 
             response.put("status", "ok");
+            response.put("message", "Congratulations! You add book");
             return ResponseEntity.ok(response);
         } else {
-            response.put("status", "This book exist");
+            response.put("status", "error");
+            response.put("message", "This book exist");
             return ResponseEntity.ok(response);
         }
     }
 
-    public ResponseEntity<Map> confirmAnnouncement(long announcementId) {
+    public boolean confirmAnnouncement(long announcementId) {
         jdbcBookRepository.confirmAnnouncement(announcementId);
         long userId = jdbcBookRepository.getUserIdByAnnouncementId(announcementId);
         try{
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "addedBooks");
-            // TODO Send notif here
+            notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
         } catch (NullPointerException e){
             e.getMessage();
         }
-        Map<Object, Object> response = new HashMap<>();
-        response.put("status", "ok");
-        return ResponseEntity.ok(response);
+
+        return jdbcBookRepository.confirmAnnouncement(announcementId);
     }
 
-    public ResponseEntity<Map> cancelAnnouncement(long announcementId) {
-        jdbcBookRepository.cancelAnnouncement(announcementId);
-
-        Map<Object, Object> response = new HashMap<>();
-        response.put("status", "ok");
-        return ResponseEntity.ok(response);
+    public boolean cancelAnnouncement(long announcementId, String imagePath) {
+        fileStorageService.deleteFile(imagePath);
+        return jdbcBookRepository.cancelAnnouncement(announcementId);
     }
 
     public List<Event> calendarAnnouncement(String value, String userName) {
@@ -209,6 +214,8 @@ public class BookService {
         } else if (author != null && genre != null && from != null && to != null) {
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
             books = jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(title, author, genre, from, to, pageSize, startIndex);
+        }else{
+            books =  jdbcBookRepository.findBooksByAuthor(author);
         }
 
         return new PageImpl<>(books, PageRequest.of(currentPage, pageSize), sizeOfBooks);
@@ -247,7 +254,8 @@ public class BookService {
             try{
                 UserAchievement userAchievement =
                         achievementRepository.checkUserAchievement(review.getUserId(), "review");
-                // TODO Send notif here
+                notificationService.createAndSaveAchievNotif(review.getUserId(), userAchievement.getAchvId());
+
             } catch (NullPointerException e){
                 e.getMessage();
             }
@@ -263,7 +271,8 @@ public class BookService {
             try{
                 UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "bookInProfile");
-                // TODO Send notif here
+                notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
             } catch (NullPointerException e){
                 e.getMessage();
             }
@@ -279,7 +288,8 @@ public class BookService {
             try{
                 UserAchievement userAchievement =
                         achievementRepository.checkUserAchievement(userId, "review");
-                // TODO Send notif here
+                notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
+
             } catch (NullPointerException e){
                 e.getMessage();
             }
@@ -386,4 +396,21 @@ public class BookService {
     public int countReviewsForBook(long bookId) {
         return reviewRepository.countReviewsForBook(bookId);
     }
+
+    public int countBooks(boolean approved) {
+        return jdbcBookRepository.countBooks(approved);
+    }
+
+    public List<ViewBook> getBooksForApprove(int page, int itemPerPage){
+        return jdbcBookRepository.getBooksForApprove(page, itemPerPage);
+    }
+
+    public boolean confirmBook(long BookId) {
+        return jdbcBookRepository.confirmBook(BookId);
+    }
+
+    public boolean cancelBook(long BookId) {
+        return jdbcBookRepository.cancelBook(BookId);
+    }
+
 }

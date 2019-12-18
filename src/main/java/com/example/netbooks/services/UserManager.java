@@ -15,11 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -29,7 +32,6 @@ import java.util.UUID;
 public class UserManager {
     private UserRepository userRepository;
 	private AchievementRepository achievementRepository;
-	private AchievementService achievementService;
     private FileStorageService fileStorageService;
     private VerificationTokenManager verificationTokenManager;
     private EmailSender emailSender;
@@ -38,13 +40,11 @@ public class UserManager {
     public UserManager(UserRepository userRepository,
                        EmailSender emailSender,
                        AchievementRepository achievementRepository,
-                       AchievementService achievementService,
                        FileStorageService fileStorageService,
                        VerificationTokenManager verificationTokenManager) {
         this.userRepository = userRepository;
         this.emailSender = emailSender;
         this.achievementRepository = achievementRepository;
-        this.achievementService = achievementService;
         this.fileStorageService = fileStorageService;
         this.verificationTokenManager = verificationTokenManager;
     }
@@ -58,11 +58,16 @@ public class UserManager {
         userRepository.removeUserById(id);
     }
 
-    public void updateUser(User user) {
+    public void updateUser(User user, MultipartFile file) {
         if (!userRepository.findByLogin(user.getLogin()).getEmail().equals(user.getEmail())
-                && userRepository.isExistByLogin(user.getLogin())){
+                && userRepository.isExistByMail(user.getEmail())){
             log.info("Email - {} already in use", user.getEmail());
             throw new EmailExistException("Email is already in use");
+        }
+        if (file != null) {
+            fileStorageService.deleteFile(user.getAvatarFilePath());
+            user.setAvatarFilePath(UUID.randomUUID().toString());
+            fileStorageService.saveFile(file, user.getAvatarFilePath());
         }
         userRepository.updateUser(user);
     }
@@ -127,9 +132,6 @@ public class UserManager {
         return userRepository.findByLogin(login);
     }
 
-    public Iterable<User> getAllUsers() {
-        return userRepository.getAllUsers();
-    }
 
     public void setMinRefreshDate(String login, Date date) {
         userRepository.setMinRefreshDate(login, date);
@@ -151,45 +153,22 @@ public class UserManager {
         return userRepository.getSubscribersByLogin(login);
     }
 
-    public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
-        return userRepository.getPersonsBySought(sought, cntPersons, offset);
-    }
-
-    public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
-        return userRepository.getClientPersonsBySought(sought, cntPersons, offset);
-    }
-
-    public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
-        return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
+    public List<User> getPersonsBySought(String login, String sought, int cntPersons, int offset, SearchIn where,
+                                         Role userRole) {
+        return userRepository.getPersonsBySought(login, sought, cntPersons, offset, where, userRole);
     }
 
     public String getUserRole(String login) {
         return userRepository.getUserRole(login);
     }
 
-    public int getCountPersonsBySought(String sought) {
-        return userRepository.getCountPersonsBySought(sought);
-    }
-
-    public int getCountFriendsBySought(String login, String sought) {
-        return userRepository.getCountFriendsBySought(login, sought);
-    }
 
 	public void addFriend(String ownLogin, String friendLogin) {
 		long userId = userRepository.getUserIdByLogin(ownLogin);
         try{
             UserAchievement userAchievement =
                     achievementRepository.checkUserAchievement(userId, "friends");
-            // TODO Send notif here
-
-            Thread notifThread = new Thread(() -> {
-                Notification notification = new Notification();
-                notification.setNotifTypeId(3);
-                notification.setUserId((int) (getUserByLogin(ownLogin).getUserId()));
-                notification.setFromUserId((int) (getUserByLogin(ownLogin).getUserId()));
-                notificationService.addNotification(notification);
-            });
-            notifThread.start();
+            notificationService.createAndSaveAchievNotif(userId, userAchievement.getAchvId());
         } catch (NullPointerException e){
             e.getMessage();
         }
@@ -203,10 +182,6 @@ public class UserManager {
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
-
-    public void deleteFile(String avatarFilePath) {
-        fileStorageService.deleteFile(avatarFilePath);
-    }
 
     public void register(User user) {
         if (userRepository.isExistByLogin(user.getLogin())){
@@ -224,7 +199,7 @@ public class UserManager {
         String message = "To verification your account, please click here : "
                 + "https://netbooksfront.herokuapp.com/verification-account?token="
                 + verificationToken.getVerificationToken();
-        log.info("fff {}", message);
+        //log.info("fff {}", message);
         emailSender.sendMessage(user.getEmail(), "Complete Registration!", message);
     }
 
@@ -255,4 +230,15 @@ public class UserManager {
         userRepository.updateUser(user);
         verificationTokenManager.removeVerificationToken(verificationToken);
 	}
+
+    public String getCurrentUserLogin(){
+        return ((UserDetails) SecurityContextHolder.getContext().
+                getAuthentication().getPrincipal()).getUsername();
+    }
+
+    public Role getCurrentUserRole(){
+        UserDetails currentUserDetails
+                = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return (Role) (currentUserDetails.getAuthorities().iterator().next());
+    }
 }

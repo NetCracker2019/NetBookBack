@@ -53,7 +53,7 @@ public class FilesController {
 
     @DeleteMapping("/remove/{filename}")
     public void removeFile(@PathVariable("filename") String filename){
-        log.info("GELETE /remove/{} by {}", filename, getCurrentUserLogin());
+        log.info("DELETE /remove/{} by {}", filename, getCurrentUserLogin());
         fileStorageService.deleteFile(filename);
     }
     private String getCurrentUserLogin(){

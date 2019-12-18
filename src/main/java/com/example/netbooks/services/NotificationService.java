@@ -6,6 +6,7 @@ import com.example.netbooks.models.User;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -36,17 +37,21 @@ public class NotificationService {
         for (Notification notif : notifList) {
             notifList.set(notifList.indexOf(notif), parseViewNotif(notif, userName));
         }
+        log.info("Get all  notifications for user by id {}", userId);
         return notifList;
     }
 
     public List<Notification> getAllUnreadViewNotificationsByUserId(long userId,int cntNotifsForView,int offset) {
         List<Notification> notifList = notificationRepository.getAllUnreadViewNotificationsByUserId(userId,cntNotifsForView,offset);
+        String userName = userManager.getUserById(userId).getName();
         for (Notification notif : notifList) {
-            notifList.set(notifList.indexOf(notif), parseViewNotif(notif));
+            notifList.set(notifList.indexOf(notif), parseViewNotif(notif, userName));
         }
+        log.info("Get all unread notifications for user by id {}", userId);
         return notifList;
     }
 
+    @Async
     public void createAndSaveReviewNotif(long fromUserId, List<User> friends, long bookId, long reviewId) {
         for (User user : friends) {
             Notification notification = new Notification();
@@ -59,7 +64,13 @@ public class NotificationService {
         }
     }
 
-    public void createAndSaveAchievNotif(long fromUserId, List<User> friends, long achvId) {
+    @Async
+    public void createAndSaveAchievNotif(long fromUserId, long achvId) {
+        User tmpUser = userManager.getUserById(fromUserId);
+        List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
+        List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
+        friends.addAll(subscribers);
+        friends.add(tmpUser);
         for (User user : friends) {
             Notification notification = new Notification();
             notification.setNotifTypeId(3);
@@ -93,29 +104,50 @@ public class NotificationService {
         return notif;
     }
 
-
+    @Async
     public void addNotification(Notification notification) {
 
         java.util.Date now = new java.util.Date();
         notification.setDate(new Date(now.getTime()));
         notificationRepository.addNotification(notification);
+        log.info("Add notification for user with id {}", notification.getUserId());
+    }
+
+    @Async
+    public void createAndSaveAddBookNotif(long fromUserId, long bookId) {
+        User tmpUser = userManager.getUserById(fromUserId);
+        List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
+        List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
+        friends.addAll(subscribers);
+        for (User user : friends) {
+            Notification notification = new Notification();
+            notification.setNotifTypeId(2);
+            notification.setUserId((int) userManager.getUserIdByName(user.getLogin()));
+            notification.setFromUserId((int) (tmpUser.getUserId()));
+            notification.setBookId((int) bookId);
+            addNotification(notification);
+        }
     }
 
     public void markAllAsRead(long id) {
         notificationRepository.markAllAsRead(id);
+        log.info("Mark all notifications as read where usere id {}",id);
     }
 
     public void markNotifAsReadByNotifId(Notification notification) {
         Integer id = notification.getNotificationId();
         notificationRepository.markNotifAsReadByNotifId(id);
+        log.info("Mark notification as read by notif id {}", notification.getNotificationId());
     }
 
     public int getNotifCount(long userId) {
+        //log.info("get count of unread notifications for user with id {}",userId);
         return notificationRepository.getNotifCount(userId);
     }
 
     public void deleteAllNotificationsByUserId(long id) {
         notificationRepository.deleteAllNotificationsByUserId(id);
+        log.info("Delete all notifications for user with id {}", id);
     }
 
 }
