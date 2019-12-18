@@ -214,8 +214,6 @@ public class BookService {
         } else if (author != null && genre != null && from != null && to != null) {
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndAuthorAndGenre(title, author, genre, from, to);
             books = jdbcBookRepository.findBooksByTitleAndAuthorAndGenre(title, author, genre, from, to, pageSize, startIndex);
-        }else{
-            books =  jdbcBookRepository.findBooksByAuthor(author);
         }
 
         return new PageImpl<>(books, PageRequest.of(currentPage, pageSize), sizeOfBooks);
