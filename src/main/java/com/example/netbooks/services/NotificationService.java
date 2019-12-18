@@ -141,7 +141,7 @@ public class NotificationService {
     }
 
     public int getNotifCount(long userId) {
-        log.info("get count of unread notifications for user with id {}",userId);
+        //log.info("get count of unread notifications for user with id {}",userId);
         return notificationRepository.getNotifCount(userId);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ChatController {
     //get chat list by login
     @GetMapping("/{login}/chats")
     public List<Chat> getChatsByLogin(@PathVariable("login")String login) {
-        if(!getCurrentUserLogin().equals(login)) return null;
+        if(!userManager.getCurrentUserLogin().equals(login)) return null;
         return chatService.getChatsByUserId(
                 userManager.getUserByLogin(login).getUserId());
     }
@@ -45,12 +46,12 @@ public class ChatController {
     //get chat messages history
     @GetMapping("/{chatId}")
     public List<Message> getMessagesByChatId(@PathVariable("chatId") Long chatId){
-        if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return null;
+        if(!chatService.isMemberOfChat(chatId, userManager.getCurrentUserLogin())) return null;
         return chatService.getMessagesByChatId(chatId);
     }
     @GetMapping("/{chatId}/members")
     public List<User> getChatMembers(@PathVariable("chatId") Long chatId){
-        if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return null;
+        if(!chatService.isMemberOfChat(chatId, userManager.getCurrentUserLogin())) return null;
         return chatService.getChatMembers(chatId);
     }
 
@@ -61,22 +62,16 @@ public class ChatController {
         chatService.createNewChat(validationService.plainTextValidation(chatName, 2,20), members);
     }
 
-
     @PutMapping("/{chatId}/update/{editedChatName}")
     public void updateChat(@PathVariable("chatId") Long chatId,
-                           @RequestBody List<String> removedMembers,
+                           @RequestParam("removedMembers") List<String> removedMembers,
                            @RequestParam("addedMembers") List<String> addedMembers,
+                           @RequestParam("oldChatAvatar") String oldChatAvatar,
                            @PathVariable("editedChatName") String editedChatName,
-                           @RequestParam("chatAvatar") String chatAvatar) throws SQLException {
-        log.info("POST /{}/update/{} by {}", chatId, editedChatName, getCurrentUserLogin());
-        if(!chatService.isMemberOfChat(chatId, getCurrentUserLogin())) return;
+                           @RequestParam(value = "file", required = false) MultipartFile file) throws SQLException {
+        log.info("POST /{}/update/{} by {}", chatId, editedChatName, userManager.getCurrentUserLogin());
+        if(!chatService.isMemberOfChat(chatId, userManager.getCurrentUserLogin())) return;
         chatService.updateChat(chatId, validationService.plainTextValidation(editedChatName, 2, 20),
-                addedMembers, removedMembers, chatAvatar);
+                addedMembers, removedMembers, file, oldChatAvatar);
     }
-
-    private String getCurrentUserLogin(){
-        return ((UserDetails) SecurityContextHolder.getContext().
-                getAuthentication().getPrincipal()).getUsername();
-    }
-
 }

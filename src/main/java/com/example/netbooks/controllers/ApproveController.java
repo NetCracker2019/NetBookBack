@@ -48,7 +48,7 @@ public class ApproveController {
         logger.info(announcement);
         long id = announcement.getAnnouncmentId();
         logger.info(id);
-        return bookService.cancelAnnouncement(id);
+        return bookService.cancelAnnouncement(id, announcement.getImagePath());
 
     }
 
