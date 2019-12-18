@@ -1,6 +1,7 @@
 package com.example.netbooks.controllers;
 
 import com.example.netbooks.models.Role;
+import com.example.netbooks.models.SearchIn;
 import com.example.netbooks.models.User;
 import com.example.netbooks.services.UserManager;
 import lombok.extern.slf4j.Slf4j;
@@ -26,39 +27,10 @@ public class FindPersonController {
 
     @GetMapping("/{login}")
     public List<User> getUser(@PathVariable("login") String login,
-            @RequestParam("sought") String sought, @RequestParam("where") String where,
+            @RequestParam("sought") String sought, @RequestParam("where") int where,
             @RequestParam("cnt") int cntPersons, @RequestParam("offset") int offset) {
-        if (sought == null) {
-            sought = "";
-        }
-        if (userManager.getUserByLogin(login).getRole() == Role.ROLE_CLIENT) {
-            if ("all".equals(where)) {
-                return userManager.getClientPersonsBySought(sought, cntPersons, offset);
-            } else {
-                return userManager.getFriendsBySought(login, sought, cntPersons, offset);
-            }
-        } else {
-            if ("all".equals(where)) {
-                return userManager.getPersonsBySought(sought, cntPersons, offset);
-            } else {
-                return userManager.getFriendsBySought(login, sought, cntPersons, offset);
-            }
-        }
+        if (sought == null) { sought = ""; }
+        return userManager.getPersonsBySought(login, sought, cntPersons, offset, SearchIn.values()[where],
+                userManager.getCurrentUserRole());
     }
-
-    //get size of result set(without pagination)
-    @GetMapping("/{login}/collection-size")
-    public int getCollectionSize(@PathVariable("login") String login,
-            @RequestParam("sought") String sought, @RequestParam("where") String where) {
-        if (sought == null) {
-            sought = new String("");
-        }
-        if ("all".equals(where)) {
-            return userManager.getCountPersonsBySought(sought);
-        } else {
-            return userManager.getCountFriendsBySought(login, sought);
-        }
-
-    }
-
 }

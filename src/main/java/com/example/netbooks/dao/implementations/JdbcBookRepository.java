@@ -436,8 +436,8 @@ public class JdbcBookRepository implements BookRepository {
         namedParams.put("reading", reading);
         namedParams.put("not_set", notSet);
         namedParams.put("sought", "%" + sought + "%");
-        if(Order.ASC.equals(order)){
-            if(BookParam.TITLE.equals(sortBy)){
+        if(Order.ASC == order){
+            if(BookParam.TITLE == sortBy){
                 return namedJdbcTemplate.query(getBookList,
                         namedParams, new ShortViewBookMapper());
             }else{
@@ -445,7 +445,7 @@ public class JdbcBookRepository implements BookRepository {
                         namedParams, new ShortViewBookMapper());
             }
         }else{
-            if(BookParam.TITLE.equals(sortBy)){
+            if(BookParam.TITLE == sortBy){
                 return namedJdbcTemplate.query(getBookListDesc,
                         namedParams, new ShortViewBookMapper());
             }else{
@@ -468,9 +468,9 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
-        if(Shelf.Reading.equals(shelf)){
+        if(Shelf.Reading == shelf){
             namedJdbcTemplate.update(addBookBatchToReading, namedParams);
-        }else if(Shelf.Read.equals(shelf)){
+        }else if(Shelf.Read == shelf){
             namedJdbcTemplate.update(addBookBatchToRead, namedParams);
         }else namedJdbcTemplate.update(addBookBatchToFavourite, namedParams);
         log.info("Successful adding books");
@@ -489,9 +489,9 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("booksId", booksId);
         namedParams.put("user_id", userId);
-        if(Shelf.Reading.equals(shelf)){
+        if(Shelf.Reading == shelf){
             namedJdbcTemplate.update(removeBookBatchFromReading, namedParams);
-        }else if(Shelf.Read.equals(shelf)){
+        }else if(Shelf.Read == shelf){
             namedJdbcTemplate.update(removeBookBatchFromRead, namedParams);
         }else {
             namedJdbcTemplate.update(removeBookBatchFromFavourite, namedParams);

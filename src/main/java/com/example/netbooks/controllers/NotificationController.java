@@ -51,7 +51,7 @@ public class NotificationController {
         long id = userManager.getUserIdByName(((UserDetails) SecurityContextHolder
                 .getContext().getAuthentication()
                 .getPrincipal()).getUsername());
-        log.info("Get count of unread notifications for user with id {}",id);
+        //log.info("Get count of unread notifications for user with id {}",id);
         return ResponseEntity.ok(notificationService.getNotifCount(id));
     }
 
