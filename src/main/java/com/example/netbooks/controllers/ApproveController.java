@@ -1,6 +1,5 @@
 package com.example.netbooks.controllers;
 
-
 import com.example.netbooks.models.Review;
 import com.example.netbooks.models.User;
 import com.example.netbooks.models.ViewAnnouncement;
@@ -20,6 +19,7 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200", "https://netbooksfront.herokuapp.com"})
 @RequestMapping(value = "/approve-service")
 public class ApproveController {
+
     private final Logger logger = LogManager.getLogger(ApproveController.class);
     @Autowired
     private BookService bookService;
@@ -80,7 +80,6 @@ public class ApproveController {
         return bookService.cancelReview(reviewId);
     }
 
-
     @GetMapping("/count-announcement")
     public int countAnnouncement(@RequestParam("approved") boolean approved){
         logger.info("Количетсво анонсов: " + bookService.countAnnouncement(approved));
@@ -110,5 +109,4 @@ public class ApproveController {
         return bookService.cancelBook(id);
 
     }
-
 }
