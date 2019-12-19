@@ -58,7 +58,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         namedParameters.addValue("userId", review.getUserId());
         namedParameters.addValue("reviewText", review.getReviewText());
         namedParameters.addValue("approved", review.isApproved());
-        System.out.println(review);
         return namedJdbcTemplate.update(env.getProperty("addReviewForUserBook"), namedParameters) > 0;
     }
 
@@ -82,7 +81,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("count", itemPerPage);
         namedParameters.addValue("offset", page);
-        System.out.println(getReviewPeaceForApprove);
         return namedJdbcTemplate.query(getReviewPeaceForApprove, namedParameters, reviewMapper);
     }
 
@@ -111,13 +109,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 
     @Override
     public int checkLikedReview(long reviewId, long userId) {
-//        SimpleJdbcCall jdbcCall = new
-//                SimpleJdbcCall(dataSource).withFunctionName("check_review_liked");
-//
-//        SqlParameterSource in = new MapSqlParameterSource()
-//                .addValue("reviewId", reviewId)
-//                .addValue("userId", userId);
-//        return jdbcCall.executeFunction(Integer.class, in);
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("reviewId", reviewId);
         namedParams.put("userId", userId);

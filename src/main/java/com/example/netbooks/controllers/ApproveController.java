@@ -54,24 +54,18 @@ public class ApproveController {
 
     @GetMapping("/reviews-for-approve")
     public List<Review> getReviewsForApprove(@RequestParam("page") int page,
-                                             @RequestParam("itemPerPage") int offset) {
-        logger.info(bookService.getReviewsForApprove(page, offset));
-        return bookService.getReviewsForApprove(page, offset);
+                                             @RequestParam("itemPerPage") int itemPerPage) {
+        return bookService.getReviewsForApprove(page - 1, itemPerPage);
     }
 
     @PostMapping("confirm-review")
     public boolean confirmReview(@RequestParam("reviewId") long reviewId, @RequestParam("userId") long userId) {
-
             Review review = bookService.getReviewById(reviewId);
             User tmpUser = userManager.getUserById(review.getUserId());
             List<User> friends = userManager.getFriendsByUsername(tmpUser.getLogin());
             List<User> subscribers = userManager.getSubscribersByLogin(tmpUser.getLogin());
             friends.addAll(subscribers);
             notificationService.createAndSaveReviewNotif(review.getUserId(), friends, review.getBookId(), reviewId);
-
-
-
-
         return bookService.approveReview(reviewId, userId);
     }
 
