@@ -35,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/end-point")
-                .setAllowedOrigins("*");
+                .setAllowedOrigins("https://netbooksfront.herokuapp.com");
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
