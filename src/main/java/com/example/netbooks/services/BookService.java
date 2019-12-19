@@ -190,6 +190,16 @@ public class BookService {
         return jdbcBookRepository.getPeaceOfBook(count, offset);
     }
 
+    /**
+     * get books with specific parameters
+     * @param title - book title
+     * @param author - book author id
+     * @param genre - book genre id
+     * @param from - min release date
+     * @param to - max release date
+     * @param pageable - information about page
+     * @return page of books
+     */
     public Page<ViewBook> getBooksByParameters(String title, Integer author, Integer genre, Date from, Date to, Pageable pageable) {
         List<ViewBook> books = Collections.emptyList();
         int sizeOfBooks = 0;
@@ -200,18 +210,23 @@ public class BookService {
         title = title.toLowerCase().trim().replaceAll(" +", " ");
 
         if (author == null && genre == null && from == null && to == null) {
+            // find books only with title param
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitle(title);
             books = jdbcBookRepository.findBooksByTitle(title, pageSize, startIndex);
         } else if (author == null && genre == null && from != null && to != null) {
+            // find books with title and release date between from and to
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAndDate(title, from, to);
             books = jdbcBookRepository.findBooksByTitleAndDate(title, from, to, pageSize, startIndex);
         } else if (author == null && genre != null && from != null && to != null) {
+            // find books with title, genre and release date between from and to
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleGenreDate(title, genre, from, to);
             books =  jdbcBookRepository.findBooksByTitleGenreDate(title, genre, from, to, pageSize, startIndex);
         } else if (author != null && genre == null && from != null && to != null) {
+            // find books with title, author and release date between from and to
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAuthorDate(title, author, from, to);
             books = jdbcBookRepository.findBooksByTitleAuthorDate(title, author, from, to, pageSize, startIndex);
         } else if (author != null && genre != null && from != null && to != null) {
+            // find books with title, author, genre and release date between from and to
             sizeOfBooks = jdbcBookRepository.findAmountBooksByTitleAuthorGenreDate(title, author, genre, from, to);
             books = jdbcBookRepository.findBooksByTitleAuthorGenreDate(title, author, genre, from, to, pageSize, startIndex);
         }
@@ -315,23 +330,27 @@ public class BookService {
         return jdbcBookRepository.checkBookInProfile(userId, bookId);
     }
 
+
+    /**
+     * get suggestions for user
+     * @param userName - username for which suggestions are needed
+     * @param pageable -  information about page
+     * @return page of books
+     */
     public Page<ViewBook> getSuggestions(String userName, Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startIndex = currentPage * pageSize;
+
+        // get user id
         long userId = userRepository.getUserIdByLogin(userName);
 
-        List<ViewBook> books = jdbcBookRepository.getSuggestions(userId);
+        // get size of result
+        int sizeOfBooks = jdbcBookRepository.getAmountSuggestions(userId);
+        // get page of result
+        List<ViewBook> books = jdbcBookRepository.getSuggestions(userId, pageSize, startIndex);
 
-        List<ViewBook> result;
-        if (books.size() < startIndex) {
-            result = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startIndex + pageSize, books.size());
-            result = books.subList(startIndex, toIndex);
-        }
-
-        return new PageImpl<>(result, PageRequest.of(currentPage, pageSize), books.size());
+        return new PageImpl<>(books, PageRequest.of(currentPage, pageSize), sizeOfBooks);
     }
   
     public List<ViewBook> getBooksByUserId(long userId, String sought, int cntBooks, boolean read, boolean favourite,
