@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -122,6 +123,7 @@ public class AuthenticationController {
             if (token != null) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
                 user.setRole(userManager.getUserById(token.getUserId()).getRole());
+                user.setRegDate(LocalDate.now());
                 userManager.updateUserById(user, token.getUserId());
                 userManager.activateUser(token.getUserId());
                 verificationTokenManager.removeVerificationToken(verificationToken);
@@ -149,6 +151,7 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register admin account!", message);
+        log.info("Complete Admin request! {}", user.getLogin()+ message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful admin mail snet!");
@@ -166,7 +169,7 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register moderator account!", message);
-
+        log.info("Complete moder request! {}", user.getLogin()+ message);
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful moder mail snet!");
         return ResponseEntity.ok(response);
