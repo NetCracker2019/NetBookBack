@@ -6,6 +6,8 @@ import com.example.netbooks.dao.mappers.UserMapper;
 import com.example.netbooks.exceptions.CustomException;
 import com.example.netbooks.exceptions.EmailNotFountException;
 import com.example.netbooks.exceptions.UserNotFoundException;
+import com.example.netbooks.models.Role;
+import com.example.netbooks.models.SearchIn;
 import com.example.netbooks.models.User;
 
 import java.io.IOException;
@@ -198,6 +200,7 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         SqlParameterSource namedParameters = new MapSqlParameterSource("login", login);
         return namedJdbcTemplate.queryForObject(getUserIdByLogin, namedParameters, Integer.class);
     }
+
     @Override
     public Integer countFriendsForUser(long userId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("userId", userId);
@@ -306,33 +309,22 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         return namedJdbcTemplate.query(getSubscribersByLogin, namedParams, new FriendMapper());
     }
 
-
-    public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
+    @Override
+    public List<User> getPersonsBySought(String login, String sought, int cntPersons, int offset,
+                                         SearchIn where, Role userRole) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("sought", "%" + sought + "%");
         namedParams.put("offset", offset);
         namedParams.put("cnt", cntPersons);
+        namedParams.put("login", login);
+        if(where == SearchIn.FRIENDS){
+            return namedJdbcTemplate.query(getFriendsBySought, namedParams, new FriendMapper());
+        } else if(userRole == Role.ROLE_CLIENT){
+            return namedJdbcTemplate.query(getClientPersonsBySought, namedParams, new FriendMapper());
+        } else
         return namedJdbcTemplate.query(getPersonsBySought, namedParams, new FriendMapper());
     }
 
-    @Override
-    public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("sought", "%" + sought + "%");
-        namedParams.put("offset", offset);
-        namedParams.put("cnt", cntPersons);
-        return namedJdbcTemplate.query(getClientPersonsBySought, namedParams, new FriendMapper());
-    }
-
-    @Override
-    public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("id", findByLogin(login).getUserId());
-        namedParams.put("sought", "%" + sought + "%");
-        namedParams.put("offset", offset);
-        namedParams.put("cnt", cntPersons);
-        return namedJdbcTemplate.query(getFriendsBySought, namedParams, new FriendMapper());
-    }
     @Override
     public String getUserRole(String login) {
         Map<String, Object> namedParams = new HashMap<>();
@@ -340,44 +332,20 @@ public class UserRepository implements com.example.netbooks.dao.interfaces.UserR
         return namedJdbcTemplate.queryForObject(getUserRole, namedParams, String.class);
     }
     @Override
-    public Integer getCountFriendsBySought(String login, String sought) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("id", findByLogin(login).getUserId());
-        namedParams.put("sought", "%" + sought + "%");
-        return namedJdbcTemplate.queryForObject(getCountFriendsBySought, namedParams, Integer.class);
-    }
-    @Override
-    public Integer getCountPersonsBySought(String sought) {
-        Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("sought", "%" + sought + "%");
-        return namedJdbcTemplate.queryForObject(
-                getCountPersonsBySought, namedParams, Integer.class);
-    }
-    @Override
     public void addFriend(String ownLogin, String friendLogin) {
         log.info("{} adding {} to friend", ownLogin, friendLogin);
         Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("ownId", findByLogin(ownLogin).getUserId());
-        namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        if(!Objects.equals(namedJdbcTemplate.queryForObject(
-                isSubscribe, namedParams, Integer.class), 0)) {
-            namedJdbcTemplate.update(acceptFriendRequest, namedParams);
-        }else
-        namedJdbcTemplate.update(addFriend, namedParams);
+        namedParams.put("ownLogin", ownLogin);
+        namedParams.put("friendLogin", friendLogin);
+        namedJdbcTemplate.queryForObject(addFriend, namedParams, String.class);
         log.info("Successful adding friend");
     }
     @Override
-    public int isFriend(String ownLogin, String friendLogin) {
+    public Integer isFriend(String ownLogin, String friendLogin) {
         Map<String, Object> namedParams = new HashMap<>();
-        namedParams.put("ownId", findByLogin(ownLogin).getUserId());
-        namedParams.put("friendId", findByLogin(friendLogin).getUserId());
-        if(!Objects.equals(namedJdbcTemplate.queryForObject(
-                isFriend, namedParams, Integer.class), 0)){
-            return 1;
-        }else if(!Objects.equals(namedJdbcTemplate.queryForObject(
-                isSubscribe, namedParams, Integer.class), 0)){
-            return 0;
-        } else return -1;
+        namedParams.put("ownLogin", ownLogin);
+        namedParams.put("friendLogin", friendLogin);
+        return namedJdbcTemplate.queryForObject(isFriend, namedParams, Integer.class);
 
     }
     @Override

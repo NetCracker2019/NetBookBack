@@ -38,7 +38,7 @@ public class WebSocketController {
     }
 
     @MessageMapping("/send/message/{toChatId}")
-    public Message useSocketCommunication(Message message, @DestinationVariable Long toChatId) {
+    public Message sendMessage(Message message, @DestinationVariable Long toChatId) {
         message.setDateSend(LocalDateTime.now());
         message.setToId(toChatId);
         chatService.saveMessage(message);

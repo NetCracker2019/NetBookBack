@@ -15,11 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.netbooks.dao.implementations.UserRepository;
 import com.example.netbooks.exceptions.CustomException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -55,11 +58,16 @@ public class UserManager {
         userRepository.removeUserById(id);
     }
 
-    public void updateUser(User user) {
+    public void updateUser(User user, MultipartFile file) {
         if (!userRepository.findByLogin(user.getLogin()).getEmail().equals(user.getEmail())
-                && userRepository.isExistByLogin(user.getLogin())){
+                && userRepository.isExistByMail(user.getEmail())){
             log.info("Email - {} already in use", user.getEmail());
             throw new EmailExistException("Email is already in use");
+        }
+        if (file != null) {
+            fileStorageService.deleteFile(user.getAvatarFilePath());
+            user.setAvatarFilePath(UUID.randomUUID().toString());
+            fileStorageService.saveFile(file, user.getAvatarFilePath());
         }
         userRepository.updateUser(user);
     }
@@ -124,9 +132,6 @@ public class UserManager {
         return userRepository.findByLogin(login);
     }
 
-    public Iterable<User> getAllUsers() {
-        return userRepository.getAllUsers();
-    }
 
     public void setMinRefreshDate(String login, Date date) {
         userRepository.setMinRefreshDate(login, date);
@@ -148,29 +153,15 @@ public class UserManager {
         return userRepository.getSubscribersByLogin(login);
     }
 
-    public List<User> getPersonsBySought(String sought, int cntPersons, int offset) {
-        return userRepository.getPersonsBySought(sought, cntPersons, offset);
-    }
-
-    public List<User> getClientPersonsBySought(String sought, int cntPersons, int offset) {
-        return userRepository.getClientPersonsBySought(sought, cntPersons, offset);
-    }
-
-    public List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset) {
-        return userRepository.getFriendsBySought(login, sought, cntPersons, offset);
+    public List<User> getPersonsBySought(String login, String sought, int cntPersons, int offset, SearchIn where,
+                                         Role userRole) {
+        return userRepository.getPersonsBySought(login, sought, cntPersons, offset, where, userRole);
     }
 
     public String getUserRole(String login) {
         return userRepository.getUserRole(login);
     }
 
-    public int getCountPersonsBySought(String sought) {
-        return userRepository.getCountPersonsBySought(sought);
-    }
-
-    public int getCountFriendsBySought(String login, String sought) {
-        return userRepository.getCountFriendsBySought(login, sought);
-    }
 
 	public void addFriend(String ownLogin, String friendLogin) {
 		long userId = userRepository.getUserIdByLogin(ownLogin);
@@ -191,10 +182,6 @@ public class UserManager {
 	public void deleteFriend(String ownLogin, String friendLogin) {
 		userRepository.deleteFriend(ownLogin, friendLogin);
 	}
-
-    public void deleteFile(String avatarFilePath) {
-        fileStorageService.deleteFile(avatarFilePath);
-    }
 
     public void register(User user) {
         if (userRepository.isExistByLogin(user.getLogin())){
@@ -243,4 +230,15 @@ public class UserManager {
         userRepository.updateUser(user);
         verificationTokenManager.removeVerificationToken(verificationToken);
 	}
+
+    public String getCurrentUserLogin(){
+        return ((UserDetails) SecurityContextHolder.getContext().
+                getAuthentication().getPrincipal()).getUsername();
+    }
+
+    public Role getCurrentUserRole(){
+        UserDetails currentUserDetails
+                = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return (Role) (currentUserDetails.getAuthorities().iterator().next());
+    }
 }

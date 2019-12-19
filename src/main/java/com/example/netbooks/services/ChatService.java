@@ -8,16 +8,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class ChatService {
     private ChatRepositoryImpl chatRepository;
+    private FileStorageService fileStorageService;
     @Autowired
-    public ChatService(ChatRepositoryImpl chatRepository) {
+    public ChatService(FileStorageService fileStorageService,
+                       ChatRepositoryImpl chatRepository) {
+        this.fileStorageService = fileStorageService;
         this.chatRepository = chatRepository;
     }
 
@@ -44,10 +49,16 @@ public class ChatService {
     public void updateChat(Long chatId, String editedChatName,
                            List<String> addedMembers,
                            List<String> removedMembers,
-                           String chatAvatar) throws SQLException {
+                           MultipartFile file, String oldChatAvatar) throws SQLException {
         addedMembers.add("");
         removedMembers.add("");
-        chatRepository.updateChat(chatId, editedChatName, addedMembers, removedMembers, chatAvatar);
+        String newChatAvatar = oldChatAvatar;
+        if (file != null) {
+            fileStorageService.deleteFile(oldChatAvatar);
+            newChatAvatar = UUID.randomUUID().toString();
+            fileStorageService.saveFile(file, newChatAvatar);
+        }
+        chatRepository.updateChat(chatId, editedChatName, addedMembers, removedMembers, newChatAvatar);
     }
 
     public boolean isMemberOfChat(Long chatId, String login){
