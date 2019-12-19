@@ -51,7 +51,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(TokenValidationException.class)
     protected ResponseEntity handleTokenValidationException() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                 body(new SimpleException("Link is broken or expired"));
     }
     @ExceptionHandler(Exception.class)
