@@ -222,7 +222,7 @@ public class BookController {
     }
     @GetMapping("/count-reviews")
     public int countReviews(@RequestParam("approved") boolean approved){
-        return  bookService.countReviews(approved);
+        return bookService.countReviews(approved);
     }
     @GetMapping("/count-reviews-book")
     public int countReviewsForBook(@RequestParam("bookId") long bookId) {
