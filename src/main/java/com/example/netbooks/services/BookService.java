@@ -138,7 +138,8 @@ public class BookService {
 
     public List<Event> calendarAnnouncement(String value, String userName) {
         int userId = userRepository.getUserIdByLogin(userName);
-        if (value.equals("all")) {
+        String all = "all";
+        if (all.equals(value)) {
             return jdbcBookRepository.getCalendarAllAnnouncement();
         } else {
             return jdbcBookRepository.getCalendarPersonalizeAnnouncement(userId);
