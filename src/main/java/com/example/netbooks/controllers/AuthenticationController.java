@@ -138,7 +138,7 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/send-admin-reg-mail")//TODO change mapping
+    @PostMapping("/send-admin-reg-mail")
     public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail) throws IOException {
         User user = userManager.createAndSaveTempAdmin();
         VerificationToken verificationToken = new VerificationToken(
@@ -149,14 +149,13 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register admin account!", message);
-        log.info("Admin registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful admin mail snet!");
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/send-moder-reg-mail")//TODO change mapping
+    @PostMapping("/send-moder-reg-mail")
     public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) throws IOException {
         User user = userManager.createAndSaveTempModer();
         VerificationToken verificationToken = new VerificationToken(
@@ -167,7 +166,6 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register moderator account!", message);
-        log.info("Moderator registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful moder mail snet!");
