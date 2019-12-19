@@ -9,8 +9,6 @@ public interface BookRepository {
     List<Book> findAllBooks();
     List<Announcement> findAllAnnouncement();
     int addBook(Book book, int userId);
-//    String addAnnouncement(Book book);
-//    void addNewAnnouncement(Book book);
     int getAmountOfAnnouncement();
     List<ViewBook> getPeaceAnnouncement(int page, int booksPerPage);
 
@@ -45,8 +43,6 @@ public interface BookRepository {
     List<Event> getCalendarAllAnnouncement();
     List<Event> getCalendarPersonalizeAnnouncement(int userId);
 
-    List<String> getFavouriteAuthor(int id);
-    List<String> getFavouriteGenre(int id);
 
     //void likeBook(long bookId);
     int countBooksForUser(long userId);
