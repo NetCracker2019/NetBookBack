@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -122,6 +123,7 @@ public class AuthenticationController {
             if (token != null) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
                 user.setRole(userManager.getUserById(token.getUserId()).getRole());
+                user.setRegDate(LocalDate.now());
                 userManager.updateUserById(user, token.getUserId());
                 userManager.activateUser(token.getUserId());
                 verificationTokenManager.removeVerificationToken(verificationToken);
@@ -138,7 +140,7 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/send-admin-reg-mail")//TODO change mapping
+    @PostMapping("/send-admin-reg-mail")
     public ResponseEntity<Map> sendAdminRegMail(@RequestBody String mail) throws IOException {
         User user = userManager.createAndSaveTempAdmin();
         VerificationToken verificationToken = new VerificationToken(
@@ -149,14 +151,13 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register admin account!", message);
-        log.info("Admin registration mail sent! {}", user.getLogin() + message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful admin mail snet!");
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/send-moder-reg-mail")//TODO change mapping
+    @PostMapping("/send-moder-reg-mail")
     public ResponseEntity<Map> sendModerRegMail(@RequestBody String mail) throws IOException {
         User user = userManager.createAndSaveTempModer();
         VerificationToken verificationToken = new VerificationToken(
@@ -167,20 +168,29 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register moderator account!", message);
-        log.info("Moderator registration mail sent! {}", user.getLogin() + message);
-
+        
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful moder mail snet!");
         return ResponseEntity.ok(response);
     }
 
-    //request for recovery password
+
+    /**
+     * Sent link for recovery password on user email
+     * @param email user email
+     * @exception com.example.netbooks.exceptions.EmailNotFountException when email not found
+     */
     @PostMapping("/recovery/password")
     public void requestFroRecoveryPass(@RequestBody String email) {
         log.info("POST /recovery/password for {}", email);
         userManager.requestForRecoveryPass(validationService.emailValidation(email));
     }
 
+    /**
+     * Change user password
+     * @param verificationToken verification token
+     * @param newPass new password
+     */
     @PutMapping("/change/password")
     public void recoveryPass(@RequestParam("token") String verificationToken,
                              @RequestBody String newPass) {

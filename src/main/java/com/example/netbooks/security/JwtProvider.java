@@ -60,7 +60,6 @@ public class JwtProvider {
         User user = userManager.getUserByLogin(login);
         Claims claims = Jwts.claims().setSubject(login);
         claims.put("role", role);
-
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityTime);
         if (user.getMinRefreshDate() == null) {

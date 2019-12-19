@@ -1,5 +1,7 @@
 package com.example.netbooks.dao.interfaces;
 
+import com.example.netbooks.models.Role;
+import com.example.netbooks.models.SearchIn;
 import com.example.netbooks.models.User;
 
 import java.util.Date;
@@ -38,21 +40,13 @@ public interface UserRepository {
 
     List<User> getFriendsByLogin(String login, int cntFriends, int offset);
 
-    List<User> getPersonsBySought(String sought, int cntPersons, int offset);
-
-    List<User> getClientPersonsBySought(String sought, int cntPersons, int offset);
-
-    List<User> getFriendsBySought(String login, String sought, int cntPersons, int offset);
+    List<User> getPersonsBySought(String login, String sought, int cntPersons, int offset, SearchIn where, Role userRole);
 
     String getUserRole(String login);
 
-    Integer getCountFriendsBySought(String login, String sought);
-
-    Integer getCountPersonsBySought(String sought);
-
     void addFriend(String ownLogin, String friendLogin);
 
-    int isFriend(String ownLogin, String friendLogin);
+    Integer isFriend(String ownLogin, String friendLogin);
 
     void deleteFriend(String ownLogin, String friendLogin);
 }

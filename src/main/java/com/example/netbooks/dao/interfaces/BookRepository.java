@@ -24,20 +24,21 @@ public interface BookRepository {
 
     List<ViewBook> findAllViewBooks();
 
-    List<ViewBook> findViewBooksByTitle(String title);
     ViewBook getBookById(int id);
 
     List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset);
 
-    List<ViewBook> findBooksByTitleAndGenre(String title, Integer genre, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndAuthor(String title, String author, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to);
-    List<ViewBook> findBooksByTitleAndAuthorAndGenre(String title, String author, Integer genre, Date from, Date to);
+    List<ViewBook> findBooksByTitle(String title, int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleGenreDate(String title, Integer genre, Date from, Date to, int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleAuthorDate(String title, Integer author, Date from, Date to,  int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleAndDate(String title, Date from, Date to, int pageSize, int startIndex);
+    List<ViewBook> findBooksByTitleAuthorGenreDate(String title, Integer author, Integer genre, Date from, Date to, int pageSize, int startIndex);
     List<ViewBook> findBooksByAuthor(String author);
 
 
     boolean confirmAnnouncement(long announcementId);
     boolean cancelAnnouncement(long announcementId);
+
 
 
     List<Event> getCalendarAllAnnouncement();
@@ -57,7 +58,7 @@ public interface BookRepository {
 
     boolean checkIsDuplicate(String title, String description);
 
-    List<ViewBook> getSuggestions(long userId);
+    List<ViewBook> getSuggestions(long userId, int pageSize, int startIndex);
   
     void likeBook(long bookId, long userId);
     void dislikeBook(long bookId, long userId);

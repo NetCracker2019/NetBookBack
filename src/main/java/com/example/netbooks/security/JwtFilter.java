@@ -22,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -50,35 +52,30 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (TokenValidationException ex) {
             SecurityContextHolder.clearContext();
             HttpServletResponse response = (HttpServletResponse) httpServletResponse;
-            response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-            //response.setHeader("Access-Control-Allow-Origin", "https://netbooksfront.herokuapp.com");
+            //response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+            response.setHeader("Access-Control-Allow-Origin", "https://netbooksfront.herokuapp.com");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, " +
                     "Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, " +
                     "Access-Control-Request-Headers");
+
             httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
             return;
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    protected JwtProvider attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if (CorsUtils.isPreFlightRequest(httpServletRequest)) {
+    private void attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-            httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-            //httpServletResponse.setHeader("Access-Control-Allow-Origin", "https://netbooksfront.herokuapp.com");
+            //httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", "https://netbooksfront.herokuapp.com");
             httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
             httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
             httpServletResponse.setHeader("Access-Control-Allow-Headers", "X-Requested-With, " +
                     "Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, " +
                     "Access-Control-Request-Headers");
-            return new JwtProvider();
-        } else {
-            return null;
-        }
     }
-
 }
