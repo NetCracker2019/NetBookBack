@@ -62,7 +62,7 @@ public interface BookRepository {
 
     boolean checkIsDuplicate(String title, String description);
 
-    List<ViewBook> getSuggestions(long userId);
+    List<ViewBook> getSuggestions(long userId, int pageSize, int startIndex);
   
     void likeBook(long bookId, long userId);
     void dislikeBook(long bookId, long userId);

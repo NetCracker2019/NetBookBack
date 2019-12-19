@@ -529,11 +529,19 @@ public class JdbcBookRepository implements BookRepository {
         log.info("Successful adding books");
     }
 
-
-    public List<ViewBook> getSuggestions(long userId) {
+    @Override
+    public List<ViewBook> getSuggestions(long userId, int pageSize, int startIndex) {
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("userId", userId);
+        namedParameters.addValue("limit", pageSize);
+        namedParameters.addValue("offset", startIndex);
         return namedJdbcTemplate.query(env.getRequiredProperty("getSuggestions"), namedParameters, viewBooksMapper);
+    }
+
+    public Integer getAmountSuggestions(long userId) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("userId", userId);
+        return namedJdbcTemplate.queryForObject(env.getRequiredProperty("getAmountSuggestions"), namedParameters, Integer.class);
     }
 
     @Override

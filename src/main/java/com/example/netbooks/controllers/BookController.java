@@ -171,6 +171,17 @@ public class BookController {
         return bookService.countBooks();
     }
 
+    /**
+     * find books with specific parameters
+     * @param title - book title
+     * @param author - book author id
+     * @param genre - book genre id
+     * @param from - min release date
+     * @param to - max release date
+     * @param page - number of page
+     * @param size - number of items per page
+     * @return page of books
+     */
     @GetMapping("/find-books")
     public Page<ViewBook> findBooks(@RequestParam(value = "title") String title,
                                     @RequestParam(value = "author", required = false) Integer author,
@@ -182,11 +193,19 @@ public class BookController {
         return bookService.getBooksByParameters(title, author, genre, from, to, PageRequest.of(page, size));
     }
 
+    /**
+     * get minimum release date
+     * @return min release date
+     */
     @GetMapping("/min-date-release")
     public Date getMinDateRelease() {
         return bookService.getMinDateRelease();
     }
 
+    /**
+     * get maximum release date
+     * @return max release date
+     */
     @GetMapping("/max-date-release")
     public Date getMaxDateRelease() {
         return bookService.getMaxDateRelease();
@@ -215,6 +234,13 @@ public class BookController {
         return bookService.calendarAnnouncement(value, userName);
     }
 
+    /**
+     * get suggestions for user
+     * @param userName - username for which suggestions are needed
+     * @param page - number of page
+     * @param size - number of items per page
+     * @return page of books
+     */
     @GetMapping("/suggestions")
     public Page<ViewBook> getSuggestions(@RequestParam("user") String userName,
                                          @RequestParam("page") int page,
