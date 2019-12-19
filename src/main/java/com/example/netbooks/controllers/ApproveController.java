@@ -55,7 +55,7 @@ public class ApproveController {
     @GetMapping("/reviews-for-approve")
     public List<Review> getReviewsForApprove(@RequestParam("page") int page,
                                              @RequestParam("itemPerPage") int offset) {
-        return bookService.getReviewsForApprove(page, offset);
+        return bookService.getReviewsForApprove(page -1, offset -1);
     }
 
     @PostMapping("confirm-review")
