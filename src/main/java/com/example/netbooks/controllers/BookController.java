@@ -86,7 +86,7 @@ public class BookController {
     }
     @GetMapping("/view-books")
     public List<ViewBook> getPeaceViewBooks(@RequestParam("count") int count, @RequestParam("offset") int offset) {
-        return bookService.getPeaceOfBooks(count, offset);
+        return bookService.getPeaceOfBooks(count, offset - 1);
     }
 //    @GetMapping("/find-books")
 //
