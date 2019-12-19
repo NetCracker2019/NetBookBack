@@ -51,6 +51,16 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (TokenValidationException ex) {
             SecurityContextHolder.clearContext();
+            HttpServletResponse response = (HttpServletResponse) httpServletResponse;
+            //response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+            response.setHeader("Access-Control-Allow-Origin", "https://netbooksfront.herokuapp.com");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+            response.setHeader("Access-Control-Max-Age", "3600");
+            response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, " +
+                    "Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, " +
+                    "Access-Control-Request-Headers");
+
             httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
             return;
         }
