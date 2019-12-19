@@ -151,7 +151,6 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register admin account!", message);
-        log.info("Complete Admin request! {}", user.getLogin()+ message);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful admin mail snet!");
@@ -169,7 +168,7 @@ public class AuthenticationController {
                 + "https://netbooksfront.herokuapp.com/verification-admin?token="
                 + verificationToken.getVerificationToken();
         emailSender.sendMessage(mail, "Register moderator account!", message);
-        log.info("Complete moder request! {}", user.getLogin()+ message);
+        
         Map<Object, Object> response = new HashMap<>();
         response.put("msg", "Successful moder mail snet!");
         return ResponseEntity.ok(response);
