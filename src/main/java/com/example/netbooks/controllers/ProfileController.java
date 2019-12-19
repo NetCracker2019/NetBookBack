@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.alibaba.fastjson.JSON;
 
 import java.util.List;
 
@@ -70,28 +71,16 @@ public class ProfileController {
      * Edit user profile information
      * @param login Edited user login
      * @param file new user avatar
-     * @param name user name
-     * @param country user country
-     * @param city user city
-     * @param password user password
-     * @param email user email
-     * @param sex user sex
-     * @param status user status
+     * @param userInJson user information
      * @exception UserNotFoundException when user not found
      * @exception ValidationException when edited user data is not valid
      */
     @PutMapping("/{login}/edit")
     public void editUser(@PathVariable("login")String login,
                          @RequestParam(value = "file", required = false) MultipartFile file,
-                         @RequestParam("name") String name,
-                         @RequestParam("country") String country,
-                         @RequestParam("city") String city,
-                         @RequestParam("password") String password,
-                         @RequestParam("email") String email,
-                         @RequestParam("sex") String sex,
-                         @RequestParam("status") String status) {
+                         @RequestParam("user") String userInJson) {
         log.info("PUT /{}/edit", login);
-        User user = new User(login, name, password, status, city, country, email, sex);
+        User user = JSON.parseObject(userInJson, User.class);
         if(!login.equals(userManager.getCurrentUserLogin()) && Integer.parseInt(userManager.getUserRole(login)) - 1
                 <= userManager.getCurrentUserRole().ordinal()) {
             log.info("Cannot get access to edit {} profile from {}", userManager.getCurrentUserLogin(), login);

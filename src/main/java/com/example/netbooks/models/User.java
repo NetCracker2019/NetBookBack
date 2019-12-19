@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,10 @@ public class User {
 	@JsonProperty("id")
 	private long userId;
 	@JsonProperty("firstName")
+	@JSONField(name="firstName")
 	private String name;
 	@JsonProperty("username")
+	@JSONField(name="username")
 	private String login;
 	@JsonProperty("email")
 	private String email;
@@ -35,6 +38,7 @@ public class User {
 	@JsonProperty("sex")
 	private String sex;
 	@JsonProperty("regDate")
+	@JSONField(name="regDate", deserialize=false)
 	private LocalDate regDate;
 	@JsonProperty("avatarFilePath")
     private String avatarFilePath;
@@ -53,17 +57,7 @@ public class User {
 	public void setRoleInt(int roleId) {
 		this.role = Role.values()[roleId - 1];
 	}
-	public User(String login, String name, String password, String status, String city, String country,
-				String email, String sex){
-		this.name = name;
-		this.login = login;
-		this.email = email;
-		this.password = password;
-		this.sex = sex;
-		this.country = country;
-		this.city = city;
-		this.status = status;
-	}
+
 	public void compareAndReplace(User user) {
 		this.name = user.name;
 		this.email = user.email;
@@ -73,7 +67,6 @@ public class User {
 		this.country = user.country;
 		this.city = user.city;
 		this.status = user.status;
-		this.turnOnNotif = user.turnOnNotif;
 	}
 
 }

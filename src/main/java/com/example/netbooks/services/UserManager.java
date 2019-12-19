@@ -87,6 +87,7 @@ public class UserManager {
         user.setPassword(tempLogPass);
         user.setEmail(tempLogPass);
         user.setName(tempLogPass);
+        user.setRegDate(LocalDate.now());
         user.setRole(Role.ROLE_ADMIN);
         saveUser(user);
         return user;
@@ -99,6 +100,7 @@ public class UserManager {
         user.setPassword(tempLogPass);
         user.setEmail(tempLogPass);
         user.setName(tempLogPass);
+        user.setRegDate(LocalDate.now());
         user.setRole(Role.ROLE_MODER);
         saveUser(user);
         return user;
