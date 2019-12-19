@@ -49,6 +49,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).
                 body(new SimpleException("User with this email already exist"));
     }
+    @ExceptionHandler(TokenValidationException.class)
+    protected ResponseEntity handleTokenValidationException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                body(new SimpleException("Link is broken or expired"));
+    }
     @ExceptionHandler(Exception.class)
     protected ResponseEntity handleDefaultException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).

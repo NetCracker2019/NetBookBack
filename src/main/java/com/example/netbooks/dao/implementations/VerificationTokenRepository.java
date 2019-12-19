@@ -2,6 +2,7 @@ package com.example.netbooks.dao.implementations;
 
 import com.example.netbooks.controllers.AuthenticationController;
 import com.example.netbooks.exceptions.CustomException;
+import com.example.netbooks.exceptions.TokenValidationException;
 import com.example.netbooks.models.VerificationToken;
 
 import java.sql.ResultSet;
@@ -83,7 +84,7 @@ public class VerificationTokenRepository implements com.example.netbooks.dao.int
             return namedJdbcTemplate.queryForObject(findByVerificationToken, namedParams, new TokenMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.info("Token is broken or expired - " + token);
-            throw new CustomException("Link is broken or expired", HttpStatus.NOT_FOUND);
+            throw new TokenValidationException("Link is broken or expired", HttpStatus.NOT_FOUND);
         }
     }
     @Override
