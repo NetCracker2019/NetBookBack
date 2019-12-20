@@ -119,9 +119,11 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<ViewAnnouncement> findViewUnApproveBooks(int page, int offset) {
+        int startIndex = offset * (page - 1);
+        System.out.println(startIndex);
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("count", offset);
-        namedParameters.addValue("offset", page);
+        namedParameters.addValue("offset", startIndex);
         return namedJdbcTemplate.query(env.getProperty("getUnApprove"), namedParameters, viewAnnouncementMapper);
     }
 
@@ -555,9 +557,10 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<ViewBook> getBooksForApprove(int page, int itemPerPage) {
+        int startIndex = itemPerPage * (page - 1);
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("count", itemPerPage);
-        namedParameters.addValue("offset", page);
+        namedParameters.addValue("offset", startIndex);
         return namedJdbcTemplate.query(env.getProperty("getBooksForApprove"), namedParameters, viewBooksMapper);
     }
 

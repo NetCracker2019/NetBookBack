@@ -83,7 +83,6 @@ public class ApproveController {
     @GetMapping("/books-for-approve")
     public List<ViewBook> getBooksForApprove(@RequestParam("page") int page,
                                              @RequestParam("itemPerPage") int offset) {
-        logger.info(bookService.getBooksForApprove(page, offset));
         return bookService.getBooksForApprove(page, offset);
     }
 
